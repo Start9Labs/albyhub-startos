@@ -105,15 +105,15 @@ export LOG_EVENTS=true # makes debugging easier
 # Reverse proxy configuration (aka Firefox patch)
 cat  <<EOF >/etc/caddy/Caddyfile
 {
-    admin off
-    servers {
-        protocols h1 h2c h3
-    }
+	admin off
+	servers {
+		protocols h1 h2c
+	}
 }
 
 :8443 {
-    tls /mnt/cert/main.cert.pem /mnt/cert/main.key.pem
-    reverse_proxy albyhub.embassy:8080
+	tls /mnt/cert/main.cert.pem /mnt/cert/main.key.pem
+	reverse_proxy albyhub.embassy:8080
 }
 EOF
 
