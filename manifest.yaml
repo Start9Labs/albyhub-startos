@@ -1,14 +1,13 @@
 id: albyhub
 title: Alby Hub
-version: 1.10.4
+version: 1.11.3
 release-notes: |
-  minor improvements and bugfixes.
+  In this release we make a large number of improvements to the privacy of app connections,
+  relay connectivity, backups, open channel flows, receive page, isolated app connections, transaction lists, and more.
 
   for details see:
 
-  * https://github.com/getAlby/hub/releases/tag/v1.10.4
-  * https://github.com/getAlby/hub/releases/tag/v1.10.3
-  * https://github.com/getAlby/hub/releases/tag/v1.10.2
+  * https://github.com/getAlby/hub/releases/tag/v1.11.3
 
 license: Apache-2.0
 wrapper-repo: "https://github.com/start9labs/albyhub-startos"
