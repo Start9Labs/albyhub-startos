@@ -39,6 +39,10 @@ main:
     main: /data
     cert: /mnt/cert
     lnd: /mnt/lnd
+hardware-requirements:
+  arch:
+    - x86_64
+    - aarch64
 health-checks:
   web-ui:
     name: Web UI
