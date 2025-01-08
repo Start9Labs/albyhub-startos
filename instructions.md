@@ -18,10 +18,17 @@
 5. **Create a Strong Password**  
    Set a strong password for your Alby Hub account. It's recommended to store this password securely in your self-hosted Vaultwarden. If you are using the Alby Hub embedded light node, it is critical you do not lose your password, as it will result in loss of funds.
 
-6. **Connect Your Alby Account**  
+6. **Enable Auto-Unlock (Recommended)**
+   Once logged in to Alby Hub:
+   - Navigate to Settings -> Auto Unlock
+   - Enter the password you created in step 5
+   - Click the "Enable Auto Unlock" button
+   - **Note**: You must disable auto-unlock before changing your password or migrating your node
+
+7. **Connect Your Alby Account**  
    Follow the on-screen instructions to connect your Alby account.
 
-7. **All Set!**  
+8. **All Set!**  
    You're done! Your Alby Hub is now ready to use.
 
 ## Getting Help
