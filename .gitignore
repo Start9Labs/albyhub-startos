@@ -1,16 +1,7 @@
-.DS_Store
-.vscode
-.env
-*.db
-*.macaroon
-node_modules
-<<<<<<< Updated upstream
-nostr-wallet-connect
-=======
->>>>>>> Stashed changes
-albyhub
-nwc.db
-docker-images/
 *.s9pk
-scripts/*.js
-lnd-data/
+startos/*.js
+node_modules/
+.DS_Store
+.vscode/
+docker-images
+javascript
