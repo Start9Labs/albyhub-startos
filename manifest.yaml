@@ -1,15 +1,21 @@
 id: albyhub
 title: Alby Hub
-version: 1.12.0
+version: 1.13.0
 release-notes: |
-  In this release we make a large number of improvements to the privacy of app connections,
-  relay connectivity, backups, open channel flows, receive page, isolated app connections, transaction lists, and more.
+  In this release we introduce auto-unlock functionality for self-hosted instances, improve relay connectivity, and enhance the overall user experience.
 
-  for details see:
+  Key updates include:
+  * New auto-unlock feature
+  * Improved relay connectivity
+  * Enhanced support for paying BOLT-11 invoices
+  * Added LND channel notifications
+  * UI improvements including better transaction lists and receive page
+  * Improved privacy for app connections
+  * Enhanced backup functionality
+  * Optimized open channel flows
+  * Instructions update
 
-  * https://github.com/getAlby/hub/releases/tag/v1.12.0
-  * https://github.com/getAlby/hub/releases/tag/v1.11.3
-
+  View full release details - [here](https://github.com/getAlby/hub/releases/tag/v1.13.0)
 license: Apache-2.0
 wrapper-repo: "https://github.com/start9labs/albyhub-startos"
 upstream-repo: "https://github.com/getAlby/hub"
@@ -33,6 +39,10 @@ main:
     main: /data
     cert: /mnt/cert
     lnd: /mnt/lnd
+hardware-requirements:
+  arch:
+    - x86_64
+    - aarch64
 health-checks:
   web-ui:
     name: Web UI
