@@ -4,8 +4,20 @@
 
 # Alby Hub for StartOS
 
-[Alby Hub](https://github.com/getAlby/hub) is the open-source, self-custodial Lightning wallet that puts you in control. With an integrated node, it's more than just a wallet—it's your gateway to Bitcoin. Manage channels, run apps, and take charge of your funds, all through one sleek, user-friendly interface. Empower your Bitcoin journey with simplicity and sovereignty.
-This repository creates the `s9pk` package that is installed to run `Alby Hub` on [StartOS](https://github.com/Start9Labs/start-os/).
+**Alby Hub ✨** - Modern Self-custodial Bitcoin Lightning wallet with the ability to connect to external apps.
+
+Alby Hub is an open-source, self-custodial Bitcoin Lightning wallet, with the easiest-to-use Lightning Network node for everyone. Whether you're an individual, creator, or developer, Alby Hub is your centre for seamless Bitcoin payments. Effortlessly connect to a variety of apps like the Alby Browser Extension or Alby Go mobile app, create sub-wallets for family and friends, and take full control of your funds—all within an intuitive interface and developer-ready APIs.
+
+
+🔗 **USEFUL LINKS:**
+
+Alby Hub [website ](https://albyhub.com/)
+
+[Source Code Repository](https://github.com/getAlby/hub)
+
+[Community of users and developers](https://discord.getalby.com/)
+
+[Support](https://support.getalby.com/)
 
 ## Dependencies
 
