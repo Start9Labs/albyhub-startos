@@ -1,12 +1,15 @@
 id: albyhub
-title: Alby Hub
+title: Alby Hub ✨
 version: 1.13.0
 release-notes: |
-  In this release we introduce auto-unlock functionality for self-hosted instances, improve relay connectivity, and enhance the overall user experience.
+  In this release we introduce auto-unlock functionality for self-hosted instances, add new apps to Hub's store, and enhance the overall user experience.
 
   Key updates include:
-  * New auto-unlock feature
+  * New apps in the app store: e.g. ZapPlanner for scheduled recurring payments, Clams for accounting, Simple Boost for donations
+  * New auto-unlock feature  after restarts
+  * More information about pending channel closing transactions
   * Improved relay connectivity
+  * Security improvements for isolated apps and budgeting
   * Enhanced support for paying BOLT-11 invoices
   * Added LND channel notifications
   * UI improvements including better transaction lists and receive page
@@ -14,6 +17,8 @@ release-notes: |
   * Enhanced backup functionality
   * Optimized open channel flows
   * Instructions update
+
+  <3 Honouring Eva Galperin
 
   View full release details - [here](https://github.com/getAlby/hub/releases/tag/v1.13.0)
 license: Apache-2.0
@@ -23,9 +28,17 @@ support-site: "https://github.com/getAlby/hub/issues"
 marketing-site: "https://albyhub.com/"
 build: ["make"]
 description:
-  short: Self-custodial Lightning wallet with integrated node.
+  short: Self-custodial Bitcoin Lightning wallet with integrated node and app connections
   long: |
-    Alby Hub is the open-source, self-custodial Lightning wallet that puts you in control. With an integrated node, it's more than just a wallet—it's your gateway to Bitcoin. Manage channels, run apps, and take charge of your funds, all through one sleek, user-friendly interface. Empower your Bitcoin journey with simplicity and sovereignty.
+    Alby Hub is an open-source, self-custodial Bitcoin Lightning wallet, with the easiest-to-use Lightning Network node for everyone. 
+    Whether you're an individual, creator, or developer, Alby Hub is your centre for seamless Bitcoin payments. 
+    Effortlessly connect to a variety of apps like the Alby Browser Extension or Alby Go mobile app, create sub-wallets for family and friends, and take full control of your funds—all within an intuitive interface and developer-ready APIs.
+
+    USEFUL LINKS
+    * Alby Hub [website ](https://albyhub.com/)
+    * [Source Code Repository](https://github.com/getAlby/hub)
+    * [Community of users and developers](https://discord.getalby.com/)
+    * [Support](https://support.getalby.com/)
 assets:
   license: LICENSE
   icon: icon.png
