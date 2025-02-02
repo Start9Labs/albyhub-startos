@@ -1,8 +1,8 @@
 id: albyhub
-title: Alby Hub ✨
+title: Alby Hub
 version: 1.13.0
 release-notes: |
-  In this release we introduce auto-unlock functionality for self-hosted instances, add new apps to Hub's store, and enhance the overall user experience.
+  This release introduces auto-unlock functionality for self-hosted instances, adds new apps to Hub's store, and enhances the overall user experience.
 
   Key updates include:
   * New apps in the app store: e.g. ZapPlanner for scheduled recurring payments, Clams for accounting, Simple Boost for donations
@@ -35,10 +35,9 @@ description:
     Effortlessly connect to a variety of apps like the Alby Browser Extension or Alby Go mobile app, create sub-wallets for family and friends, and take full control of your funds—all within an intuitive interface and developer-ready APIs.
 
     USEFUL LINKS
-    * Alby Hub [website ](https://albyhub.com/)
-    * [Source Code Repository](https://github.com/getAlby/hub)
+    * [Feedback Board](https://feedback.getalby.com/)
     * [Community of users and developers](https://discord.getalby.com/)
-    * [Support](https://support.getalby.com/)
+
 assets:
   license: LICENSE
   icon: icon.png
