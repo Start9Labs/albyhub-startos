@@ -59,13 +59,11 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
    */
   return sdk.Daemons.of(effects, started, healthReceipts).addDaemon('primary', {
     subcontainer: { imageId: 'albyhub' },
-    command: ['./hello-moon'],
+    command: ['main'],
     env,
     mounts: sdk.Mounts.of()
       .addVolume('main', null, '/data', false)
-      .addDependency<
-        typeof lndManifest
-      >('lnd', 'main', null, '/hello-world', true),
+      .addDependency<typeof lndManifest>('lnd', 'main', null, '/lnd', true),
     ready: {
       display: 'Web Interface',
       fn: () =>
