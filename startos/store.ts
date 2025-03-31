@@ -1,7 +1,7 @@
 import { setupExposeStore } from '@start9labs/start-sdk'
 
 export type Store = {
-  implementation: 'lnd' | 'ldk'
+  LN_BACKEND_TYPE: 'LND' | 'LDK' | null
 }
 
-export const exposedStore = setupExposeStore<Store>((pathBuilder) => [])
+export const exposedStore = setupExposeStore<Store>(() => [])

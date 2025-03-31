@@ -13,12 +13,11 @@ export const manifest = setupManifest({
     short: 'Self-custodial Lightning wallet with integrated node',
     long: `Alby Hub is the open-source, self-custodial Lightning wallet that puts you in control. With an integrated node, it's more than just a wallet—it's your gateway to Bitcoin. Manage channels, run apps, and take charge of your funds, all through one sleek, user-friendly interface. Empower your Bitcoin journey with simplicity and sovereignty`,
   },
-  assets: [],
   volumes: ['main'],
   images: {
     albyhub: {
       source: {
-        dockerTag: 'ghcr.io/getalby/hub:v1.13.0',
+        dockerTag: 'ghcr.io/getalby/hub:v1.15.0',
       },
     },
   },
@@ -35,7 +34,7 @@ export const manifest = setupManifest({
     lnd: {
       description: 'Provides a fully sovereign experience',
       optional: true,
-      s9pk: 'https://github.com/start9labs/lnd-startos/releases/...', // @TODO
+      s9pk: 'https://github.com/Start9Labs/bitcoind-startos/releases/download/v28.1.0.0-alpha.2/bitcoind.s9pk',
     },
   },
 })

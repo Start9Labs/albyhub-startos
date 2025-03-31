@@ -3,9 +3,9 @@ import { readFile, rmdir } from 'fs/promises'
 import { load } from 'js-yaml'
 import { sdk } from '../sdk'
 
-export const v_1_13_0_0 = VersionInfo.of({
-  version: '1.13.0:0',
-  releaseNotes: 'Updated for StartOS 0.3.6',
+export const v_1_15_0_1 = VersionInfo.of({
+  version: '1.15.0:1',
+  releaseNotes: 'Updated for StartOS 0.4.0',
   migrations: {
     up: async ({ effects }) => {
       // get old config.yaml
@@ -13,10 +13,12 @@ export const v_1_13_0_0 = VersionInfo.of({
         await readFile('/root/start9/config.yaml', 'utf-8'),
       ) as { lightning: 'lnd' | 'ldk' }
 
+      const LN_BACKEND_TYPE = configYaml.lightning === 'lnd' ? 'LND' : 'LDK'
+
       await sdk.store.setOwn(
         effects,
-        sdk.StorePath.implementation,
-        configYaml.lightning,
+        sdk.StorePath.LN_BACKEND_TYPE,
+        LN_BACKEND_TYPE,
       )
 
       // remove old start9 dir

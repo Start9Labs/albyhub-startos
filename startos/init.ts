@@ -8,6 +8,7 @@ import { setLightning } from './actions/setLightning'
 
 // **** Install ****
 const install = sdk.setupInstall(async ({ effects }) => {
+  await sdk.store.setOwn(effects, sdk.StorePath, { LN_BACKEND_TYPE: null })
   await sdk.action.requestOwn(effects, setLightning, 'critical')
 })
 

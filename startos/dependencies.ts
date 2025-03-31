@@ -2,10 +2,10 @@ import { sdk } from './sdk'
 
 export const setDependencies = sdk.setupDependencies(async ({ effects }) => {
   const implementation = await sdk.store
-    .getOwn(effects, sdk.StorePath.implementation)
+    .getOwn(effects, sdk.StorePath.LN_BACKEND_TYPE)
     .const()
 
-  if (implementation === 'ldk') return {}
+  if (implementation === 'LDK') return {}
 
   return {
     lnd: {

@@ -9,17 +9,46 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
    *
    * In this section, we fetch any resources or run any desired preliminary commands.
    */
-  console.info('Starting Hello Moon!')
+  console.info('Starting Alby Hub!')
 
   const depResult = await sdk.checkDependencies(effects)
   depResult.throwIfNotSatisfied()
+
+  const LN_BACKEND_TYPE = (await sdk.store
+    .getOwn(effects, sdk.StorePath.LN_BACKEND_TYPE)
+    .once())!
+
+  let env: Record<string, string> = {
+    LN_BACKEND_TYPE,
+    WORK_DIR: '/data/albyhub', // @TODO Aiden does this need to be set at LXC container scope?
+    PORT: '8080',
+    LOG_EVENTS: 'true',
+  }
+
+  if (LN_BACKEND_TYPE === 'LND') {
+    const lndgrpc = await sdk.serviceInterface
+      .get(effects, {
+        id: 'grpc',
+        packageId: 'lnd',
+      })
+      .const()
+
+    env = {
+      // @TODO Aiden how to get LND GRPC port?
+      LND_ADDRESS: `lnd.startos:${lndgrpc?.host?.bindings[0].net.assignedPort}`,
+      LND_CERT_FILE: '/mnt/lnd/tls.cert',
+      LND_MACAROON_FILE: '/mnt/lnd/admin.macaroon',
+      ENABLE_ADVANCED_SETUP: 'false',
+      ...env,
+    }
+  }
 
   /**
    * ======================== Additional Health Checks (optional) ========================
    *
    * In this section, we define *additional* health checks beyond those included with each daemon (below).
    */
-  const healthReceipts: T.HealthReceipt[] = []
+  const healthReceipts: T.HealthCheck[] = []
 
   /**
    * ======================== Daemons ========================
@@ -29,22 +58,22 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
    * Each daemon defines its own health check, which can optionally be exposed to the user.
    */
   return sdk.Daemons.of(effects, started, healthReceipts).addDaemon('primary', {
-    subcontainer: { id: 'albyhub' }, // Must match an Image ID declared in the manifest.
-    command: ['./hello-moon'], // The command to start the daemon.
+    subcontainer: { imageId: 'albyhub' },
+    command: ['./hello-moon'],
+    env,
     mounts: sdk.Mounts.of()
       .addVolume('main', null, '/data', false)
       .addDependency<
         typeof lndManifest
       >('lnd', 'main', null, '/hello-world', true),
     ready: {
-      display: 'Web Interface', // If null, the health check will NOT be displayed to the user. If provided, this string will be the name of the health check and displayed to the user.
-      // The function below determines the health status of the daemon.
+      display: 'Web Interface',
       fn: () =>
         sdk.healthCheck.checkPortListening(effects, uiPort, {
           successMessage: 'The web interface is ready',
           errorMessage: 'The web interface is unreachable',
         }),
     },
-    requires: [], // If this daemon depends on the successful initialization of one or more prior daemons, enter their IDs here.
+    requires: [],
   })
 })
