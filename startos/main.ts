@@ -21,7 +21,7 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
   let env: Record<string, string> = {
     LN_BACKEND_TYPE,
     WORK_DIR: '/data/albyhub', // @TODO Aiden does this need to be set at LXC container scope?
-    PORT: '8080',
+    PORT: String(uiPort),
     LOG_EVENTS: 'true',
   }
 
