@@ -35,7 +35,7 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
 
     env = {
       // @TODO Aiden how to get LND GRPC port?
-      LND_ADDRESS: `lnd.startos:${lndgrpc?.host?.bindings[0].net.assignedPort}`,
+      LND_ADDRESS: `lnd.startos:${lndgrpc?.addressInfo?.internalPort || '10009'}`,
       LND_CERT_FILE: '/mnt/lnd/tls.cert',
       LND_MACAROON_FILE: '/mnt/lnd/admin.macaroon',
       ENABLE_ADVANCED_SETUP: 'false',
