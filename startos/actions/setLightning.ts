@@ -32,7 +32,7 @@ export const setLightning = sdk.Action.withInput(
       warning: null,
       allowedStatuses: 'only-stopped',
       group: null,
-      visibility: 'hidden',
+      visibility: exists ? 'hidden' : 'enabled',
     }
   },
 
