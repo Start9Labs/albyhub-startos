@@ -21,7 +21,9 @@ export const setLightning = sdk.Action.withInput(
 
   // metadata
   async ({ effects }) => {
-    const exists = sdk.store.getOwn(effects, sdk.StorePath.LN_BACKEND_TYPE)
+    const exists = await sdk.store
+      .getOwn(effects, sdk.StorePath.LN_BACKEND_TYPE)
+      .const()
 
     return {
       name: 'Set Lightning Implementation',
