@@ -1,9 +1,16 @@
 id: albyhub
 title: Alby Hub
-version: 1.15.0
+version: 1.16.0
 release-notes: |
-  In this release Alby Hub adds "1 Tap connections", an easy way to connect other apps to your hub using Alby Go! Also there are many minor improvements and bug fixes.
-  View full release details - [here](https://github.com/getAlby/hub/releases/tag/v1.15.0)
+  In this release, Alby Hub brings several new features and improvements:
+  
+  - Introduced **Alby Pro** for premium features on self-hosted hubs
+  - Added ability to **buy gift cards** in the App Store via Bitrefill
+  - **New apps** added to the App Store
+  - Improved **channel opening flow** with clearer, more helpful information
+  - **UI refresh** for the sidebar and settings page
+  - Various minor improvements and bug fixes
+  View full release details - [here](https://github.com/getAlby/hub/releases/tag/v1.16.0)
 license: Apache-2.0
 wrapper-repo: "https://github.com/start9labs/albyhub-startos"
 upstream-repo: "https://github.com/getAlby/hub"
