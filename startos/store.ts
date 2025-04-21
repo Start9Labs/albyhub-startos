@@ -4,4 +4,8 @@ export type Store = {
   LN_BACKEND_TYPE: 'LND' | 'LDK' | null
 }
 
+export const initStore: Store = {
+  LN_BACKEND_TYPE: null,
+}
+
 export const exposedStore = setupExposeStore<Store>(() => [])

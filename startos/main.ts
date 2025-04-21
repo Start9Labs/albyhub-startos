@@ -25,6 +25,8 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
     LOG_EVENTS: 'true',
   }
 
+  let mounts = sdk.Mounts.of().addVolume('main', null, '/data', false)
+
   if (LN_BACKEND_TYPE === 'LND') {
     const lndgrpc = await sdk.serviceInterface
       .get(effects, {
@@ -41,6 +43,14 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
       ENABLE_ADVANCED_SETUP: 'false',
       ...env,
     }
+
+    mounts = mounts.addDependency<typeof lndManifest>(
+      'lnd',
+      'main',
+      null,
+      '/lnd',
+      true,
+    )
   }
 
   /**
@@ -58,12 +68,14 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
    * Each daemon defines its own health check, which can optionally be exposed to the user.
    */
   return sdk.Daemons.of(effects, started, healthReceipts).addDaemon('primary', {
-    subcontainer: { imageId: 'albyhub' },
+    subcontainer: await sdk.SubContainer.of(
+      effects,
+      { imageId: 'albyhub' },
+      mounts,
+      'albyhub-sub',
+    ),
     command: ['main'],
     env,
-    mounts: sdk.Mounts.of()
-      .addVolume('main', null, '/data', false)
-      .addDependency<typeof lndManifest>('lnd', 'main', null, '/lnd', true),
     ready: {
       display: 'Web Interface',
       fn: () =>
