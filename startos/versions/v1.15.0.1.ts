@@ -1,7 +1,7 @@
 import { IMPOSSIBLE, VersionInfo } from '@start9labs/start-sdk'
 import { readFile, rmdir } from 'fs/promises'
 import { load } from 'js-yaml'
-import { sdk } from '../sdk'
+import { store } from '../file-models/store.json'
 
 export const v_1_15_0_1 = VersionInfo.of({
   version: '1.15.0:1',
@@ -15,11 +15,7 @@ export const v_1_15_0_1 = VersionInfo.of({
 
       const LN_BACKEND_TYPE = configYaml.lightning === 'lnd' ? 'LND' : 'LDK'
 
-      await sdk.store.setOwn(
-        effects,
-        sdk.StorePath.LN_BACKEND_TYPE,
-        LN_BACKEND_TYPE,
-      )
+      await store.write(effects, { LN_BACKEND_TYPE })
 
       // remove old start9 dir
       await rmdir('/data/start9')

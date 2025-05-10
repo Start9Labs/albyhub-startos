@@ -1,9 +1,10 @@
+import { store } from './file-models/store.json'
 import { sdk } from './sdk'
 
 export const setDependencies = sdk.setupDependencies(async ({ effects }) => {
-  const LN_BACKEND_TYPE = await sdk.store
-    .getOwn(effects, sdk.StorePath.LN_BACKEND_TYPE)
-    .const()
+  const LN_BACKEND_TYPE = await store
+    .read((s) => s.LN_BACKEND_TYPE)
+    .const(effects)
 
   return LN_BACKEND_TYPE === 'LND'
     ? {

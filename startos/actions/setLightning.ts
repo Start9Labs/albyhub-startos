@@ -1,3 +1,4 @@
+import { store } from '../file-models/store.json'
 import { sdk } from '../sdk'
 
 const { InputSpec, Value } = sdk
@@ -7,10 +8,7 @@ export const inputSpec = InputSpec.of({
     name: 'Lightning Implementation',
     description:
       'Choose the Lightning implementation to use with Alby Hub.<br><br><strong>LND on this server</strong>: This option tells Alby Hub to use the LND node installed on this StartOS server. It is the more sovereign and secure option, allowing full control over your node.<br><br><strong>Alby embedded light node</strong>: This option tells Alby Hub to use its own, internal LDK node. This option is convenient but offers less control over your node.',
-    values: {
-      LND: 'LND on this server',
-      LDK: 'LDK embedded node',
-    },
+    values: { LND: 'LND on this server', LDK: 'LDK embedded node' },
     default: 'LND',
   }),
 })
@@ -21,9 +19,7 @@ export const setLightning = sdk.Action.withInput(
 
   // metadata
   async ({ effects }) => {
-    const exists = await sdk.store
-      .getOwn(effects, sdk.StorePath.LN_BACKEND_TYPE)
-      .const()
+    const exists = await store.read((s) => s.LN_BACKEND_TYPE).const(effects)
 
     return {
       name: 'Set Lightning Implementation',
@@ -42,16 +38,10 @@ export const setLightning = sdk.Action.withInput(
   // optionally pre-fill the input form
   async ({ effects }) => ({
     LN_BACKEND_TYPE:
-      (await sdk.store
-        .getOwn(effects, sdk.StorePath.LN_BACKEND_TYPE)
-        .const()) || undefined,
+      (await store.read((s) => s.LN_BACKEND_TYPE).once()) || undefined,
   }),
 
   // the execution function
   async ({ effects, input }) =>
-    sdk.store.setOwn(
-      effects,
-      sdk.StorePath.LN_BACKEND_TYPE,
-      input.LN_BACKEND_TYPE,
-    ),
+    store.merge(effects, { LN_BACKEND_TYPE: input.LN_BACKEND_TYPE }),
 )

@@ -2,6 +2,7 @@ import { sdk } from './sdk'
 import { T } from '@start9labs/start-sdk'
 import { manifest as lndManifest } from 'lnd-startos/startos/manifest'
 import { uiPort } from './utils'
+import { store } from './file-models/store.json'
 
 export const main = sdk.setupMain(async ({ effects, started }) => {
   /**
@@ -14,9 +15,11 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
   const depResult = await sdk.checkDependencies(effects)
   depResult.throwIfNotSatisfied()
 
-  const LN_BACKEND_TYPE = (await sdk.store
-    .getOwn(effects, sdk.StorePath.LN_BACKEND_TYPE)
-    .once())!
+  const LN_BACKEND_TYPE = await store.read((s) => s.LN_BACKEND_TYPE).once()
+
+  if (!LN_BACKEND_TYPE) {
+    throw new Error('You must select node type before starting Alby Hub')
+  }
 
   let env: Record<string, string> = {
     LN_BACKEND_TYPE,
@@ -25,14 +28,16 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
     LOG_EVENTS: 'true',
   }
 
-  let mounts = sdk.Mounts.of().addVolume('main', null, '/data', false)
+  let mounts = sdk.Mounts.of().mountVolume({
+    volumeId: 'main',
+    subpath: null,
+    mountpoint: '/data',
+    readonly: false,
+  })
 
   if (LN_BACKEND_TYPE === 'LND') {
     const lndgrpc = await sdk.serviceInterface
-      .get(effects, {
-        id: 'grpc',
-        packageId: 'lnd',
-      })
+      .get(effects, { id: 'grpc', packageId: 'lnd' })
       .const()
 
     env = {
@@ -44,13 +49,13 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
       ...env,
     }
 
-    mounts = mounts.addDependency<typeof lndManifest>(
-      'lnd',
-      'main',
-      null,
-      '/lnd',
-      true,
-    )
+    mounts = mounts.mountDependency<typeof lndManifest>({
+      dependencyId: 'lnd',
+      volumeId: 'main',
+      subpath: null,
+      mountpoint: '/lnd',
+      readonly: true,
+    })
   }
 
   /**
