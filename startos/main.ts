@@ -2,7 +2,7 @@ import { sdk } from './sdk'
 import { T } from '@start9labs/start-sdk'
 import { manifest as lndManifest } from 'lnd-startos/startos/manifest'
 import { uiPort } from './utils'
-import { store } from './file-models/store.json'
+import { store } from './fileModels/store.json'
 
 export const main = sdk.setupMain(async ({ effects, started }) => {
   /**

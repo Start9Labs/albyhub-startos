@@ -1,7 +1,7 @@
 import { IMPOSSIBLE, VersionInfo } from '@start9labs/start-sdk'
 import { readFile, rmdir } from 'fs/promises'
 import { load } from 'js-yaml'
-import { store } from '../file-models/store.json'
+import { store } from '../../fileModels/store.json'
 
 export const v_1_15_0_1 = VersionInfo.of({
   version: '1.15.0:1',
@@ -11,9 +11,9 @@ export const v_1_15_0_1 = VersionInfo.of({
       // get old config.yaml
       const configYaml = load(
         await readFile('/data/start9/config.yaml', 'utf-8'),
-      ) as { lightning: 'lnd' | 'ldk' }
+      ) as { lightning?: 'lnd' | 'ldk' } | undefined
 
-      const LN_BACKEND_TYPE = configYaml.lightning === 'lnd' ? 'LND' : 'LDK'
+      const LN_BACKEND_TYPE = configYaml?.lightning === 'ldk' ? 'LDK' : 'LND'
 
       await store.write(effects, { LN_BACKEND_TYPE })
 
