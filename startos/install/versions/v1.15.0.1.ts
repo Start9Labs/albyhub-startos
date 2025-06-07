@@ -10,7 +10,10 @@ export const v_1_15_0_1 = VersionInfo.of({
     up: async ({ effects }) => {
       // get old config.yaml
       const configYaml = load(
-        await readFile('/data/start9/config.yaml', 'utf-8'),
+        await readFile(
+          '/media/startos/volumes/main/start9/config.yaml',
+          'utf-8',
+        ),
       ) as { lightning?: 'lnd' | 'ldk' } | undefined
 
       if (configYaml?.lightning) {
@@ -20,7 +23,9 @@ export const v_1_15_0_1 = VersionInfo.of({
       }
 
       // remove old start9 dir
-      await rm('/data/start9', { recursive: true }).catch(console.error)
+      await rm('/media/startos/volumes/main/start9', { recursive: true }).catch(
+        console.error,
+      )
     },
     down: IMPOSSIBLE,
   },
