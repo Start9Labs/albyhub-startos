@@ -1,5 +1,4 @@
 import { sdk } from './sdk'
-import { T } from '@start9labs/start-sdk'
 import { manifest as lndManifest } from 'lnd-startos/startos/manifest'
 import { uiPort } from './utils'
 import { store } from './fileModels/store.json'
@@ -59,28 +58,20 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
   }
 
   /**
-   * ======================== Additional Health Checks (optional) ========================
-   *
-   * In this section, we define *additional* health checks beyond those included with each daemon (below).
-   */
-  const healthReceipts: T.HealthCheck[] = []
-
-  /**
    * ======================== Daemons ========================
    *
    * In this section, we create one or more daemons that define the service runtime.
    *
    * Each daemon defines its own health check, which can optionally be exposed to the user.
    */
-  return sdk.Daemons.of(effects, started, healthReceipts).addDaemon('primary', {
+  return sdk.Daemons.of(effects, started).addDaemon('primary', {
     subcontainer: await sdk.SubContainer.of(
       effects,
       { imageId: 'albyhub' },
       mounts,
       'albyhub-sub',
     ),
-    command: ['main'],
-    env,
+    exec: { command: ['main'], env },
     ready: {
       display: 'Web Interface',
       fn: () =>

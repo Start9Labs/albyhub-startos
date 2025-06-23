@@ -4,7 +4,6 @@ import { setInterfaces } from '../interfaces'
 import { versionGraph } from '../install/versionGraph'
 import { actions } from '../actions'
 import { restoreInit } from '../backups'
-import { taskSetLightning } from './taskSetLightning'
 
 export const init = sdk.setupInit(
   restoreInit,
@@ -12,7 +11,6 @@ export const init = sdk.setupInit(
   setInterfaces,
   setDependencies,
   actions,
-  taskSetLightning,
 )
 
 export const uninit = sdk.setupUninit(versionGraph)
