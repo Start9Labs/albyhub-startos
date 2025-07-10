@@ -17,7 +17,7 @@ export const setDependencies = sdk.setupDependencies(async ({ effects }) => {
     ? {
         lnd: {
           kind: 'running',
-          versionRange: '^0.19.1-beta:1',
+          versionRange: '^0.19.1-beta:1-alpha.4',
           healthChecks: ['primary', 'sync-progress'],
         },
       }
