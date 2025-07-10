@@ -27,7 +27,7 @@ jobs:
           start-cli init
           if [[ -n "$S9DEVKEY" ]]; then
             echo "Using developer key from secrets to sign the package."
-            printf '%s\n' "$S9DEVKEY" > ~/.startos/developer.key.pem
+            printf '%s' "$S9DEVKEY" > ~/.startos/developer.key.pem
           else
             echo "Using newly generated developer key to sign the package."
           fi
