@@ -19,7 +19,7 @@ export const manifest = setupManifest({
   images: {
     albyhub: {
       source: {
-        dockerTag: 'ghcr.io/getalby/hub:v1.18.2',
+        dockerTag: 'ghcr.io/getalby/hub:v1.18.3',
       },
     },
   },
