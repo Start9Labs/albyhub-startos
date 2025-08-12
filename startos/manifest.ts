@@ -19,7 +19,7 @@ export const manifest = setupManifest({
   images: {
     albyhub: {
       source: {
-        dockerTag: 'ghcr.io/getalby/hub:v1.18.3',
+        dockerTag: 'ghcr.io/getalby/hub:v1.18.5',
       },
     },
   },
@@ -36,7 +36,7 @@ export const manifest = setupManifest({
     lnd: {
       description: 'Provides a fully sovereign experience',
       optional: true,
-      s9pk: 'https://github.com/Start9Labs/lnd-startos/releases/download/v0.19.1-beta.1-alpha.5/lnd.s9pk',
+      s9pk: 'https://github.com/Start9Labs/lnd-startos/releases/download/v0.19.2-beta.1-beta.0/lnd.s9pk',
     },
   },
 })
