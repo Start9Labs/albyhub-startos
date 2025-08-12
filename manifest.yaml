@@ -1,16 +1,15 @@
 id: albyhub
 title: Alby Hub
-version: 1.18.3
+version: 1.18.5
 release-notes: |
-  This is a HUGE Alby Hub release with many new features!
-  - Receive via **BOLT 12 offers**
-  - Integrated **one-off swaps**
-  - **Channel rebalancing** (beta)
-  - **Lightning addresses** for sub-wallets
-  - New apps in the app store
-  - And much more!
+  In this hotfix we make a few improvements and bug fixes:
+  * App pagination is added, improving the performance for hubs with many apps.
+  * Fixed an issue where Alby Hub would ignore the shutdown signal and not gracefully shut down.
+  * Addressed a password change bug where HTTP requests are unauthorized until Alby Hub is fully restarted.
+  * Added a button to migrate standard isolated connections to sub-wallets.
+  * Included Wave.space in the app store.
 
-  View full release details - [here](https://github.com/getAlby/hub/releases/tag/v1.18.3)
+  View full release details - [here](https://github.com/getAlby/hub/releases/tag/v1.18.5)
 license: Apache-2.0
 wrapper-repo: "https://github.com/start9labs/albyhub-startos"
 upstream-repo: "https://github.com/getAlby/hub"
