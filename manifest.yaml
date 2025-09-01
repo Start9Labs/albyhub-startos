@@ -1,15 +1,17 @@
 id: albyhub
 title: Alby Hub
-version: 1.18.5
+version: 1.19.3
 release-notes: |
-  In this hotfix we make a few improvements and bug fixes:
-  * App pagination is added, improving the performance for hubs with many apps.
-  * Fixed an issue where Alby Hub would ignore the shutdown signal and not gracefully shut down.
-  * Addressed a password change bug where HTTP requests are unauthorized until Alby Hub is fully restarted.
-  * Added a button to migrate standard isolated connections to sub-wallets.
-  * Included Wave.space in the app store.
+  In this release Alby Hub introduces several new features and improvements:
+  * Added on-chain and swaps support to the wallet send and receive pages.
+  * Redesigned the app store for a better user experience.
+  * Added routing statistics to the homepage.
+  * Introduced auto-swap to xpub.
+  * Improved the first channel flow with support to pay by credit card.
+  * Fixed links that incorrectly opened the connections page on the app store tab instead of the connections tab.
+  * Many bug fixes and minor improvements.
 
-  View full release details - [here](https://github.com/getAlby/hub/releases/tag/v1.18.5)
+  View full release details - [here](https://github.com/getAlby/hub/releases/tag/v1.19.3)
 license: Apache-2.0
 wrapper-repo: "https://github.com/start9labs/albyhub-startos"
 upstream-repo: "https://github.com/getAlby/hub"
