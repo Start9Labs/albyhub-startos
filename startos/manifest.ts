@@ -17,7 +17,7 @@ export const manifest = setupManifest({
   marketingSite: 'https://start9.com/',
   donationUrl: 'https://albyhub.com/',
   docsUrl:
-    'https://github.com/Start9Labs/albyhub-startos/blob/main/instructions.md',
+    'https://github.com/Start9Labs/albyhub-startos/blob/update/040/docs/README.md',
   description: {
     short: 'Self-custodial Lightning wallet with integrated node',
     long: `Alby Hub is the open-source, self-custodial Lightning wallet that puts you in control. With an integrated node, it's more than just a wallet—it's your gateway to Bitcoin. Manage channels, run apps, and take charge of your funds, all through one sleek, user-friendly interface. Empower your Bitcoin journey with simplicity and sovereignty`,
@@ -44,7 +44,10 @@ export const manifest = setupManifest({
     lnd: {
       description: 'Provides a fully sovereign experience',
       optional: true,
-      s9pk: 'https://github.com/Start9Labs/lnd-startos/releases/download/v0.19.2-beta.1-beta.2/lnd.s9pk',
+      metadata: {
+        title: 'Lightning Network Daemon',
+        icon: './assets/lnd-icon.png'
+      }
     },
   },
 })
