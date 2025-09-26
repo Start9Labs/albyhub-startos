@@ -1,17 +1,14 @@
 id: albyhub
 title: Alby Hub
-version: 1.19.3
+version: 1.20.0
 release-notes: |
   In this release Alby Hub introduces several new features and improvements:
-  * Added on-chain and swaps support to the wallet send and receive pages.
-  * Redesigned the app store for a better user experience.
-  * Added routing statistics to the homepage.
-  * Introduced auto-swap to xpub.
-  * Improved the first channel flow with support to pay by credit card.
-  * Fixed links that incorrectly opened the connections page on the app store tab instead of the connections tab.
+  * Added a new connection wizard to guide users through connecting apps from the app store.
+  * Introduced CSV export functionality for Alby Hub transactions (both the main transaction list and individual connections/subwallets).
+  * Enhanced channel purchasing with support for all preferred payment methods (lightning wallet or credit card).
+  * Added a new search dialog and hotkey to easily navigate to specific pages in the hub.
   * Many bug fixes and minor improvements.
-
-  View full release details - [here](https://github.com/getAlby/hub/releases/tag/v1.19.3)
+  View full release details - [here](https://github.com/getAlby/hub/releases/tag/v1.20.0)
 license: Apache-2.0
 wrapper-repo: "https://github.com/start9labs/albyhub-startos"
 upstream-repo: "https://github.com/getAlby/hub"
