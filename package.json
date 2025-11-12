@@ -6,13 +6,13 @@
     "check": "tsc --noEmit"
   },
   "dependencies": {
-    "@start9labs/start-sdk": "^0.4.0-beta.41",
-    "js-yaml": "^4.1.0",
+    "@start9labs/start-sdk": "^0.4.0-beta.43",
+    "js-yaml": "^4.1.1",
     "lnd-startos": "git+https://github.com/Start9Labs/lnd-startos.git#update/040"
   },
   "devDependencies": {
     "@types/js-yaml": "^4.0.9",
-    "@types/node": "^22.18.12",
+    "@types/node": "^22.19.1",
     "@vercel/ncc": "^0.38.4",
     "prettier": "^3.6.2",
     "typescript": "^5.9.3"

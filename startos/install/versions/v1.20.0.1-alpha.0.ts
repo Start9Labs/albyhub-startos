@@ -1,8 +1,15 @@
 import { IMPOSSIBLE, VersionInfo } from '@start9labs/start-sdk'
 
 export const v_1_20_0_1 = VersionInfo.of({
-  version: '1.20.0:1-alpha.0',
-  releaseNotes: `## Updated for StartOS 0.4.0
+  version: '1.20.0:1-alpha.1',
+  releaseNotes: `\
+## Updated for StartOS 0.4.0
+
+### Dependency Updates
+* Updated SDK to beta.43
+* Updated interface name for backwards compatibility
+* Updated dev dependencies to latest versions
+
 In this release Alby Hub introduces several new features and improvements:
 * Added a new connection wizard to guide users through connecting apps from the app store.
 * Introduced CSV export functionality for Alby Hub transactions (both the main transaction list and individual connections/subwallets).
