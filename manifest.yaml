@@ -1,14 +1,9 @@
 id: albyhub
 title: Alby Hub
-version: 1.20.0
+version: 1.21.0
 release-notes: |
-  In this release Alby Hub introduces several new features and improvements:
-  * Added a new connection wizard to guide users through connecting apps from the app store.
-  * Introduced CSV export functionality for Alby Hub transactions (both the main transaction list and individual connections/subwallets).
-  * Enhanced channel purchasing with support for all preferred payment methods (lightning wallet or credit card).
-  * Added a new search dialog and hotkey to easily navigate to specific pages in the hub.
-  * Many bug fixes and minor improvements.
-  View full release details - [here](https://github.com/getAlby/hub/releases/tag/v1.20.0)
+  In this release Alby Hub is updated to Alby's new branding! other changes include a simpler swaps and on-chain receive UX, multiple relay support, better presets for creating connections, simpler unit display, more accessible keyboard navigation, and many bugfixes and other minor improvements.
+  View full release details - [here](https://github.com/getAlby/hub/releases/tag/v1.21.0)
 license: Apache-2.0
 wrapper-repo: "https://github.com/start9labs/albyhub-startos"
 upstream-repo: "https://github.com/getAlby/hub"
@@ -78,7 +73,7 @@ interfaces:
       - http
 dependencies:
   lnd:
-    version: ">=0.16.0 <0.20.0"
+    version: ">=0.16.0 <0.21.0"
     description: Alby Hub works with your LND
     requirement:
       type: "opt-in"
