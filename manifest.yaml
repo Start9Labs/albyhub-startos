@@ -1,26 +1,9 @@
 id: albyhub
 title: Alby Hub
-version: 1.13.0
+version: 1.21.0
 release-notes: |
-  This release introduces auto-unlock functionality for self-hosted instances, adds new apps to Hub's store, and enhances the overall user experience.
-
-  Key updates include:
-  * New apps in the app store: e.g. ZapPlanner for scheduled recurring payments, Clams for accounting, Simple Boost for donations
-  * New auto-unlock feature  after restarts
-  * More information about pending channel closing transactions
-  * Improved relay connectivity
-  * Security improvements for isolated apps and budgeting
-  * Enhanced support for paying BOLT-11 invoices
-  * Added LND channel notifications
-  * UI improvements including better transaction lists and receive page
-  * Improved privacy for app connections
-  * Enhanced backup functionality
-  * Optimized open channel flows
-  * Instructions update
-
-  <3 Honouring Eva Galperin
-
-  View full release details - [here](https://github.com/getAlby/hub/releases/tag/v1.13.0)
+  In this release Alby Hub is updated to Alby's new branding! other changes include a simpler swaps and on-chain receive UX, multiple relay support, better presets for creating connections, simpler unit display, more accessible keyboard navigation, and many bugfixes and other minor improvements.
+  View full release details - [here](https://github.com/getAlby/hub/releases/tag/v1.21.0)
 license: Apache-2.0
 wrapper-repo: "https://github.com/start9labs/albyhub-startos"
 upstream-repo: "https://github.com/getAlby/hub"
@@ -97,7 +80,7 @@ interfaces:
       - http
 dependencies:
   lnd:
-    version: ">=0.16.0 <0.20.0"
+    version: ">=0.16.0 <0.21.0"
     description: Alby Hub works with your LND
     requirement:
       type: "opt-in"
