@@ -26,41 +26,41 @@ If you are running LND:
 
 1. Cycle through the introduction to arrive at the setup screen.
 
-   ![Setup](assets/albyhub-setup-0.png)
-
-
 1. Click on the **Get Started (LND)** button.
 
-   ![Setup](assets/albyhub-setup-1.png)
-
-
-1. Enter a password and keep it somewhere safe, like in your personal :ref:`Vaultwarden<vaultwarden-service>` instance.
-
-   ![Setup](assets/albyhub-setup-2.png)
+   ![Setup](assets/albyhub-setup-0.png)
 
 
 1. Select whether you will create an Alby account now or later (i.e. not at all).
 
    NOTE: An Alby Account gives your hub a lightning address, Nostr address and zaps, email notifications, fiat topups, priority support, automatic channel backups, access to podcasting apps & more. If you choose not to create an account, your setup will be complete.
 
-   ![Setup](assets/albyhub-setup-3.png)
+   ![Setup](assets/albyhub-setup-1.png)
+
+   NOTE: You probably want to create an account, otherwise many of the features that make Alby Hub worth using do not exist, but you can skip the next few steps if not.
 
 
-1. Connect your Alby account by clicking to request an authorization code. This will open a new tab.
+1. Connect your Alby account by clicking to request an authorization code. This will open a new window/tab.
 
-   ![Setup](assets/albyhub-albyaccount.png)
+   ![Setup](assets/albyhub-setup-2.png)
 
 
 1. If you have a pre-existing Alby account your can log in here, otherwise you can sign up.
 
-   ![Setup](assets/albyhub-setup-4.png)
-
-   ![Setup](assets/albyhub-setup-5.png)
+   ![Setup](assets/albyhub-albyaccount.png)
 
 
 1. You will get an authorization code to add back into the previous tab hosted on your server. Paste that auth code and hit **Submit**.
 
-   ![Setup](assets/albyhub-success.png)
+   ![Setup](assets/albyhub-setup-3.png)
+
+
+1. Enter a password and keep it somewhere safe, like in your personal Vaultwarden.
+
+   ![Setup](assets/albyhub-setup-4.png)
+
+
+1. You'll find yourself on the Alby Hub dashboard
 
 
 1. Enable Auto-Unlock (Recommended)
@@ -84,42 +84,43 @@ If you are running LND:
 
 1. Click on the **Get Started (LDK)** button.
 
+   ![Setup](assets/albyhub-setup-0.png)
+
+
+1. Select whether you will create/connect an Alby account now or later (i.e. not at all).
+
+   NOTE: An Alby Account gives your hub a lightning address, Nostr address and zaps, email notifications, fiat topups, priority support, automatic channel backups, access to podcasting apps & more. If you choose not to  create an account, your setup will be complete.
+
    ![Setup](assets/albyhub-setup-1.png)
 
+   NOTE: You probably want to create an account, otherwise many of the features that make Alby Hub worth using do not exist, but you can skip the next few steps if not.
 
-1. Enter a password and keep it somewhere safe, like in your personal Vaultwarden.
+1. Connect your Alby account by clicking to request an authorization code. This will open a new window/tab.
 
    ![Setup](assets/albyhub-setup-2.png)
 
 
-1. Select whether you will create an Alby account now or later (i.e. not at all).
+1. If you have a pre-existing Alby account your can log in here, otherwise you can sign up.
 
-   NOTE: An Alby Account gives your hub a lightning address, Nostr address and zaps, email notifications, fiat topups, priority support, automatic channel backups, access to podcasting apps & more. If you choose not to create an account, your setup will be complete.
+   ![Setup](assets/albyhub-albyaccount.png)
+
+1. You will get an authorization code to add back into the previous tab hosted on your server. Paste that auth code and hit **Submit**.
 
    ![Setup](assets/albyhub-setup-3.png)
 
 
-1. Connect your Alby account by clicking to request an authorization code. This will open a new tab.
-
-   ![Setup](assets/albyhub-albyaccount.png)
-
-
-1. If you have a pre-existing Alby account your can log in here, otherwise you can sign up.
+1. Enter a password and keep it somewhere safe, like in your personal Vaultwarden.
 
    ![Setup](assets/albyhub-setup-4.png)
 
-   ![Setup](assets/albyhub-setup-5.png)
 
-
-1. You will get an authorization code to add back into the previous tab hosted on your server. Paste that auth code and hit **Submit**.
-
-   ![Setup](assets/albyhub-ldk-success.png)
+1. You'll find yourself on the Alby Hub dashboard
 
 
 1. Enable Auto-Unlock (Recommended)
    Once logged in to Alby Hub:
    - Navigate to Settings -> Auto Unlock
-   - Enter the password you created in step 5
+   - Enter the password you just created
    - Click the "Enable Auto Unlock" button
    - **Note**: You must disable auto-unlock before changing your password or migrating your node
 
@@ -127,60 +128,62 @@ If you are running LND:
 1. Your self-hosted Alby Hub is ready and connected to your self-hosted LDK light node!
 
 
-## Connecting Apps
+## Connections
 
-Two of the more important apps you may want to install are:
+Three of the more important connections you may want to set up:
 
-- **Alby Web** (a simple wallet interface that connects to your Alby Hub and can be saved as a PWA (app-like) on your phone)
+- **Alby Account web wallet** (a simple wallet interface that connects to your Alby Hub and can be saved as a PWA (app-like) on your phone)
+- **Alby Go** (a native web app that connects to your node from your phone)
 - **Alby Extension** (companion for accessing Bitcoin and Nostr apps, payments across the globe and passwordless logins)
 
-### Alby Web
+### Alby Account web wallet
 
 1. If you have connected your Alby Hub to an Alby account during setup, Alby Web will appear connected by default. (If you have not, you can go to **Settings** > **Alby Account** to add an account).
 
-   ![Alby Web Setup](assets/albyhub-albyweb-0.png)
+   You'd then visit https://getalby.com/dashboard
 
-   ![Alby Web Setup](assets/albyhub-albyweb-1.png)
+   This wallet interface allows you to interact with your personal Alby Hub-connected self-hosted LND or light node over clearnet with an easy to use interface.
 
 
-This wallet interface allows you to interact with your Alby Hub-connected LND over clearnet with a easy to use interface.
+### Alby Go
+
+1. A [simple mobile app](https://albygo.com/) frokm Alby for iOS and Android that let's you spend and receive to and from your self-hosted node over clearnet with an easy to use interface.
 
 
 ### Alby Extension
 
-1. Visit the App Store from your Alby Hub.
+1. Visit the App Store from your Alby Hub by clicking on Connections.
 
    ![Alby Extension Setup](assets/albyhub-appstore-extension-0.png)
 
 
-1. Click **Connect**.
+1. Click Alby Extension, then Click **Connect to Alby Extension**.
 
    ![Alby Extension Setup](assets/albyhub-appstore-extension-1.png)
 
+1. Download the extension for your browser if you don't have it already. Install it. Open it if you do already have it installed.
+
+   ![Alby Extension Setup](assets/albyhub-appstore-extension-2.png)
 
 1. Give the connection to your Alby Extenions a name and decide what access and limitations you give it.
 
    NOTE: The settings are fairly self explanatory. Typically you'll want your browser extension to be able to have full access to your lightning node and funds since you will be the only one using it and will want to both make and receive payments. Payments you make have to be confirmed and authorized through the extension, but if you are worried about overspending, the advanced **Budget** option sets monthly limits on how much can be spent. This is useful in case you get carried away zapping or if you ever misread a payment request that's higher than you expect.
 
+   ![Alby Extension Setup](assets/albyhub-appstore-extension-3.png)
 
-   ![Alby Extension Setup](assets/albyhub-appstore-extension-2.png)
-
-
-1. Download the extension for your browser if you don't have it already. Install it. Open it if you do already have it installed.
-
-1. If the extenstion is installed on the same browser, click the newly appeared icon in the menu bar while on the screen above. Click to connect.
+1. If the extenstion is installed on the same browser, click the newly appeared icon in the menu bar while on the screen above. Click to connect. Otherwise finish installing the extension and either do the same or paste in the offered connection secret. 
 
    ![Alby Extension Setup](assets/albyhub-appstore-extension-success.png)
 
 
-1. You can now spend sats and generate invoices from your browser! Test it out by running your own [noStrudel](/service-guides/nostr/nostrudel.md) instance.
+1. You can now spend sats and generate invoices from your browser! Test it out by running your own noStrudel instance.
+
 
 ## Resources and Guides
 
-
 **Alby** have extensive users guides [available here](https://guides.getalby.com/user-guide/v/alby-account-and-browser-extension/alby-hub/introduction). Learn how to connect other apps and use the advanced features available to those who set up Alby accounts.
 
-**BTC Sessions** has created an Alby Hub [tutorial here](https://www.youtube.com/watch?v=2Z1BzwxdP4I). While this focuses on the cloud hosted variety of Alby Hub, the interface and features are the same, and the Start9 hosted variety gets a mention in the last segment.
+**BTC Sessions** has created an Alby Hub [tutorial here](https://www.youtube.com/watch?v=2Z1BzwxdP4I). While this focuses on the cloud hosted variety of Alby Hub and is now out of date, the interface and features are mostly the same, and the Start9 hosted variety gets a mention in the last segment.
 
 
 ## Getting Help
