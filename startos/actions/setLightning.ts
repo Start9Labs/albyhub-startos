@@ -1,4 +1,4 @@
-import { store } from '../fileModels/store.json'
+import { storeJson } from '../fileModels/store.json'
 import { sdk } from '../sdk'
 
 const { InputSpec, Value } = sdk
@@ -19,16 +19,14 @@ export const setLightning = sdk.Action.withInput(
 
   // metadata
   async ({ effects }) => {
-    const exists = await store.read((s) => s.LN_BACKEND_TYPE).const(effects)
-
     return {
       name: 'Set Lightning Implementation',
       description:
         'Choose which lightning node/implementation Alby Hub will use',
-      warning: null,
+      warning: 'This cannot be changed later',
       allowedStatuses: 'only-stopped',
       group: null,
-      visibility: exists ? 'hidden' : 'enabled',
+      visibility: 'hidden',
     }
   },
 
@@ -36,12 +34,9 @@ export const setLightning = sdk.Action.withInput(
   inputSpec,
 
   // optionally pre-fill the input form
-  async ({ effects }) => ({
-    LN_BACKEND_TYPE:
-      (await store.read((s) => s.LN_BACKEND_TYPE).once()) || undefined,
-  }),
+  async ({ effects }) => {},
 
   // the execution function
   async ({ effects, input }) =>
-    store.merge(effects, { LN_BACKEND_TYPE: input.LN_BACKEND_TYPE }),
+    storeJson.write(effects, { LN_BACKEND_TYPE: input.LN_BACKEND_TYPE }),
 )

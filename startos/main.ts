@@ -1,7 +1,7 @@
 import { sdk } from './sdk'
 import { manifest as lndManifest } from 'lnd-startos/startos/manifest'
 import { uiPort } from './utils'
-import { store } from './fileModels/store.json'
+import { storeJson } from './fileModels/store.json'
 
 export const main = sdk.setupMain(async ({ effects, started }) => {
   /**
@@ -11,10 +11,7 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
    */
   console.info('Starting Alby Hub!')
 
-  const depResult = await sdk.checkDependencies(effects)
-  depResult.throwIfNotSatisfied()
-
-  const LN_BACKEND_TYPE = await store.read((s) => s.LN_BACKEND_TYPE).once()
+  const LN_BACKEND_TYPE = await storeJson.read((s) => s.LN_BACKEND_TYPE).once()
 
   if (!LN_BACKEND_TYPE) {
     throw new Error('You must select node type before starting Alby Hub')
@@ -22,9 +19,11 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
 
   let env: Record<string, string> = {
     LN_BACKEND_TYPE,
-    WORK_DIR: '/data/albyhub', // @TODO Aiden does this need to be set at LXC container scope?
-    PORT: String(uiPort),
-    LOG_EVENTS: 'true',
+    // WORK_DIR: '/data/albyhub',
+    // PORT: String(uiPort),
+    // @TODO seems like LOG_EVENTS may have been renamed to SEND_EVENTS_TO_ALBY
+    // LOG_EVENTS: 'false',
+    // SEND_EVENTS_TO_ALBY: 'false',
   }
 
   let mounts = sdk.Mounts.of().mountVolume({
@@ -35,17 +34,12 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
   })
 
   if (LN_BACKEND_TYPE === 'LND') {
-    const lndgrpc = await sdk.serviceInterface
-      .get(effects, { id: 'grpc', packageId: 'lnd' })
-      .const()
-
     env = {
-      // @TODO Aiden how to get LND GRPC port?
-      LND_ADDRESS: `lnd.startos:${lndgrpc?.addressInfo?.internalPort || '10009'}`,
+      ...env,
+      LND_ADDRESS: 'lnd.startos:10009',
       LND_CERT_FILE: '/mnt/lnd/tls.cert',
       LND_MACAROON_FILE: '/mnt/lnd/data/chain/bitcoin/mainnet/admin.macaroon',
       ENABLE_ADVANCED_SETUP: 'false',
-      ...env,
     }
 
     mounts = mounts.mountDependency<typeof lndManifest>({
@@ -71,7 +65,7 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
       mounts,
       'albyhub-sub',
     ),
-    exec: { command: ['main'], env },
+    exec: { command: sdk.useEntrypoint(), env },
     ready: {
       display: 'Web Interface',
       fn: () =>

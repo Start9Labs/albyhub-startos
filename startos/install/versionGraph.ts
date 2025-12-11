@@ -1,11 +1,14 @@
 import { VersionGraph } from '@start9labs/start-sdk'
 import { current, other } from './versions'
-import { store } from '../fileModels/store.json'
+import { sdk } from '../sdk'
+import { setLightning } from '../actions/setLightning'
 
 export const versionGraph = VersionGraph.of({
   current,
   other,
   preInstall: async (effects) => {
-    await store.write(effects, { LN_BACKEND_TYPE: null })
+    await sdk.action.createOwnTask(effects, setLightning, 'critical', {
+      reason: 'Choose your backend lightning implementation',
+    })
   },
 })

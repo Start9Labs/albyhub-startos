@@ -1,16 +1,15 @@
-# Quick Start Guide for Alby Hub
+# Instructions for Alby Hub on StartOS
 
-1. **Configure Alby Hub**
-   In the Alby Hub configuration settings, select your preferred Lightning implementation:
+Before starting Alby Hub for the first time, you must select your preferred Lightning implementation:
 
-   - **LND on this server**: This option tells Alby Hub to use the LND node installed on this StartOS server. It is the more sovereign and secure option, allowing full control over your node.
-   - **Alby Hub embedded light node**: This option tells Alby Hub to use its own, built-in light node. This option is convenient but offers less control over your node.
+- **LND on this server**: This option tells Alby Hub to use the LND node installed on this StartOS server. It is the more sovereign and secure option, allowing full control over your node.
+- **LDK embedded node**: This option tells Alby Hub to use its own, built-in LDK node. This option is convenient but offers less control over your node.
 
 2. **Start the Service**
    After configuring, start the Alby Hub service.
 
 3. **Launch Alby Hub**  
-   Click the `Launch UI` button to open the Alby Hub interface.
+   Click the Web interface and launch your ALby Hub UI.
 
 4. **Get Started**  
    On the Alby Welcome screen, click the **Get Started** button. The button will display either (LND) or (LDK) based on your chosen configuration.
@@ -25,7 +24,7 @@
    - Click the "Enable Auto Unlock" button
    - **Note**: You must disable auto-unlock before changing your password or migrating your node
 
-7. **Connect Your Alby Account**  
+7. **Connect Your Alby Account (optional)**  
    Follow the on-screen instructions to connect your Alby account.
 
 8. **All Set!**  

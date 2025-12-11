@@ -1,6 +1,5 @@
 import { setupManifest } from '@start9labs/start-sdk'
 import { SDKImageInputSpec } from '@start9labs/start-sdk/base/lib/types/ManifestTypes'
-import { currentContainer } from './install/versions'
 
 const BUILD = process.env.BUILD || ''
 
@@ -22,11 +21,11 @@ export const manifest = setupManifest({
     short: 'Self-custodial Lightning wallet with integrated node',
     long: `Alby Hub is the open-source, self-custodial Lightning wallet that puts you in control. With an integrated node, it's more than just a wallet—it's your gateway to Bitcoin. Manage channels, run apps, and take charge of your funds, all through one sleek, user-friendly interface. Empower your Bitcoin journey with simplicity and sovereignty`,
   },
-  volumes: ['main'],
+  volumes: ['main', 'startos'],
   images: {
     albyhub: {
       source: {
-        dockerTag: currentContainer,
+        dockerTag: 'ghcr.io/getalby/hub:v1.21.0',
       },
       arch: architectures,
     } as SDKImageInputSpec,
@@ -46,8 +45,8 @@ export const manifest = setupManifest({
       optional: true,
       metadata: {
         title: 'Lightning Network Daemon',
-        icon: './assets/lnd-icon.png'
-      }
+        icon: './assets/lnd-icon.png',
+      },
     },
   },
 })

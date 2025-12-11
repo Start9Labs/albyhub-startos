@@ -8,7 +8,7 @@ const shape = object({
     .onMismatch(null),
 })
 
-export const store = FileHelper.json(
-  { volumeId: 'main', subpath: '/store.json' },
+export const storeJson = FileHelper.json(
+  { volumeId: 'startos', subpath: './store.json' },
   shape,
 )

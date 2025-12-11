@@ -7,7 +7,7 @@ export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
 
   const ui = sdk.createInterface(effects, {
     name: 'Web UI',
-    id: 'webui',
+    id: 'main',
     description: 'The web interface of Alby Hub',
     type: 'ui',
     schemeOverride: null,

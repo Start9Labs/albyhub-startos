@@ -1,23 +1,16 @@
-import { setLightning } from './actions/setLightning'
-import { store } from './fileModels/store.json'
+import { storeJson } from './fileModels/store.json'
 import { sdk } from './sdk'
 
 export const setDependencies = sdk.setupDependencies(async ({ effects }) => {
-  const LN_BACKEND_TYPE = await store
+  const LN_BACKEND_TYPE = await storeJson
     .read((s) => s.LN_BACKEND_TYPE)
     .const(effects)
-
-  if (!LN_BACKEND_TYPE) {
-    await sdk.action.createOwnTask(effects, setLightning, 'critical', {
-      reason: 'Choose which lightning node Alby Hub will connect to',
-    })
-  }
 
   return LN_BACKEND_TYPE === 'LND'
     ? {
         lnd: {
           kind: 'running',
-          versionRange: '^0.19.1-beta:1-alpha.4',
+          versionRange: '^0.20.0-beta:1-beta.0',
           healthChecks: ['primary', 'sync-progress'],
         },
       }
