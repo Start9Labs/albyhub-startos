@@ -3,7 +3,7 @@ import { manifest as lndManifest } from 'lnd-startos/startos/manifest'
 import { uiPort } from './utils'
 import { storeJson } from './fileModels/store.json'
 
-export const main = sdk.setupMain(async ({ effects, started }) => {
+export const main = sdk.setupMain(async ({ effects }) => {
   /**
    * ======================== Setup (optional) ========================
    *
@@ -19,11 +19,6 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
 
   let env: Record<string, string> = {
     LN_BACKEND_TYPE,
-    // WORK_DIR: '/data/albyhub',
-    // PORT: String(uiPort),
-    // @TODO seems like LOG_EVENTS may have been renamed to SEND_EVENTS_TO_ALBY
-    // LOG_EVENTS: 'false',
-    // SEND_EVENTS_TO_ALBY: 'false',
   }
 
   let mounts = sdk.Mounts.of().mountVolume({
@@ -58,7 +53,7 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
    *
    * Each daemon defines its own health check, which can optionally be exposed to the user.
    */
-  return sdk.Daemons.of(effects, started).addDaemon('primary', {
+  return sdk.Daemons.of(effects).addDaemon('primary', {
     subcontainer: await sdk.SubContainer.of(
       effects,
       { imageId: 'albyhub' },

@@ -3,8 +3,8 @@ import { readFile, rm } from 'fs/promises'
 import { load } from 'js-yaml'
 import { storeJson } from '../../fileModels/store.json'
 
-export const v_1_17_2_1 = VersionInfo.of({
-  version: '1.17.2:1',
+export const v_1_21_0_2_b1 = VersionInfo.of({
+  version: '1.21.0:2-beta.1',
   releaseNotes: 'Updated for StartOS 0.4.0',
   migrations: {
     up: async ({ effects }) => {
