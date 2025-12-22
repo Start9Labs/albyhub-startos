@@ -9,23 +9,24 @@ export const v_1_21_0_2_b1 = VersionInfo.of({
   migrations: {
     up: async ({ effects }) => {
       // get old config.yaml
-      const configYaml = load(
-        await readFile(
-          '/media/startos/volumes/main/start9/config.yaml',
-          'utf-8',
-        ),
-      ) as { lightning?: 'lnd' | 'ldk' } | undefined
+      const raw = await readFile(
+        '/media/startos/volumes/main/start9/config.yaml',
+        'utf-8',
+      ).catch(console.log)
 
-      if (configYaml?.lightning) {
-        await storeJson.write(effects, {
-          LN_BACKEND_TYPE: configYaml.lightning === 'ldk' ? 'LDK' : 'LND',
+      if (raw) {
+        const configYaml = load(raw) as { lightning?: 'lnd' | 'ldk' }
+        if (configYaml.lightning) {
+          await storeJson.write(effects, {
+            LN_BACKEND_TYPE: configYaml.lightning === 'ldk' ? 'LDK' : 'LND',
+          })
+        }
+
+        // remove old start9 dir
+        await rm('/media/startos/volumes/main/start9', {
+          recursive: true,
         })
       }
-
-      // remove old start9 dir
-      await rm('/media/startos/volumes/main/start9', { recursive: true }).catch(
-        console.error,
-      )
     },
     down: IMPOSSIBLE,
   },
