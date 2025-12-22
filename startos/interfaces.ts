@@ -1,0 +1,23 @@
+import { sdk } from './sdk'
+import { uiPort } from './utils'
+
+export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
+  const uiMulti = sdk.MultiHost.of(effects, 'main')
+  const uiMultiOrigin = await uiMulti.bindPort(uiPort, { protocol: 'http' })
+
+  const ui = sdk.createInterface(effects, {
+    name: 'Web UI',
+    id: 'main',
+    description: 'The web interface of Alby Hub',
+    type: 'ui',
+    schemeOverride: null,
+    masked: false,
+    username: null,
+    path: '',
+    query: {},
+  })
+
+  const multiReceipt = await uiMultiOrigin.export([ui])
+
+  return [multiReceipt]
+})
