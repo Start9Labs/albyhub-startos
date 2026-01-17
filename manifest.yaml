@@ -1,9 +1,9 @@
 id: albyhub
 title: Alby Hub
-version: 1.21.2
+version: 1.21.4
 release-notes: |
   In this release Alby Hub is updated to Alby's new branding! other changes include a simpler swaps and on-chain receive UX, multiple relay support, better presets for creating connections, simpler unit display, more accessible keyboard navigation, and many bugfixes and other minor improvements.
-  - View full release details - [here](https://github.com/getAlby/hub/releases/tag/v1.21.2)
+  - View full release details - [here](https://github.com/getAlby/hub/releases/tag/v1.21.4)
 license: Apache-2.0
 wrapper-repo: "https://github.com/start9labs/albyhub-startos"
 upstream-repo: "https://github.com/getAlby/hub"
