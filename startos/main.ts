@@ -2,6 +2,7 @@ import { sdk } from './sdk'
 import { manifest as lndManifest } from 'lnd-startos/startos/manifest'
 import { uiPort } from './utils'
 import { storeJson } from './fileModels/store.json'
+import { i18n } from './i18n'
 
 export const main = sdk.setupMain(async ({ effects }) => {
   /**
@@ -9,12 +10,12 @@ export const main = sdk.setupMain(async ({ effects }) => {
    *
    * In this section, we fetch any resources or run any desired preliminary commands.
    */
-  console.info('Starting Alby Hub!')
+  console.info(i18n('Starting Alby Hub!'))
 
   const LN_BACKEND_TYPE = await storeJson.read((s) => s.LN_BACKEND_TYPE).once()
 
   if (!LN_BACKEND_TYPE) {
-    throw new Error('You must select node type before starting Alby Hub')
+    throw new Error(i18n('You must select node type before starting Alby Hub'))
   }
 
   let env: Record<string, string> = {
@@ -62,11 +63,11 @@ export const main = sdk.setupMain(async ({ effects }) => {
     ),
     exec: { command: sdk.useEntrypoint(), env },
     ready: {
-      display: 'Web Interface',
+      display: i18n('Web Interface'),
       fn: () =>
         sdk.healthCheck.checkPortListening(effects, uiPort, {
-          successMessage: 'The web interface is ready',
-          errorMessage: 'The web interface is unreachable',
+          successMessage: i18n('The web interface is ready'),
+          errorMessage: i18n('The web interface is unreachable'),
         }),
     },
     requires: [],

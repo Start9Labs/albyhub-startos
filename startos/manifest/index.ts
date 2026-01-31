@@ -1,4 +1,5 @@
 import { setupManifest } from '@start9labs/start-sdk'
+import { short, long } from './i18n'
 
 export const manifest = setupManifest({
   id: 'albyhub',
@@ -11,25 +12,14 @@ export const manifest = setupManifest({
   donationUrl: 'https://albyhub.com/',
   docsUrl:
     'https://github.com/Start9Labs/albyhub-startos/blob/update/040/docs/README.md',
-  description: {
-    short: 'Self-custodial Lightning wallet with integrated node',
-    long: `Alby Hub is the open-source, self-custodial Lightning wallet that puts you in control. With an integrated node, it's more than just a wallet—it's your gateway to Bitcoin. Manage channels, run apps, and take charge of your funds, all through one sleek, user-friendly interface. Empower your Bitcoin journey with simplicity and sovereignty`,
-  },
+  description: { short, long },
   volumes: ['main', 'startos'],
   images: {
     albyhub: {
       source: {
-        dockerTag: 'ghcr.io/getalby/hub:v1.21.0',
+        dockerTag: 'ghcr.io/getalby/hub:v1.21.4',
       },
     },
-  },
-  alerts: {
-    install: null,
-    update: null,
-    uninstall: null,
-    restore: null,
-    start: null,
-    stop: null,
   },
   dependencies: {
     lnd: {

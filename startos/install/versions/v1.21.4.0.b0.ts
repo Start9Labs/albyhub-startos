@@ -2,9 +2,15 @@ import { IMPOSSIBLE, VersionInfo, YAML } from '@start9labs/start-sdk'
 import { readFile, rm } from 'fs/promises'
 import { storeJson } from '../../fileModels/store.json'
 
-export const v_1_21_0_2_b1 = VersionInfo.of({
-  version: '1.21.0:2-beta.1',
-  releaseNotes: 'Updated for StartOS 0.4.0',
+export const v_1_21_4_0_b0 = VersionInfo.of({
+  version: '1.21.4:0-beta.0',
+  releaseNotes: {
+    en_US: 'Updated for StartOS 0.4.0',
+    es_ES: 'Actualizado para StartOS 0.4.0',
+    de_DE: 'Aktualisiert für StartOS 0.4.0',
+    pl_PL: 'Zaktualizowano dla StartOS 0.4.0',
+    fr_FR: 'Mis à jour pour StartOS 0.4.0',
+  },
   migrations: {
     up: async ({ effects }) => {
       // get old config.yaml
