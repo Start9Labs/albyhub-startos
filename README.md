@@ -13,17 +13,15 @@ Prior to building the `albyhub` package, it's essential to configure your build 
 
 - [docker](https://docs.docker.com/get-docker)
 - [docker-buildx](https://docs.docker.com/buildx/working-with-buildx/)
-- [deno](https://deno.land/)
 - [make](https://www.gnu.org/software/make/)
-- [start-sdk](https://github.com/Start9Labs/start-os/tree/sdk/core)
-- [yq](https://mikefarah.gitbook.io/yq)
+- [start-cli](https://github.com/Start9Labs/start-cli/)
 
 ## Cloning
 
 Clone the **Alby Hub** package repository locally.
 
 ```
-git clone https://github.com/horologger/albyhub-startos.git
+git clone https://github.com/start9labs/albyhub-startos.git
 cd albyhub-startos
 ```
 
@@ -35,27 +33,13 @@ To build the **Alby Hub** service as a universal package, run the following comm
 make
 ```
 
-Alternatively the package can be built for individual architectures by specifying the architecture as follows:
-
-```
-# for amd64
-make x86
-```
-or
-```
-# for arm64
-make arm
-```
-
 ## Installing (on StartOS)
 
-Before installation, define `host: https://server-name.local` in your `~/.embassy/config.yaml` config file then run the following commands to determine successful install:
+Before installation, define `host: https://server-name.local` in your `~/.startos/config.yaml` config file then run the following commands to determine successful install:
 
 > :information_source: Change server-name.local to your Start9 server address
 
 ```
-start-cli auth login
-#Enter your StartOS password
 make install
 ```
 
