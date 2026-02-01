@@ -19,6 +19,7 @@ export const manifest = setupManifest({
       source: {
         dockerTag: 'ghcr.io/getalby/hub:v1.21.4',
       },
+      arch: ['x86_64', 'aarch64'],
     },
   },
   dependencies: {
