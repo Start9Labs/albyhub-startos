@@ -10,8 +10,7 @@ export const manifest = setupManifest({
   supportSite: 'https://github.com/getAlby/hub/issues/',
   marketingSite: 'https://start9.com/',
   donationUrl: 'https://albyhub.com/',
-  docsUrl:
-    'https://github.com/Start9Labs/albyhub-startos/blob/update/040/docs/README.md',
+  docsUrl: 'https://github.com/getAlby/hub#readme',
   description: { short, long },
   volumes: ['main', 'startos'],
   images: {
