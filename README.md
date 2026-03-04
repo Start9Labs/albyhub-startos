@@ -7,7 +7,7 @@
 > **Upstream docs:** <https://github.com/getAlby/hub#readme>
 >
 > Everything not listed in this document should behave the same as upstream
-> Alby Hub v1.21.4. If a feature, setting, or behavior is not mentioned
+> Alby Hub. If a feature, setting, or behavior is not mentioned
 > here, the upstream documentation is accurate and fully applicable.
 
 [Alby Hub](https://github.com/getAlby/hub) is a self-custodial Lightning wallet that connects to a Lightning node and provides wallet functionality, Nostr Wallet Connect (NWC), and an app marketplace.
@@ -36,7 +36,7 @@
 
 | Property | Value |
 |----------|-------|
-| Image | `ghcr.io/getalby/hub:v1.21.4` (upstream unmodified) |
+| Image | `ghcr.io/getalby/hub` (upstream unmodified) |
 | Architectures | x86_64, aarch64 |
 | Entrypoint | Default upstream entrypoint |
 
@@ -202,8 +202,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for build instructions and development wo
 
 ```yaml
 package_id: albyhub
-upstream_version: 1.21.4
-image: ghcr.io/getalby/hub:v1.21.4
+image: ghcr.io/getalby/hub
 architectures: [x86_64, aarch64]
 volumes:
   main: /data

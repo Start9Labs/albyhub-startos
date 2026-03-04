@@ -1,5 +1,4 @@
 import { sdk } from './sdk'
-import { manifest as lndManifest } from 'lnd-startos/startos/manifest'
 import { uiPort } from './utils'
 import { storeJson } from './fileModels/store.json'
 import { i18n } from './i18n'
@@ -20,6 +19,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
 
   let env: Record<string, string> = {
     LN_BACKEND_TYPE,
+    HIDE_UPDATE_BANNER: 'true',
   }
 
   let mounts = sdk.Mounts.of().mountVolume({
@@ -38,7 +38,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
       ENABLE_ADVANCED_SETUP: 'false',
     }
 
-    mounts = mounts.mountDependency<typeof lndManifest>({
+    mounts = mounts.mountDependency({
       dependencyId: 'lnd',
       volumeId: 'main',
       subpath: null,

@@ -1,22 +1,21 @@
 import { setupManifest } from '@start9labs/start-sdk'
-import { short, long } from './i18n'
+import { long, short } from './i18n'
 
 export const manifest = setupManifest({
   id: 'albyhub',
   title: 'Alby Hub',
   license: 'Apache-2.0',
-  wrapperRepo: 'https://github.com/start9labs/albyhub-startos/',
+  packageRepo: 'https://github.com/start9labs/albyhub-startos/',
   upstreamRepo: 'https://github.com/getAlby/hub/',
-  supportSite: 'https://github.com/getAlby/hub/issues/',
-  marketingSite: 'https://start9.com/',
-  donationUrl: 'https://albyhub.com/',
-  docsUrl: 'https://github.com/getAlby/hub#readme',
+  marketingUrl: 'https://albyhub.com/',
+  donationUrl: 'https://getalby.com/donate',
+  docsUrls: ['https://github.com/getAlby/hub#readme'],
   description: { short, long },
   volumes: ['main', 'startos'],
   images: {
     albyhub: {
       source: {
-        dockerTag: 'ghcr.io/getalby/hub:v1.21.4',
+        dockerTag: 'ghcr.io/getalby/hub:v1.21.5',
       },
       arch: ['x86_64', 'aarch64'],
     },
@@ -26,8 +25,8 @@ export const manifest = setupManifest({
       description: 'Provides a fully sovereign experience',
       optional: true,
       metadata: {
-        title: 'Lightning Network Daemon',
-        icon: './assets/lnd-icon.png',
+        title: 'LND',
+        icon: 'https://raw.githubusercontent.com/Start9Labs/lnd-startos/f17336a10769efd8782a347662848c50c6270349/icon.svg',
       },
     },
   },
