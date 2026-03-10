@@ -4,7 +4,7 @@
 
 # Alby Hub on StartOS
 
-> **Upstream docs:** <https://github.com/getAlby/hub#readme>
+> **Upstream docs:** <https://guides.getalby.com/user-guide/alby-hub>
 >
 > Everything not listed in this document should behave the same as upstream
 > Alby Hub. If a feature, setting, or behavior is not mentioned
