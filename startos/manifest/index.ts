@@ -5,11 +5,11 @@ export const manifest = setupManifest({
   id: 'albyhub',
   title: 'Alby Hub',
   license: 'Apache-2.0',
-  packageRepo: 'https://github.com/start9labs/albyhub-startos/',
+  packageRepo: 'https://github.com/Start9Labs/albyhub-startos/tree/update/040',
   upstreamRepo: 'https://github.com/getAlby/hub/',
   marketingUrl: 'https://albyhub.com/',
   donationUrl: 'https://getalby.com/donate',
-  docsUrls: ['https://github.com/getAlby/hub#readme'],
+  docsUrls: ['https://guides.getalby.com/user-guide/alby-hub'],
   description: { short, long },
   volumes: ['main', 'startos'],
   images: {
