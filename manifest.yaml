@@ -1,9 +1,14 @@
 id: albyhub
 title: Alby Hub
-version: 1.21.0
+version: 1.21.6
 release-notes: |
-  In this release Alby Hub is updated to Alby's new branding! other changes include a simpler swaps and on-chain receive UX, multiple relay support, better presets for creating connections, simpler unit display, more accessible keyboard navigation, and many bugfixes and other minor improvements.
-  - View full release details - [here](https://github.com/getAlby/hub/releases/tag/v1.21.0)
+  Patch update from v1.21.0 to v1.21.6 with stability improvements and bug fixes:
+  - LDK-Node v0.7.0, encrypted JWT secret, stability improvements (v1.21.2)
+  - Dynamic channel backup improvements, large channel monitor alerts (v1.21.3)
+  - UI fixes: swap-in navigation, dialog keyboard, max dialog height (v1.21.4)
+  - Stablecoin onramp support, custom message for subwallet transfers, bumped LDK for eclair fix (v1.21.5)
+  - Boltz 2.10→2.11.1, swap-out 1 confirmation, Alby referral, budget increase 150k→250k (v1.21.6)
+  - View full release details - [here](https://github.com/getAlby/hub/releases/tag/v1.21.6)
 license: Apache-2.0
 wrapper-repo: "https://github.com/start9labs/albyhub-startos"
 upstream-repo: "https://github.com/getAlby/hub"
