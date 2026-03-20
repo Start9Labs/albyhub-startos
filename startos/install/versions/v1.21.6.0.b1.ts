@@ -2,8 +2,8 @@ import { IMPOSSIBLE, VersionInfo, YAML } from '@start9labs/start-sdk'
 import { readFile, rm } from 'fs/promises'
 import { storeJson } from '../../fileModels/store.json'
 
-export const v_1_21_6_0_b0 = VersionInfo.of({
-  version: '1.21.6:0-beta.0',
+export const v_1_21_6_0_b1 = VersionInfo.of({
+  version: '1.21.6:0-beta.1',
   releaseNotes: {
     en_US: 'Update Alby Hub to 1.21.6',
   },
