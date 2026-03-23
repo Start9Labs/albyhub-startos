@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="icon.png" alt="Alby Hub Logo" width="21%">
+  <img src="icon.svg" alt="Alby Hub Logo" width="21%">
 </p>
 
 # Alby Hub on StartOS
