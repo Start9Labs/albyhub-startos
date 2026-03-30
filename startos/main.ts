@@ -19,6 +19,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
 
   let env: Record<string, string> = {
     LN_BACKEND_TYPE,
+    WORK_DIR: '/data',
     HIDE_UPDATE_BANNER: 'true',
   }
 
