@@ -78,6 +78,7 @@
 | `LND_CERT_FILE` | Env var | Auto-configured: `/mnt/lnd/tls.cert` |
 | `LND_MACAROON_FILE` | Env var | Auto-configured: `/mnt/lnd/data/chain/bitcoin/mainnet/admin.macaroon` |
 | `ENABLE_ADVANCED_SETUP` | Env var (default: unset) | Set to `false` when using LND |
+| `HIDE_UPDATE_BANNER` | Env var (default: unset) | Set to `true` |
 | `PORT` | Env var (default: 8080) | Fixed at 8080 |
 | `WORK_DIR` | Env var | Fixed at `/data` |
 | All other settings | Web UI / env vars | Web UI only |
@@ -131,11 +132,17 @@
 
 ## Dependencies
 
-| Dependency | Required | Purpose |
-|------------|----------|---------|
-| LND | Optional | Required if you select "LND on this server" |
+### LND (optional)
 
-When LND is selected, StartOS mounts LND's volume read-only at `/mnt/lnd` to provide the TLS certificate and admin macaroon.
+| Property | Value |
+|----------|-------|
+| Version constraint | `>= 0.20.1-beta` |
+| Required state | Running |
+| Health checks | `lnd`, `sync-progress` |
+| Mounted volume | `main` → `/mnt/lnd` (read-only) |
+| Purpose | Lightning node backend for wallet operations |
+
+Only required if you select "LND on this server" during setup. Provides the TLS certificate and admin macaroon via the mounted volume.
 
 ---
 
@@ -144,15 +151,11 @@ When LND is selected, StartOS mounts LND's volume read-only at `/mnt/lnd` to pro
 **Included in backup:**
 
 - `main` volume — Alby Hub data, wallet, database
-
-**Not included:**
-
 - `startos` volume — backend selection (`store.json`)
 
 **Restore behavior:**
 
-- Data restores normally
-- You may need to re-select your Lightning backend if `store.json` is missing
+- Data and backend selection restore normally
 
 ---
 
@@ -213,6 +216,8 @@ dependencies:
   - lnd (optional)
 startos_managed_env_vars:
   - LN_BACKEND_TYPE
+  - WORK_DIR
+  - HIDE_UPDATE_BANNER
   - LND_ADDRESS (when LND)
   - LND_CERT_FILE (when LND)
   - LND_MACAROON_FILE (when LND)
@@ -228,5 +233,6 @@ health_checks:
   - port_listening: 8080
 backup_volumes:
   - main
+  - startos
 backend_options: [LND, LDK]  # upstream supports: LND, LDK, Phoenixd, Cashu
 ```
