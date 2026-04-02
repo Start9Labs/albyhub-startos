@@ -31,18 +31,29 @@ export const v_1_21_6_1 = VersionInfo.of({
         await rm(sdk.volumes.main.subpath('start9'), {
           recursive: true,
         })
+      } else {
+        const ldkExists = await stat(sdk.volumes.main.subpath('albyhub/ldk'))
+          .then((s) => s.isDirectory())
+          .catch(() => false)
+        if (ldkExists) {
+          await storeJson.write(effects, {
+            LN_BACKEND_TYPE: 'LDK',
+          })
+        }
       }
 
       // migrate data from old WORK_DIR (/data/albyhub) to new WORK_DIR (/data)
       const oldDataDir = sdk.volumes.main.subpath('albyhub')
-      const exists = await stat(oldDataDir)
+      const oldDataExists = await stat(oldDataDir)
         .then((s) => s.isDirectory())
         .catch(() => false)
 
-      if (exists) {
+      if (oldDataExists) {
         const entries = await readdir(oldDataDir)
         for (const entry of entries) {
-          await rename(join(oldDataDir, entry), sdk.volumes.main.subpath(entry))
+          const target = sdk.volumes.main.subpath(entry)
+          await rm(target, { recursive: true, force: true })
+          await rename(join(oldDataDir, entry), target)
         }
         await rm(oldDataDir, { recursive: true })
       }
