@@ -5,14 +5,14 @@ import { storeJson } from '../fileModels/store.json'
 
 const MAIN_VOL = '/media/startos/volumes/main'
 
-export const v_1_21_6_0 = VersionInfo.of({
-  version: '1.21.6:0',
+export const v_1_21_6_1 = VersionInfo.of({
+  version: '1.21.6:1',
   releaseNotes: {
-    en_US: 'Update to StartOS SDK beta.65',
-    es_ES: 'Actualización a StartOS SDK beta.65',
-    de_DE: 'Update auf StartOS SDK beta.65',
-    pl_PL: 'Aktualizacja do StartOS SDK beta.65',
-    fr_FR: 'Mise à jour vers StartOS SDK beta.65',
+    en_US: 'Fix data migration from StartOS 0.3.5.1',
+    es_ES: 'Corrección de migración de datos desde StartOS 0.3.5.1',
+    de_DE: 'Datenmigration von StartOS 0.3.5.1 behoben',
+    pl_PL: 'Naprawiono migrację danych z StartOS 0.3.5.1',
+    fr_FR: 'Correction de la migration des données depuis StartOS 0.3.5.1',
   },
   migrations: {
     up: async ({ effects }) => {
