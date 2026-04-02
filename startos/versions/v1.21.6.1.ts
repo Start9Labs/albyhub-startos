@@ -1,9 +1,8 @@
 import { IMPOSSIBLE, VersionInfo, YAML } from '@start9labs/start-sdk'
-import { readFile, readdir, rename, rm, stat } from 'fs/promises'
+import { readdir, rename, rm, stat } from 'fs/promises'
 import { join } from 'path'
 import { storeJson } from '../fileModels/store.json'
-
-const MAIN_VOL = '/media/startos/volumes/main'
+import { sdk } from '../sdk'
 
 export const v_1_21_6_1 = VersionInfo.of({
   version: '1.21.6:1',
@@ -17,35 +16,35 @@ export const v_1_21_6_1 = VersionInfo.of({
   migrations: {
     up: async ({ effects }) => {
       // get old config.yaml
-      const configYaml: { lightning?: 'lnd' | 'ldk' } | undefined =
-        await readFile(
-          join(MAIN_VOL, 'start9/config.yaml'),
-          'utf-8',
-        ).then(YAML.parse, () => undefined)
+      const configYaml: { lightning?: 'lnd' | 'alby' } | undefined =
+        await sdk.volumes.main
+          .readFile('start9/config.yaml')
+          .then((c) => c.toString('utf-8'))
+          .then(YAML.parse, () => undefined)
 
       if (configYaml) {
         await storeJson.write(effects, {
-          LN_BACKEND_TYPE: configYaml.lightning === 'ldk' ? 'LDK' : 'LND',
+          LN_BACKEND_TYPE: configYaml.lightning === 'alby' ? 'LDK' : 'LND',
         })
 
         // remove old start9 dir
-        await rm(join(MAIN_VOL, 'start9'), {
+        await rm(sdk.volumes.main.subpath('start9'), {
           recursive: true,
         })
+      }
 
-        // migrate data from old WORK_DIR (/data/albyhub) to new WORK_DIR (/data)
-        const oldDataDir = join(MAIN_VOL, 'albyhub')
-        const exists = await stat(oldDataDir)
-          .then((s) => s.isDirectory())
-          .catch(() => false)
+      // migrate data from old WORK_DIR (/data/albyhub) to new WORK_DIR (/data)
+      const oldDataDir = sdk.volumes.main.subpath('albyhub')
+      const exists = await stat(oldDataDir)
+        .then((s) => s.isDirectory())
+        .catch(() => false)
 
-        if (exists) {
-          const entries = await readdir(oldDataDir)
-          for (const entry of entries) {
-            await rename(join(oldDataDir, entry), join(MAIN_VOL, entry))
-          }
-          await rm(oldDataDir, { recursive: true })
+      if (exists) {
+        const entries = await readdir(oldDataDir)
+        for (const entry of entries) {
+          await rename(join(oldDataDir, entry), sdk.volumes.main.subpath(entry))
         }
+        await rm(oldDataDir, { recursive: true })
       }
     },
     down: IMPOSSIBLE,
