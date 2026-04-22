@@ -4,14 +4,14 @@ import { join } from 'path'
 import { storeJson } from '../fileModels/store.json'
 import { sdk } from '../sdk'
 
-export const v_1_21_6_1 = VersionInfo.of({
-  version: '1.21.6:1',
+export const v_1_21_6_2 = VersionInfo.of({
+  version: '1.21.6:2',
   releaseNotes: {
-    en_US: 'Fix data migration from StartOS 0.3.5.1',
-    es_ES: 'Corrección de migración de datos desde StartOS 0.3.5.1',
-    de_DE: 'Datenmigration von StartOS 0.3.5.1 behoben',
-    pl_PL: 'Naprawiono migrację danych z StartOS 0.3.5.1',
-    fr_FR: 'Correction de la migration des données depuis StartOS 0.3.5.1',
+    en_US: 'Internal updates (start-sdk 1.2.0)',
+    es_ES: 'Actualizaciones internas (start-sdk 1.2.0)',
+    de_DE: 'Interne Aktualisierungen (start-sdk 1.2.0)',
+    pl_PL: 'Aktualizacje wewnętrzne (start-sdk 1.2.0)',
+    fr_FR: 'Mises à jour internes (start-sdk 1.2.0)',
   },
   migrations: {
     up: async ({ effects }) => {

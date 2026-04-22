@@ -1,3 +1,4 @@
+import { manifest as lndManifest } from 'lnd-startos/startos/manifest'
 import { sdk } from './sdk'
 import { uiPort } from './utils'
 import { storeJson } from './fileModels/store.json'
@@ -39,7 +40,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
       ENABLE_ADVANCED_SETUP: 'false',
     }
 
-    mounts = mounts.mountDependency({
+    mounts = mounts.mountDependency<typeof lndManifest>({
       dependencyId: 'lnd',
       volumeId: 'main',
       subpath: null,
