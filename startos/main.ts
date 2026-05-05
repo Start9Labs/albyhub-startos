@@ -63,7 +63,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
       mounts,
       'albyhub-sub',
     ),
-    exec: { command: sdk.useEntrypoint(), env },
+    exec: { command: sdk.useEntrypoint(), env, runAsInit: true },
     ready: {
       display: i18n('Web Interface'),
       fn: () =>

@@ -7,15 +7,16 @@ import { sdk } from '../sdk'
 export const v_1_21_6_4 = VersionInfo.of({
   version: '1.21.6:4',
   releaseNotes: {
-    en_US: 'Fix backup failure caused by transient SQLite journal/WAL/SHM files',
+    en_US:
+      'Fix backup failure caused by transient SQLite journal/WAL/SHM files; run Alby Hub as PID 1 so it receives SIGTERM directly and shuts down gracefully (prevents SQLite corruption on stop/restart)',
     es_ES:
-      'Corrige el fallo de copia de seguridad causado por archivos transitorios de SQLite (journal/WAL/SHM)',
+      'Corrige el fallo de copia de seguridad causado por archivos transitorios de SQLite (journal/WAL/SHM); ejecuta Alby Hub como PID 1 para que reciba SIGTERM directamente y se cierre con elegancia (evita la corrupción de SQLite al detener/reiniciar)',
     de_DE:
-      'Behebt Backup-Fehler durch flüchtige SQLite-Journal-/WAL-/SHM-Dateien',
+      'Behebt Backup-Fehler durch flüchtige SQLite-Journal-/WAL-/SHM-Dateien; führt Alby Hub als PID 1 aus, damit SIGTERM direkt empfangen und ein sauberes Herunterfahren ermöglicht wird (verhindert SQLite-Korruption beim Stoppen/Neustart)',
     pl_PL:
-      'Naprawia błąd kopii zapasowej spowodowany przez tymczasowe pliki SQLite (journal/WAL/SHM)',
+      'Naprawia błąd kopii zapasowej spowodowany przez tymczasowe pliki SQLite (journal/WAL/SHM); uruchamia Alby Hub jako PID 1, aby otrzymywał SIGTERM bezpośrednio i wyłączał się prawidłowo (zapobiega uszkodzeniu SQLite przy zatrzymaniu/restarcie)',
     fr_FR:
-      'Corrige l’échec de sauvegarde causé par les fichiers transitoires SQLite (journal/WAL/SHM)',
+      'Corrige l’échec de sauvegarde causé par les fichiers transitoires SQLite (journal/WAL/SHM) ; exécute Alby Hub en tant que PID 1 pour qu’il reçoive SIGTERM directement et s’arrête proprement (évite la corruption SQLite à l’arrêt/redémarrage)',
   },
   migrations: {
     up: async ({ effects }) => {
