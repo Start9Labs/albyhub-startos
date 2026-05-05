@@ -4,14 +4,18 @@ import { join } from 'path'
 import { storeJson } from '../fileModels/store.json'
 import { sdk } from '../sdk'
 
-export const v_1_21_6_3 = VersionInfo.of({
-  version: '1.21.6:3',
+export const v_1_21_6_4 = VersionInfo.of({
+  version: '1.21.6:4',
   releaseNotes: {
-    en_US: 'Internal updates (start-sdk 1.3.3)',
-    es_ES: 'Actualizaciones internas (start-sdk 1.3.3)',
-    de_DE: 'Interne Aktualisierungen (start-sdk 1.3.3)',
-    pl_PL: 'Aktualizacje wewnętrzne (start-sdk 1.3.3)',
-    fr_FR: 'Mises à jour internes (start-sdk 1.3.3)',
+    en_US: 'Fix backup failure caused by transient SQLite journal/WAL/SHM files',
+    es_ES:
+      'Corrige el fallo de copia de seguridad causado por archivos transitorios de SQLite (journal/WAL/SHM)',
+    de_DE:
+      'Behebt Backup-Fehler durch flüchtige SQLite-Journal-/WAL-/SHM-Dateien',
+    pl_PL:
+      'Naprawia błąd kopii zapasowej spowodowany przez tymczasowe pliki SQLite (journal/WAL/SHM)',
+    fr_FR:
+      'Corrige l’échec de sauvegarde causé par les fichiers transitoires SQLite (journal/WAL/SHM)',
   },
   migrations: {
     up: async ({ effects }) => {
