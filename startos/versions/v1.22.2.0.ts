@@ -68,7 +68,7 @@ Ainsi que de nombreuses autres corrections de bugs et améliorations mineures.`,
           .then(YAML.parse, () => undefined)
 
       if (configYaml) {
-        await storeJson.write(effects, {
+        await storeJson.merge(effects, {
           LN_BACKEND_TYPE: configYaml.lightning === 'alby' ? 'LDK' : 'LND',
         })
 
@@ -81,7 +81,7 @@ Ainsi que de nombreuses autres corrections de bugs et améliorations mineures.`,
           .then((s) => s.isDirectory())
           .catch(() => false)
         if (ldkExists) {
-          await storeJson.write(effects, {
+          await storeJson.merge(effects, {
             LN_BACKEND_TYPE: 'LDK',
           })
         }
