@@ -9,7 +9,6 @@ export const manifest = setupManifest({
   upstreamRepo: 'https://github.com/getAlby/hub/',
   marketingUrl: 'https://albyhub.com/',
   donationUrl: 'https://getalby.com/donate',
-  docsUrls: ['https://guides.getalby.com/user-guide/'],
   description: { short, long },
   volumes: ['main', 'startos'],
   images: {
