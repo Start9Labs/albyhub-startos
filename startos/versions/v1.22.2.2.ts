@@ -4,24 +4,14 @@ import { join } from 'path'
 import { storeJson } from '../fileModels/store.json'
 import { sdk } from '../sdk'
 
-export const v_1_22_2_1 = VersionInfo.of({
-  version: '1.22.2:1',
+export const v_1_22_2_2 = VersionInfo.of({
+  version: '1.22.2:2',
   releaseNotes: {
-    en_US: `**Internal**
-
-- Bump start-sdk to 1.5.0.`,
-    es_ES: `**Interno**
-
-- Actualización de start-sdk a 1.5.0.`,
-    de_DE: `**Intern**
-
-- start-sdk auf 1.5.0 aktualisiert.`,
-    pl_PL: `**Wewnętrzne**
-
-- Aktualizacja start-sdk do wersji 1.5.0.`,
-    fr_FR: `**Interne**
-
-- Mise à jour de start-sdk vers 1.5.0.`,
+    en_US: 'Bumps start-sdk → 1.5.2.',
+    es_ES: 'Actualiza start-sdk → 1.5.2.',
+    de_DE: 'Aktualisiert start-sdk → 1.5.2.',
+    pl_PL: 'Aktualizuje start-sdk → 1.5.2.',
+    fr_FR: 'Met à jour start-sdk → 1.5.2.',
   },
   migrations: {
     up: async ({ effects }) => {
