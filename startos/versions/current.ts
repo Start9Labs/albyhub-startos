@@ -4,7 +4,7 @@ import { join } from 'path'
 import { storeJson } from '../fileModels/store.json'
 import { sdk } from '../sdk'
 
-export const v_1_22_2_1 = VersionInfo.of({
+export const current = VersionInfo.of({
   version: '1.22.2:1',
   releaseNotes: {
     en_US: `**Internal**
