@@ -6,13 +6,25 @@ export const setDependencies = sdk.setupDependencies(async ({ effects }) => {
     .read((s) => s.LN_BACKEND_TYPE)
     .const(effects)
 
-  return LN_BACKEND_TYPE === 'LND'
-    ? {
-        lnd: {
-          kind: 'running',
-          versionRange: '^0.20.1-beta:2',
-          healthChecks: ['lnd', 'sync-progress'],
-        },
-      }
-    : {}
+  if (LN_BACKEND_TYPE === 'LND') {
+    return {
+      lnd: {
+        kind: 'running',
+        versionRange: '^0.20.1-beta:2',
+        healthChecks: ['lnd', 'sync-progress'],
+      },
+    }
+  }
+
+  if (LN_BACKEND_TYPE === 'CLN') {
+    return {
+      'c-lightning': {
+        kind: 'running',
+        versionRange: '>=26.6:0',
+        healthChecks: ['lightningd', 'check-synced'],
+      },
+    }
+  }
+
+  return {}
 })

@@ -5,23 +5,13 @@ import { storeJson } from '../fileModels/store.json'
 import { sdk } from '../sdk'
 
 export const current = VersionInfo.of({
-  version: '1.22.2:1',
+  version: '1.22.2:2',
   releaseNotes: {
-    en_US: `**Internal**
-
-- Bump start-sdk to 1.5.0.`,
-    es_ES: `**Interno**
-
-- Actualización de start-sdk a 1.5.0.`,
-    de_DE: `**Intern**
-
-- start-sdk auf 1.5.0 aktualisiert.`,
-    pl_PL: `**Wewnętrzne**
-
-- Aktualizacja start-sdk do wersji 1.5.0.`,
-    fr_FR: `**Interne**
-
-- Mise à jour de start-sdk vers 1.5.0.`,
+    en_US: 'Adds Core Lightning as a Lightning backend option.',
+    es_ES: 'Añade Core Lightning como opción de backend Lightning.',
+    de_DE: 'Fügt Core Lightning als Lightning-Backend-Option hinzu.',
+    pl_PL: 'Dodaje Core Lightning jako opcję backendu Lightning.',
+    fr_FR: 'Ajoute Core Lightning comme option de backend Lightning.',
   },
   migrations: {
     up: async ({ effects }) => {

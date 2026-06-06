@@ -1,4 +1,5 @@
 import { manifest as lndManifest } from 'lnd-startos/startos/manifest'
+import { manifest as clnManifest } from 'cln-startos/startos/manifest'
 import { sdk } from './sdk'
 import { uiPort } from './utils'
 import { storeJson } from './fileModels/store.json'
@@ -45,6 +46,21 @@ export const main = sdk.setupMain(async ({ effects }) => {
       volumeId: 'main',
       subpath: null,
       mountpoint: '/mnt/lnd',
+      readonly: true,
+    })
+  } else if (LN_BACKEND_TYPE === 'CLN') {
+    env = {
+      ...env,
+      CLN_ADDRESS: 'c-lightning.startos:2106',
+      CLN_LIGHTNING_DIR: '/mnt/cln/bitcoin',
+      ENABLE_ADVANCED_SETUP: 'false',
+    }
+
+    mounts = mounts.mountDependency<typeof clnManifest>({
+      dependencyId: 'c-lightning',
+      volumeId: 'main',
+      subpath: null,
+      mountpoint: '/mnt/cln',
       readonly: true,
     })
   }
