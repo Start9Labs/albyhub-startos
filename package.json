@@ -8,7 +8,11 @@
   "dependencies": {
     "@start9labs/start-sdk": "1.5.3",
     "cln-startos": "github:Start9Labs/cln-startos#master",
-    "lnd-startos": "github:Start9Labs/lnd-startos#next"
+    "lnd-startos": "github:Start9Labs/lnd-startos#next",
+    "phoenixd-startos": "github:Start9-Community/phoenixd-startos#master"
+  },
+  "overrides": {
+    "@start9labs/start-sdk": "1.5.3"
   },
   "devDependencies": {
     "@types/node": "^22.19.1",

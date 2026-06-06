@@ -1,5 +1,7 @@
 import { manifest as lndManifest } from 'lnd-startos/startos/manifest'
 import { manifest as clnManifest } from 'cln-startos/startos/manifest'
+import { manifest as phoenixdManifest } from 'phoenixd-startos/startos/manifest'
+import { readFile } from 'fs/promises'
 import { sdk } from './sdk'
 import { uiPort } from './utils'
 import { storeJson } from './fileModels/store.json'
@@ -63,6 +65,33 @@ export const main = sdk.setupMain(async ({ effects }) => {
       mountpoint: '/mnt/cln',
       readonly: true,
     })
+  } else if (LN_BACKEND_TYPE === 'PHOENIX') {
+    env = {
+      ...env,
+      PHOENIXD_ADDRESS: 'http://phoenixd.startos:9740',
+      ENABLE_ADVANCED_SETUP: 'false',
+    }
+
+    mounts = mounts.mountDependency<typeof phoenixdManifest>({
+      dependencyId: 'phoenixd',
+      volumeId: 'main',
+      subpath: null,
+      mountpoint: '/mnt/phoenixd',
+      readonly: true,
+    })
+  }
+
+  const subcontainer = await sdk.SubContainer.of(
+    effects,
+    { imageId: 'albyhub' },
+    mounts,
+    'albyhub-sub',
+  )
+
+  if (LN_BACKEND_TYPE === 'PHOENIX') {
+    env.PHOENIXD_AUTHORIZATION = await readPhoenixdHttpPassword(
+      subcontainer.rootfs,
+    )
   }
 
   /**
@@ -73,12 +102,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
    * Each daemon defines its own health check, which can optionally be exposed to the user.
    */
   return sdk.Daemons.of(effects).addDaemon('primary', {
-    subcontainer: await sdk.SubContainer.of(
-      effects,
-      { imageId: 'albyhub' },
-      mounts,
-      'albyhub-sub',
-    ),
+    subcontainer,
     exec: { command: sdk.useEntrypoint(), env, runAsInit: true },
     ready: {
       display: i18n('Web Interface'),
@@ -91,3 +115,12 @@ export const main = sdk.setupMain(async ({ effects }) => {
     requires: [],
   })
 })
+
+async function readPhoenixdHttpPassword(rootfs: string): Promise<string> {
+  const conf = await readFile(`${rootfs}/mnt/phoenixd/phoenix.conf`, 'utf-8')
+  const password = conf.match(/^http-password=(.*)$/m)?.[1]?.trim()
+  if (!password) {
+    throw new Error(i18n('Could not read the phoenixd http-password'))
+  }
+  return password
+}

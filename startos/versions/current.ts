@@ -7,11 +7,11 @@ import { sdk } from '../sdk'
 export const current = VersionInfo.of({
   version: '1.22.2:2',
   releaseNotes: {
-    en_US: 'Adds Core Lightning as a Lightning backend option.',
-    es_ES: 'Añade Core Lightning como opción de backend Lightning.',
-    de_DE: 'Fügt Core Lightning als Lightning-Backend-Option hinzu.',
-    pl_PL: 'Dodaje Core Lightning jako opcję backendu Lightning.',
-    fr_FR: 'Ajoute Core Lightning comme option de backend Lightning.',
+    en_US: 'Adds Core Lightning (CLN) and phoenixd as Lightning backend options.',
+    es_ES: 'Añade Core Lightning (CLN) y phoenixd como opciones de backend Lightning.',
+    de_DE: 'Fügt Core Lightning (CLN) und phoenixd als Lightning-Backend-Optionen hinzu.',
+    pl_PL: 'Dodaje Core Lightning (CLN) i phoenixd jako opcje backendu Lightning.',
+    fr_FR: 'Ajoute Core Lightning (CLN) et phoenixd comme options de backend Lightning.',
   },
   migrations: {
     up: async ({ effects }) => {

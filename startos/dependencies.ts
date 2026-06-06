@@ -26,5 +26,15 @@ export const setDependencies = sdk.setupDependencies(async ({ effects }) => {
     }
   }
 
+  if (LN_BACKEND_TYPE === 'PHOENIX') {
+    return {
+      phoenixd: {
+        kind: 'running',
+        versionRange: '>=0.7.3:3',
+        healthChecks: ['primary'],
+      },
+    }
+  }
+
   return {}
 })
