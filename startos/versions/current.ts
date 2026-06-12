@@ -5,13 +5,13 @@ import { storeJson } from '../fileModels/store.json'
 import { sdk } from '../sdk'
 
 export const current = VersionInfo.of({
-  version: '1.23.0:0',
+  version: '1.23.0:1',
   releaseNotes: {
-    en_US: 'Adds Just-in-Time channels, a Cards page for debit card top-ups, an experimental Bark backend, redesigned home/stories and currency input flows, improved Core Lightning support, and multiple bug fixes.',
-    es_ES: 'Añade canales Just-in-Time, una página de tarjetas para recargas de tarjetas de débito, un backend experimental de Bark, rediseños de inicio/historias y entrada de moneda, mejoras en Core Lightning y varias correcciones.',
-    de_DE: 'Fügt Just-in-Time-Kanäle, eine Kartenseite für Debitkarten-Aufladungen, ein experimentelles Bark-Backend, überarbeitete Start-/Stories- und Währungseingabeabläufe, verbesserte Core-Lightning-Unterstützung und mehrere Fehlerbehebungen hinzu.',
-    pl_PL: 'Dodaje kanały Just-in-Time, stronę kart do doładowań kart debetowych, eksperymentalny backend Bark, przeprojektowany ekran główny/historie i wprowadzanie waluty, ulepszoną obsługę Core Lightning oraz liczne poprawki błędów.',
-    fr_FR: 'Ajoute les canaux Just-in-Time, une page Cartes pour les recharges de cartes de débit, un backend Bark expérimental, des parcours accueil/stories et saisie de devise repensés, une meilleure prise en charge de Core Lightning et plusieurs corrections.',
+    en_US: 'Adds Just-in-Time channels, a Cards page for debit card top-ups, an experimental Bark (Ark protocol) backend selectable at setup, redesigned home/stories and currency input flows, improved Core Lightning support, and multiple bug fixes.',
+    es_ES: 'Añade canales Just-in-Time, una página de tarjetas para recargas de tarjetas de débito, un backend experimental de Bark (protocolo Ark) seleccionable durante la configuración, rediseños de inicio/historias y entrada de moneda, mejoras en Core Lightning y varias correcciones.',
+    de_DE: 'Fügt Just-in-Time-Kanäle, eine Kartenseite für Debitkarten-Aufladungen, ein experimentelles Bark-Backend (Ark-Protokoll), das bei der Einrichtung wählbar ist, überarbeitete Start-/Stories- und Währungseingabeabläufe, verbesserte Core-Lightning-Unterstützung und mehrere Fehlerbehebungen hinzu.',
+    pl_PL: 'Dodaje kanały Just-in-Time, stronę kart do doładowań kart debetowych, eksperymentalny backend Bark (protokół Ark) do wyboru podczas konfiguracji, przeprojektowany ekran główny/historie i wprowadzanie waluty, ulepszoną obsługę Core Lightning oraz liczne poprawki błędów.',
+    fr_FR: 'Ajoute les canaux Just-in-Time, une page Cartes pour les recharges de cartes de débit, un backend Bark (protocole Ark) expérimental sélectionnable lors de la configuration, des parcours accueil/stories et saisie de devise repensés, une meilleure prise en charge de Core Lightning et plusieurs corrections.',
   },
   migrations: {
     up: async ({ effects }) => {

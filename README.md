@@ -65,9 +65,10 @@
 | LND credentials | Manually configure `LND_ADDRESS`, cert, macaroon paths | Auto-configured from LND dependency |
 | CLN credentials | Manually configure `CLN_ADDRESS`, `CLN_LIGHTNING_DIR` (gRPC certs) | Auto-configured from Core Lightning dependency |
 | phoenixd credentials | Manually configure `PHOENIXD_ADDRESS`, `PHOENIXD_AUTHORIZATION` | Auto-configured from phoenixd dependency (http-password read from its volume) |
+| Bark servers | Optionally configure `BARK_SERVER`, `BARK_ESPLORA_SERVER` | Upstream defaults (Second's public servers) |
 | Initial config | `.env` file or environment variables | Managed by StartOS |
 
-**Key difference:** On StartOS, you must complete a mandatory setup task to choose your Lightning backend (LND, Core Lightning, phoenixd, or LDK) before Alby Hub can start. This choice is permanent.
+**Key difference:** On StartOS, you must complete a mandatory setup task to choose your backend (LND, Core Lightning, phoenixd, LDK, or Bark) before Alby Hub can start. This choice is permanent.
 
 ---
 
@@ -75,7 +76,7 @@
 
 | Setting | Upstream Method | StartOS Method |
 |---------|-----------------|----------------|
-| `LN_BACKEND_TYPE` | Env var (LND, LDK, CLN, Phoenixd, Cashu, …) | One-time action (LND, CLN, phoenixd, or LDK only) |
+| `LN_BACKEND_TYPE` | Env var (LND, LDK, CLN, Phoenixd, Cashu, Bark, …) | One-time action (LND, CLN, phoenixd, LDK, or Bark only) |
 | `LND_ADDRESS` | Env var | Auto-configured: `lnd.startos:10009` |
 | `LND_CERT_FILE` | Env var | Auto-configured: `/mnt/lnd/tls.cert` |
 | `LND_MACAROON_FILE` | Env var | Auto-configured: `/mnt/lnd/data/chain/bitcoin/mainnet/admin.macaroon` |
@@ -94,6 +95,7 @@
 - `DATABASE_URI` — uses default SQLite location
 - `RELAY` — uses default Nostr relay
 - `LDK_*` variables — uses defaults
+- `BARK_*` variables — uses defaults (Second's public Ark and Esplora servers)
 - `AUTO_UNLOCK_PASSWORD` — not exposed
 
 ---
@@ -133,8 +135,9 @@
 | Core Lightning on this server | Connects to your StartOS Core Lightning installation via gRPC |
 | phoenixd on this server | Connects to your StartOS phoenixd installation via its HTTP API |
 | LDK embedded node | Uses Alby Hub's built-in LDK implementation |
+| Bark embedded Ark wallet (experimental) | Uses Alby Hub's built-in Bark (Ark protocol) wallet via Second's public Ark and Esplora servers |
 
-**Note:** Upstream supports several backends (LDK, LND, CLN, Phoenixd, Cashu, …). StartOS exposes LND, Core Lightning, phoenixd, and LDK.
+**Note:** Upstream supports several backends (LDK, LND, CLN, Phoenixd, Cashu, Bark, …). StartOS exposes LND, Core Lightning, phoenixd, LDK, and Bark.
 
 ---
 
@@ -206,12 +209,13 @@ Only required if you select "phoenixd on this server" during setup. Alby Hub con
 
 ## Limitations and Differences
 
-1. **Subset of upstream backends supported** — StartOS offers LND, Core Lightning, phoenixd, and LDK only; Cashu and other upstream backends are not available
-2. **Backend selection is permanent** — cannot switch between LND, Core Lightning, phoenixd, and LDK without reinstalling
+1. **Subset of upstream backends supported** — StartOS offers LND, Core Lightning, phoenixd, LDK, and Bark only; Cashu and other upstream backends are not available
+2. **Backend selection is permanent** — cannot switch between LND, Core Lightning, phoenixd, LDK, and Bark without reinstalling
 3. **Advanced setup disabled for LND/CLN/phoenixd** — `ENABLE_ADVANCED_SETUP=false` is set, preventing backend changes via web UI
 4. **No PostgreSQL support** — only embedded SQLite database
 5. **No custom node connection** — must use the StartOS LND, Core Lightning, or phoenixd dependency; cannot connect to external nodes
-6. **Limited env var configuration** — many upstream environment variables are not exposed (relay, LDK tuning, auto-unlock, etc.)
+6. **Limited env var configuration** — many upstream environment variables are not exposed (relay, LDK tuning, Bark servers, auto-unlock, etc.)
+7. **Bark uses Second's public servers** — the Bark backend connects to upstream's default Ark and Esplora servers hosted by Second; custom servers are not configurable. The wallet runs embedded in Alby Hub (via bark FFI bindings) — it cannot connect to the separate Bark Wallet StartOS service (`bark-startos`), which is its own wallet with its own seed
 
 ---
 
@@ -265,6 +269,7 @@ upstream_env_vars_not_exposed:
   - RELAY
   - AUTO_UNLOCK_PASSWORD
   - LDK_* (all LDK tuning vars)
+  - BARK_* (server, esplora server, access token, log level — upstream defaults)
 actions:
   - set-lightning (hidden, only-stopped)
 health_checks:
@@ -272,5 +277,5 @@ health_checks:
 backup_volumes:
   - main
   - startos
-backend_options: [LND, CLN, PHOENIX, LDK]  # upstream supports more: LDK, LND, CLN, Phoenixd, Cashu, …
+backend_options: [LND, CLN, PHOENIX, LDK, BARK]  # upstream supports more: Cashu, …
 ```
