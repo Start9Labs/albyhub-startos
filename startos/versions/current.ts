@@ -5,13 +5,13 @@ import { storeJson } from '../fileModels/store.json'
 import { sdk } from '../sdk'
 
 export const current = VersionInfo.of({
-  version: '1.22.2:2',
+  version: '1.23.0:0',
   releaseNotes: {
-    en_US: 'Adds Core Lightning (CLN) and phoenixd as Lightning backend options.',
-    es_ES: 'Añade Core Lightning (CLN) y phoenixd como opciones de backend Lightning.',
-    de_DE: 'Fügt Core Lightning (CLN) und phoenixd als Lightning-Backend-Optionen hinzu.',
-    pl_PL: 'Dodaje Core Lightning (CLN) i phoenixd jako opcje backendu Lightning.',
-    fr_FR: 'Ajoute Core Lightning (CLN) et phoenixd comme options de backend Lightning.',
+    en_US: 'Adds Just-in-Time channels, a Cards page for debit card top-ups, an experimental Bark backend, redesigned home/stories and currency input flows, improved Core Lightning support, and multiple bug fixes.',
+    es_ES: 'Añade canales Just-in-Time, una página de tarjetas para recargas de tarjetas de débito, un backend experimental de Bark, rediseños de inicio/historias y entrada de moneda, mejoras en Core Lightning y varias correcciones.',
+    de_DE: 'Fügt Just-in-Time-Kanäle, eine Kartenseite für Debitkarten-Aufladungen, ein experimentelles Bark-Backend, überarbeitete Start-/Stories- und Währungseingabeabläufe, verbesserte Core-Lightning-Unterstützung und mehrere Fehlerbehebungen hinzu.',
+    pl_PL: 'Dodaje kanały Just-in-Time, stronę kart do doładowań kart debetowych, eksperymentalny backend Bark, przeprojektowany ekran główny/historie i wprowadzanie waluty, ulepszoną obsługę Core Lightning oraz liczne poprawki błędów.',
+    fr_FR: 'Ajoute les canaux Just-in-Time, une page Cartes pour les recharges de cartes de débit, un backend Bark expérimental, des parcours accueil/stories et saisie de devise repensés, une meilleure prise en charge de Core Lightning et plusieurs corrections.',
   },
   migrations: {
     up: async ({ effects }) => {
