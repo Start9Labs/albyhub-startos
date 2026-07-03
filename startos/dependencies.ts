@@ -10,7 +10,7 @@ export const setDependencies = sdk.setupDependencies(async ({ effects }) => {
     return {
       lnd: {
         kind: 'running',
-        versionRange: '^0.20.1-beta:2',
+        versionRange: '>=0.21.1-beta:0',
         healthChecks: ['lnd', 'sync-progress'],
       },
     }
@@ -20,7 +20,7 @@ export const setDependencies = sdk.setupDependencies(async ({ effects }) => {
     return {
       'c-lightning': {
         kind: 'running',
-        versionRange: '>=26.6:0',
+        versionRange: '>=26.6.1:2',
         healthChecks: ['lightningd', 'check-synced'],
       },
     }
@@ -30,7 +30,7 @@ export const setDependencies = sdk.setupDependencies(async ({ effects }) => {
     return {
       phoenixd: {
         kind: 'running',
-        versionRange: '>=0.7.3:3',
+        versionRange: '>=0.8.0:1',
         healthChecks: ['primary'],
       },
     }

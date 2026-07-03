@@ -6,16 +6,16 @@
     "check": "tsc --noEmit"
   },
   "dependencies": {
-    "@start9labs/start-sdk": "1.5.3",
-    "cln-startos": "github:Start9Labs/cln-startos#master",
+    "@start9labs/start-sdk": "2.0.1",
+    "cln-startos": "github:Start9Labs/cln-startos#next",
     "lnd-startos": "github:Start9Labs/lnd-startos#next",
-    "phoenixd-startos": "github:Start9-Community/phoenixd-startos#master"
+    "phoenixd-startos": "github:Start9-Community/phoenixd-startos#next"
   },
   "devDependencies": {
     "@types/node": "^22.19.1",
     "@vercel/ncc": "^0.38.4",
     "prettier": "^3.7.0",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.3"
   },
   "prettier": {
     "trailingComma": "all",

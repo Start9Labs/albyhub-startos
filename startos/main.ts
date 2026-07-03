@@ -1,9 +1,17 @@
 import { manifest as lndManifest } from 'lnd-startos/startos/manifest'
 import { manifest as clnManifest } from 'cln-startos/startos/manifest'
 import { manifest as phoenixdManifest } from 'phoenixd-startos/startos/manifest'
+import {
+  gRPCHostId as lndGrpcHostId,
+  gRPCInterfaceId as lndGrpcInterfaceId,
+} from 'lnd-startos/startos/interfaces'
+import {
+  apiHostId as phoenixdApiHostId,
+  apiInterfaceId as phoenixdApiInterfaceId,
+} from 'phoenixd-startos/startos/interfaces'
 import { readFile } from 'fs/promises'
 import { sdk } from './sdk'
-import { uiPort } from './utils'
+import { bridgeHostPort, uiPort } from './utils'
 import { storeJson } from './fileModels/store.json'
 import { i18n } from './i18n'
 
@@ -35,9 +43,26 @@ export const main = sdk.setupMain(async ({ effects }) => {
   })
 
   if (LN_BACKEND_TYPE === 'LND') {
+    // LND's gRPC over the LXC bridge (replaces the old `lnd.startos:10009` DNS);
+    // LND's StartOS-issued cert covers the bridge address, read via the mount.
+    const lndAddress = await bridgeHostPort(
+      effects,
+      'lnd',
+      lndGrpcHostId,
+      lndGrpcInterfaceId,
+      true,
+    )
+    if (!lndAddress) {
+      throw new Error(
+        i18n(
+          'LND is not yet reachable on the internal network. Ensure LND is installed and running.',
+        ),
+      )
+    }
+
     env = {
       ...env,
-      LND_ADDRESS: 'lnd.startos:10009',
+      LND_ADDRESS: lndAddress,
       LND_CERT_FILE: '/mnt/lnd/tls.cert',
       LND_MACAROON_FILE: '/mnt/lnd/data/chain/bitcoin/mainnet/admin.macaroon',
       ENABLE_ADVANCED_SETUP: 'false',
@@ -51,9 +76,27 @@ export const main = sdk.setupMain(async ({ effects }) => {
       readonly: true,
     })
   } else if (LN_BACKEND_TYPE === 'CLN') {
+    // Core Lightning's gRPC over the LXC bridge (replaces `c-lightning.startos:2106`).
+    // cln exports only its peer/watchtower ids, so the gRPC host/interface are
+    // referenced by literal here.
+    const clnAddress = await bridgeHostPort(
+      effects,
+      'c-lightning',
+      'grpc',
+      'grpc',
+      true,
+    )
+    if (!clnAddress) {
+      throw new Error(
+        i18n(
+          'Core Lightning is not yet reachable on the internal network. Ensure Core Lightning is installed and running.',
+        ),
+      )
+    }
+
     env = {
       ...env,
-      CLN_ADDRESS: 'c-lightning.startos:2106',
+      CLN_ADDRESS: clnAddress,
       CLN_LIGHTNING_DIR: '/mnt/cln/bitcoin',
       ENABLE_ADVANCED_SETUP: 'false',
     }
@@ -66,9 +109,25 @@ export const main = sdk.setupMain(async ({ effects }) => {
       readonly: true,
     })
   } else if (LN_BACKEND_TYPE === 'PHOENIX') {
+    // phoenixd's HTTP API over the LXC bridge (replaces `phoenixd.startos:9740`).
+    const phoenixdAddress = await bridgeHostPort(
+      effects,
+      'phoenixd',
+      phoenixdApiHostId,
+      phoenixdApiInterfaceId,
+      false,
+    )
+    if (!phoenixdAddress) {
+      throw new Error(
+        i18n(
+          'phoenixd is not yet reachable on the internal network. Ensure phoenixd is installed and running.',
+        ),
+      )
+    }
+
     env = {
       ...env,
-      PHOENIXD_ADDRESS: 'http://phoenixd.startos:9740',
+      PHOENIXD_ADDRESS: `http://${phoenixdAddress}`,
       ENABLE_ADVANCED_SETUP: 'false',
     }
 
@@ -81,7 +140,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
     })
   }
 
-  const subcontainer = await sdk.SubContainer.of(
+  const subcontainer = sdk.SubContainer.of(
     effects,
     { imageId: 'albyhub' },
     mounts,
@@ -89,9 +148,8 @@ export const main = sdk.setupMain(async ({ effects }) => {
   )
 
   if (LN_BACKEND_TYPE === 'PHOENIX') {
-    env.PHOENIXD_AUTHORIZATION = await readPhoenixdHttpPassword(
-      subcontainer.rootfs,
-    )
+    const rootfs = await subcontainer.rootfs
+    env.PHOENIXD_AUTHORIZATION = await readPhoenixdHttpPassword(rootfs)
   }
 
   /**

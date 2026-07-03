@@ -20,6 +20,9 @@ const dict = {
   'phoenixd on this server': 16,
   'Could not read the phoenixd http-password': 17,
   'Bark embedded Ark wallet (experimental)': 18,
+  'LND is not yet reachable on the internal network. Ensure LND is installed and running.': 19,
+  'Core Lightning is not yet reachable on the internal network. Ensure Core Lightning is installed and running.': 20,
+  'phoenixd is not yet reachable on the internal network. Ensure phoenixd is installed and running.': 21,
 } as const
 
 export type I18nKey = keyof typeof dict

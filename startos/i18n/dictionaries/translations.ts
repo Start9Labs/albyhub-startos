@@ -21,6 +21,9 @@ export default {
     16: 'phoenixd en este servidor',
     17: 'No se pudo leer la http-password de phoenixd',
     18: 'Cartera Ark integrada Bark (experimental)',
+    19: 'LND aún no es accesible en la red interna. Asegúrese de que LND esté instalado y en ejecución.',
+    20: 'Core Lightning aún no es accesible en la red interna. Asegúrese de que Core Lightning esté instalado y en ejecución.',
+    21: 'phoenixd aún no es accesible en la red interna. Asegúrese de que phoenixd esté instalado y en ejecución.',
   },
   de_DE: {
     0: 'Alby Hub wird gestartet!',
@@ -42,6 +45,9 @@ export default {
     16: 'phoenixd auf diesem Server',
     17: 'Das phoenixd-http-password konnte nicht gelesen werden',
     18: 'Bark integrierte Ark-Wallet (experimentell)',
+    19: 'LND ist im internen Netzwerk noch nicht erreichbar. Stellen Sie sicher, dass LND installiert ist und läuft.',
+    20: 'Core Lightning ist im internen Netzwerk noch nicht erreichbar. Stellen Sie sicher, dass Core Lightning installiert ist und läuft.',
+    21: 'phoenixd ist im internen Netzwerk noch nicht erreichbar. Stellen Sie sicher, dass phoenixd installiert ist und läuft.',
   },
   pl_PL: {
     0: 'Uruchamianie Alby Hub!',
@@ -63,6 +69,9 @@ export default {
     16: 'phoenixd na tym serwerze',
     17: 'Nie udało się odczytać http-password phoenixd',
     18: 'Wbudowany portfel Ark Bark (eksperymentalny)',
+    19: 'LND nie jest jeszcze osiągalny w sieci wewnętrznej. Upewnij się, że LND jest zainstalowany i uruchomiony.',
+    20: 'Core Lightning nie jest jeszcze osiągalny w sieci wewnętrznej. Upewnij się, że Core Lightning jest zainstalowany i uruchomiony.',
+    21: 'phoenixd nie jest jeszcze osiągalny w sieci wewnętrznej. Upewnij się, że phoenixd jest zainstalowany i uruchomiony.',
   },
   fr_FR: {
     0: 'Démarrage d\'Alby Hub !',
@@ -84,5 +93,8 @@ export default {
     16: 'phoenixd sur ce serveur',
     17: 'Impossible de lire le http-password de phoenixd',
     18: 'Portefeuille Ark intégré Bark (expérimental)',
+    19: 'LND n\'est pas encore joignable sur le réseau interne. Assurez-vous que LND est installé et en cours d\'exécution.',
+    20: 'Core Lightning n\'est pas encore joignable sur le réseau interne. Assurez-vous que Core Lightning est installé et en cours d\'exécution.',
+    21: 'phoenixd n\'est pas encore joignable sur le réseau interne. Assurez-vous que phoenixd est installé et en cours d\'exécution.',
   },
 } satisfies Record<string, LangDict>

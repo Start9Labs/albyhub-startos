@@ -77,12 +77,12 @@
 | Setting | Upstream Method | StartOS Method |
 |---------|-----------------|----------------|
 | `LN_BACKEND_TYPE` | Env var (LND, LDK, CLN, Phoenixd, Cashu, Bark, …) | One-time action (LND, CLN, phoenixd, LDK, or Bark only) |
-| `LND_ADDRESS` | Env var | Auto-configured: `lnd.startos:10009` |
+| `LND_ADDRESS` | Env var | Auto-configured: LND's gRPC over the LXC bridge (port 10009) |
 | `LND_CERT_FILE` | Env var | Auto-configured: `/mnt/lnd/tls.cert` |
 | `LND_MACAROON_FILE` | Env var | Auto-configured: `/mnt/lnd/data/chain/bitcoin/mainnet/admin.macaroon` |
-| `CLN_ADDRESS` | Env var | Auto-configured: `c-lightning.startos:2106` |
+| `CLN_ADDRESS` | Env var | Auto-configured: CLN's gRPC over the LXC bridge (port 2106) |
 | `CLN_LIGHTNING_DIR` | Env var | Auto-configured: `/mnt/cln/bitcoin` (gRPC certs) |
-| `PHOENIXD_ADDRESS` | Env var | Auto-configured: `http://phoenixd.startos:9740` |
+| `PHOENIXD_ADDRESS` | Env var | Auto-configured: phoenixd's HTTP API over the LXC bridge (port 9740) |
 | `PHOENIXD_AUTHORIZATION` | Env var | Auto-configured: phoenixd's `http-password`, read from `/mnt/phoenixd/phoenix.conf` |
 | `ENABLE_ADVANCED_SETUP` | Env var (default: unset) | Set to `false` when using LND, CLN, or phoenixd |
 | `HIDE_UPDATE_BANNER` | Env var (default: unset) | Set to `true` |
@@ -165,7 +165,7 @@ Only required if you select "LND on this server" during setup. Provides the TLS 
 | Mounted volume | `main` → `/mnt/cln` (read-only) |
 | Purpose | Lightning node backend for wallet operations |
 
-Only required if you select "Core Lightning on this server" during setup. Alby Hub connects over the CLN gRPC interface (`c-lightning.startos:2106`), reading the gRPC client certificates from the mounted volume at `/mnt/cln/bitcoin`.
+Only required if you select "Core Lightning on this server" during setup. Alby Hub connects over the CLN gRPC interface (port 2106), resolved dynamically over the LXC bridge, reading the gRPC client certificates from the mounted volume at `/mnt/cln/bitcoin`.
 
 ### phoenixd (optional)
 
@@ -177,7 +177,7 @@ Only required if you select "Core Lightning on this server" during setup. Alby H
 | Mounted volume | `main` → `/mnt/phoenixd` (read-only) |
 | Purpose | Lightning node backend for wallet operations |
 
-Only required if you select "phoenixd on this server" during setup. Alby Hub connects to phoenixd's HTTP API (`http://phoenixd.startos:9740`). phoenixd auto-generates an `http-password` in `phoenix.conf`; the package reads it from the mounted volume (`/mnt/phoenixd/phoenix.conf`) at startup and passes it as `PHOENIXD_AUTHORIZATION`.
+Only required if you select "phoenixd on this server" during setup. Alby Hub connects to phoenixd's HTTP API (port 9740), resolved dynamically over the LXC bridge. phoenixd auto-generates an `http-password` in `phoenix.conf`; the package reads it from the mounted volume (`/mnt/phoenixd/phoenix.conf`) at startup and passes it as `PHOENIXD_AUTHORIZATION`.
 
 ---
 
