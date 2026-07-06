@@ -3,15 +3,14 @@ import { manifest as clnManifest } from 'cln-startos/startos/manifest'
 import { manifest as phoenixdManifest } from 'phoenixd-startos/startos/manifest'
 import {
   gRPCHostId as lndGrpcHostId,
-  gRPCInterfaceId as lndGrpcInterfaceId,
+  gRPCPort as lndGrpcPort,
 } from 'lnd-startos/startos/interfaces'
-import {
-  apiHostId as phoenixdApiHostId,
-  apiInterfaceId as phoenixdApiInterfaceId,
-} from 'phoenixd-startos/startos/interfaces'
+import { grpcPort as clnGrpcPort } from 'cln-startos/startos/utils'
+import { apiHostId as phoenixdApiHostId } from 'phoenixd-startos/startos/interfaces'
+import { port as phoenixdPort } from 'phoenixd-startos/startos/utils'
 import { readFile } from 'fs/promises'
 import { sdk } from './sdk'
-import { bridgeHostPort, uiPort } from './utils'
+import { bridgeAddress, uiPort } from './utils'
 import { storeJson } from './fileModels/store.json'
 import { i18n } from './i18n'
 
@@ -45,13 +44,11 @@ export const main = sdk.setupMain(async ({ effects }) => {
   if (LN_BACKEND_TYPE === 'LND') {
     // LND's gRPC over the LXC bridge (replaces the old `lnd.startos:10009` DNS);
     // LND's StartOS-issued cert covers the bridge address, read via the mount.
-    const lndAddress = await bridgeHostPort(
-      effects,
-      'lnd',
-      lndGrpcHostId,
-      lndGrpcInterfaceId,
-      true,
-    )
+    const lndAddress = await bridgeAddress(effects, {
+      packageId: 'lnd',
+      hostId: lndGrpcHostId,
+      internalPort: lndGrpcPort,
+    }).const()
     if (!lndAddress) {
       throw new Error(
         i18n(
@@ -77,15 +74,13 @@ export const main = sdk.setupMain(async ({ effects }) => {
     })
   } else if (LN_BACKEND_TYPE === 'CLN') {
     // Core Lightning's gRPC over the LXC bridge (replaces `c-lightning.startos:2106`).
-    // cln exports only its peer/watchtower ids, so the gRPC host/interface are
-    // referenced by literal here.
-    const clnAddress = await bridgeHostPort(
-      effects,
-      'c-lightning',
-      'grpc',
-      'grpc',
-      true,
-    )
+    // cln exports only its peer/watchtower ids, so the gRPC host is referenced
+    // by literal here.
+    const clnAddress = await bridgeAddress(effects, {
+      packageId: 'c-lightning',
+      hostId: 'grpc',
+      internalPort: clnGrpcPort,
+    }).const()
     if (!clnAddress) {
       throw new Error(
         i18n(
@@ -110,13 +105,11 @@ export const main = sdk.setupMain(async ({ effects }) => {
     })
   } else if (LN_BACKEND_TYPE === 'PHOENIX') {
     // phoenixd's HTTP API over the LXC bridge (replaces `phoenixd.startos:9740`).
-    const phoenixdAddress = await bridgeHostPort(
-      effects,
-      'phoenixd',
-      phoenixdApiHostId,
-      phoenixdApiInterfaceId,
-      false,
-    )
+    const phoenixdAddress = await bridgeAddress(effects, {
+      packageId: 'phoenixd',
+      hostId: phoenixdApiHostId,
+      internalPort: phoenixdPort,
+    }).const()
     if (!phoenixdAddress) {
       throw new Error(
         i18n(

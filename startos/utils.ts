@@ -4,30 +4,52 @@ import { sdk } from './sdk'
 export const uiPort = 8080
 
 /**
- * Resolve a dependency interface's address over the LXC bridge (ipv4), which
- * replaces the old `<pkg>.startos:<port>` DNS. Returns a bare `host:port`, or
- * undefined if the dependency hasn't published the interface yet.
+ * Bridge address (`10.0.3.1:<assigned external port>`) of a dependency's
+ * binding, as a minimal reactive value. Chain `.const()` in main: the mapped
+ * string only changes when the address itself does, so main restarts exactly
+ * on dependency install/uninstall/port-change and never on dependency
+ * updates. Chain `.once()` in an action context. `fallbackPort` keeps the
+ * value non-null while the dependency is absent — sanctioned only for tor's
+ * allocator-guaranteed SOCKS 9050. Drop-in for the planned SDK
+ * `sdk.host.getBridgeAddress` helper.
  */
-export const bridgeHostPort = (
+export function bridgeAddress(
   effects: T.Effects,
-  packageId: string,
-  hostId: string,
-  interfaceId: string,
-  ssl: boolean,
-) =>
-  sdk.host
-    .get(effects, { hostId, packageId }, (host) => {
-      const iface =
-        host &&
-        Object.values(host.bindings)
-          .flatMap((b) => Object.values(b.interfaces))
-          .find((i) => i.id === interfaceId)
-      const addr =
-        iface &&
-        iface.addressInfo.filter({
-          kind: 'bridge',
-          predicate: (h) => h.ssl === ssl && h.metadata.kind === 'ipv4',
-        }).hostnames[0]
-      return addr ? `${addr.hostname}:${addr.port}` : undefined
-    })
-    .const()
+  opts: {
+    packageId: string
+    hostId: string
+    internalPort: number
+    fallbackPort: number
+  },
+): { const(): Promise<string>; once(): Promise<string> }
+export function bridgeAddress(
+  effects: T.Effects,
+  opts: { packageId: string; hostId: string; internalPort: number },
+): { const(): Promise<string | null>; once(): Promise<string | null> }
+export function bridgeAddress(
+  effects: T.Effects,
+  opts: {
+    packageId: string
+    hostId: string
+    internalPort: number
+    fallbackPort?: number
+  },
+) {
+  const watchable = async () => {
+    const osIp = await sdk.getOsIp(effects)
+    return sdk.host.get(
+      effects,
+      { packageId: opts.packageId, hostId: opts.hostId },
+      (host) => {
+        const port =
+          host?.bindings[opts.internalPort]?.net.assignedPort ??
+          opts.fallbackPort
+        return port != null ? `${osIp}:${port}` : null
+      },
+    )
+  }
+  return {
+    const: async () => (await watchable()).const(),
+    once: async () => (await watchable()).once(),
+  }
+}
