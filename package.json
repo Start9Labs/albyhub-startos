@@ -6,7 +6,7 @@
     "check": "tsc --noEmit"
   },
   "dependencies": {
-    "@start9labs/start-sdk": "2.0.1",
+    "@start9labs/start-sdk": "2.0.3",
     "cln-startos": "github:Start9Labs/cln-startos#next",
     "lnd-startos": "github:Start9Labs/lnd-startos#next",
     "phoenixd-startos": "github:Start9-Community/phoenixd-startos#next"
