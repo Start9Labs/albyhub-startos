@@ -10,7 +10,7 @@ import { apiHostId as phoenixdApiHostId } from 'phoenixd-startos/startos/interfa
 import { port as phoenixdPort } from 'phoenixd-startos/startos/utils'
 import { readFile } from 'fs/promises'
 import { sdk } from './sdk'
-import { bridgeAddress, uiPort } from './utils'
+import { uiPort } from './utils'
 import { storeJson } from './fileModels/store.json'
 import { i18n } from './i18n'
 
@@ -44,11 +44,13 @@ export const main = sdk.setupMain(async ({ effects }) => {
   if (LN_BACKEND_TYPE === 'LND') {
     // LND's gRPC over the LXC bridge (replaces the old `lnd.startos:10009` DNS);
     // LND's StartOS-issued cert covers the bridge address, read via the mount.
-    const lndAddress = await bridgeAddress(effects, {
-      packageId: 'lnd',
-      hostId: lndGrpcHostId,
-      internalPort: lndGrpcPort,
-    }).const()
+    const lndAddress = await sdk.host
+      .getBridgeAddress(effects, {
+        packageId: 'lnd',
+        hostId: lndGrpcHostId,
+        internalPort: lndGrpcPort,
+      })
+      .const()
     if (!lndAddress) {
       throw new Error(
         i18n(
@@ -76,11 +78,13 @@ export const main = sdk.setupMain(async ({ effects }) => {
     // Core Lightning's gRPC over the LXC bridge (replaces `c-lightning.startos:2106`).
     // cln exports only its peer/watchtower ids, so the gRPC host is referenced
     // by literal here.
-    const clnAddress = await bridgeAddress(effects, {
-      packageId: 'c-lightning',
-      hostId: 'grpc',
-      internalPort: clnGrpcPort,
-    }).const()
+    const clnAddress = await sdk.host
+      .getBridgeAddress(effects, {
+        packageId: 'c-lightning',
+        hostId: 'grpc',
+        internalPort: clnGrpcPort,
+      })
+      .const()
     if (!clnAddress) {
       throw new Error(
         i18n(
@@ -105,11 +109,14 @@ export const main = sdk.setupMain(async ({ effects }) => {
     })
   } else if (LN_BACKEND_TYPE === 'PHOENIX') {
     // phoenixd's HTTP API over the LXC bridge (replaces `phoenixd.startos:9740`).
-    const phoenixdAddress = await bridgeAddress(effects, {
-      packageId: 'phoenixd',
-      hostId: phoenixdApiHostId,
-      internalPort: phoenixdPort,
-    }).const()
+    const phoenixdAddress = await sdk.host
+      .getBridgeAddress(effects, {
+        packageId: 'phoenixd',
+        hostId: phoenixdApiHostId,
+        internalPort: phoenixdPort,
+        ssl: false,
+      })
+      .const()
     if (!phoenixdAddress) {
       throw new Error(
         i18n(
