@@ -34,20 +34,20 @@
 
 ## Image and Container Runtime
 
-| Property | Value |
-|----------|-------|
-| Image | `ghcr.io/getalby/hub` (upstream unmodified) |
-| Architectures | x86_64, aarch64 |
-| Entrypoint | Default upstream entrypoint |
+| Property      | Value                                       |
+| ------------- | ------------------------------------------- |
+| Image         | `ghcr.io/getalby/hub` (upstream unmodified) |
+| Architectures | x86_64, aarch64                             |
+| Entrypoint    | Default upstream entrypoint                 |
 
 ---
 
 ## Volume and Data Layout
 
-| Volume | Mount Point | Purpose |
-|--------|-------------|---------|
-| `main` | `/data` | Alby Hub data (replaces upstream's `WORK_DIR`) |
-| `startos` | (internal) | Contains `store.json` with lightning backend selection |
+| Volume    | Mount Point | Purpose                                                |
+| --------- | ----------- | ------------------------------------------------------ |
+| `main`    | `/data`     | Alby Hub data (replaces upstream's `WORK_DIR`)         |
+| `startos` | (internal)  | Contains `store.json` with lightning backend selection |
 
 **Differences from upstream:**
 
@@ -59,14 +59,14 @@
 
 ## Installation and First-Run Flow
 
-| Step | Upstream (Docker) | StartOS |
-|------|-------------------|---------|
-| Backend selection | Set `LN_BACKEND_TYPE` env var or use `ENABLE_ADVANCED_SETUP=true` | **Critical task** prompts user to select before first start |
-| LND credentials | Manually configure `LND_ADDRESS`, cert, macaroon paths | Auto-configured from LND dependency |
-| CLN credentials | Manually configure `CLN_ADDRESS`, `CLN_LIGHTNING_DIR` (gRPC certs) | Auto-configured from Core Lightning dependency |
-| phoenixd credentials | Manually configure `PHOENIXD_ADDRESS`, `PHOENIXD_AUTHORIZATION` | Auto-configured from phoenixd dependency (http-password read from its volume) |
-| Bark servers | Optionally configure `BARK_SERVER`, `BARK_ESPLORA_SERVER` | Upstream defaults (Second's public servers) |
-| Initial config | `.env` file or environment variables | Managed by StartOS |
+| Step                 | Upstream (Docker)                                                  | StartOS                                                                       |
+| -------------------- | ------------------------------------------------------------------ | ----------------------------------------------------------------------------- |
+| Backend selection    | Set `LN_BACKEND_TYPE` env var or use `ENABLE_ADVANCED_SETUP=true`  | **Critical task** prompts user to select before first start                   |
+| LND credentials      | Manually configure `LND_ADDRESS`, cert, macaroon paths             | Auto-configured from LND dependency                                           |
+| CLN credentials      | Manually configure `CLN_ADDRESS`, `CLN_LIGHTNING_DIR` (gRPC certs) | Auto-configured from Core Lightning dependency                                |
+| phoenixd credentials | Manually configure `PHOENIXD_ADDRESS`, `PHOENIXD_AUTHORIZATION`    | Auto-configured from phoenixd dependency (http-password read from its volume) |
+| Bark servers         | Optionally configure `BARK_SERVER`, `BARK_ESPLORA_SERVER`          | Upstream defaults (Second's public servers)                                   |
+| Initial config       | `.env` file or environment variables                               | Managed by StartOS                                                            |
 
 **Key difference:** On StartOS, you must complete a mandatory setup task to choose your backend (LND, Core Lightning, phoenixd, LDK, or Bark) before Alby Hub can start. This choice is permanent.
 
@@ -74,21 +74,21 @@
 
 ## Configuration Management
 
-| Setting | Upstream Method | StartOS Method |
-|---------|-----------------|----------------|
-| `LN_BACKEND_TYPE` | Env var (LND, LDK, CLN, Phoenixd, Cashu, Bark, …) | One-time action (LND, CLN, phoenixd, LDK, or Bark only) |
-| `LND_ADDRESS` | Env var | Auto-configured: LND's gRPC over the LXC bridge (port 10009) |
-| `LND_CERT_FILE` | Env var | Auto-configured: `/mnt/lnd/tls.cert` |
-| `LND_MACAROON_FILE` | Env var | Auto-configured: `/mnt/lnd/data/chain/bitcoin/mainnet/admin.macaroon` |
-| `CLN_ADDRESS` | Env var | Auto-configured: CLN's gRPC over the LXC bridge (port 2106) |
-| `CLN_LIGHTNING_DIR` | Env var | Auto-configured: `/mnt/cln/bitcoin` (gRPC certs) |
-| `PHOENIXD_ADDRESS` | Env var | Auto-configured: phoenixd's HTTP API over the LXC bridge (port 9740) |
-| `PHOENIXD_AUTHORIZATION` | Env var | Auto-configured: phoenixd's `http-password`, read from `/mnt/phoenixd/phoenix.conf` |
-| `ENABLE_ADVANCED_SETUP` | Env var (default: unset) | Set to `false` when using LND, CLN, or phoenixd |
-| `HIDE_UPDATE_BANNER` | Env var (default: unset) | Set to `true` |
-| `PORT` | Env var (default: 8080) | Fixed at 8080 |
-| `WORK_DIR` | Env var | Fixed at `/data` |
-| All other settings | Web UI / env vars | Web UI only |
+| Setting                  | Upstream Method                                   | StartOS Method                                                                      |
+| ------------------------ | ------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `LN_BACKEND_TYPE`        | Env var (LND, LDK, CLN, Phoenixd, Cashu, Bark, …) | One-time action (LND, CLN, phoenixd, LDK, or Bark only)                             |
+| `LND_ADDRESS`            | Env var                                           | Auto-configured: LND's gRPC over the LXC bridge (port 10009)                        |
+| `LND_CERT_FILE`          | Env var                                           | Auto-configured: `/mnt/lnd/tls.cert`                                                |
+| `LND_MACAROON_FILE`      | Env var                                           | Auto-configured: `/mnt/lnd/data/chain/bitcoin/mainnet/admin.macaroon`               |
+| `CLN_ADDRESS`            | Env var                                           | Auto-configured: CLN's gRPC over the LXC bridge (port 2106)                         |
+| `CLN_LIGHTNING_DIR`      | Env var                                           | Auto-configured: `/mnt/cln/bitcoin` (gRPC certs)                                    |
+| `PHOENIXD_ADDRESS`       | Env var                                           | Auto-configured: phoenixd's HTTP API over the LXC bridge (port 9740)                |
+| `PHOENIXD_AUTHORIZATION` | Env var                                           | Auto-configured: phoenixd's `http-password`, read from `/mnt/phoenixd/phoenix.conf` |
+| `ENABLE_ADVANCED_SETUP`  | Env var (default: unset)                          | Set to `false` when using LND, CLN, or phoenixd                                     |
+| `HIDE_UPDATE_BANNER`     | Env var (default: unset)                          | Set to `true`                                                                       |
+| `PORT`                   | Env var (default: 8080)                           | Fixed at 8080                                                                       |
+| `WORK_DIR`               | Env var                                           | Fixed at `/data`                                                                    |
+| All other settings       | Web UI / env vars                                 | Web UI only                                                                         |
 
 **Environment variables NOT configurable on StartOS:**
 
@@ -102,9 +102,9 @@
 
 ## Network Access and Interfaces
 
-| Interface | Port | Protocol | Purpose |
-|-----------|------|----------|---------|
-| Web UI | 8080 | HTTP | Browser-based wallet interface |
+| Interface | Port | Protocol | Purpose                        |
+| --------- | ---- | -------- | ------------------------------ |
+| Web UI    | 8080 | HTTP     | Browser-based wallet interface |
 
 **Access methods (StartOS 0.4.0):**
 
@@ -119,22 +119,22 @@
 
 ### Set Lightning Implementation
 
-| Property | Value |
-|----------|-------|
-| ID | `set-lightning` |
-| Name | Set Lightning Implementation |
-| Visibility | Hidden (appears only as critical task on first install) |
-| Availability | Only when stopped |
-| Purpose | Select Lightning backend |
+| Property     | Value                                                   |
+| ------------ | ------------------------------------------------------- |
+| ID           | `set-lightning`                                         |
+| Name         | Set Lightning Implementation                            |
+| Visibility   | Hidden (appears only as critical task on first install) |
+| Availability | Only when stopped                                       |
+| Purpose      | Select Lightning backend                                |
 
 **Options:**
 
-| Option | Description |
-|--------|-------------|
-| LND on this server | Connects to your StartOS LND installation via gRPC |
-| Core Lightning on this server | Connects to your StartOS Core Lightning installation via gRPC |
-| phoenixd on this server | Connects to your StartOS phoenixd installation via its HTTP API |
-| LDK embedded node | Uses Alby Hub's built-in LDK implementation |
+| Option                                  | Description                                                                                     |
+| --------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| LND on this server                      | Connects to your StartOS LND installation via gRPC                                              |
+| Core Lightning on this server           | Connects to your StartOS Core Lightning installation via gRPC                                   |
+| phoenixd on this server                 | Connects to your StartOS phoenixd installation via its HTTP API                                 |
+| LDK embedded node                       | Uses Alby Hub's built-in LDK implementation                                                     |
 | Bark embedded Ark wallet (experimental) | Uses Alby Hub's built-in Bark (Ark protocol) wallet via Second's public Ark and Esplora servers |
 
 **Note:** Upstream supports several backends (LDK, LND, CLN, Phoenixd, Cashu, Bark, …). StartOS exposes LND, Core Lightning, phoenixd, LDK, and Bark.
@@ -145,37 +145,37 @@
 
 ### LND (optional)
 
-| Property | Value |
-|----------|-------|
-| Version constraint | `>= 0.20.1-beta` |
-| Required state | Running |
-| Health checks | `lnd`, `sync-progress` |
-| Mounted volume | `main` → `/mnt/lnd` (read-only) |
-| Purpose | Lightning node backend for wallet operations |
+| Property           | Value                                        |
+| ------------------ | -------------------------------------------- |
+| Version constraint | `>= 0.20.1-beta`                             |
+| Required state     | Running                                      |
+| Health checks      | `lnd`, `sync-progress`                       |
+| Mounted volume     | `main` → `/mnt/lnd` (read-only)              |
+| Purpose            | Lightning node backend for wallet operations |
 
 Only required if you select "LND on this server" during setup. Provides the TLS certificate and admin macaroon via the mounted volume.
 
 ### Core Lightning (optional)
 
-| Property | Value |
-|----------|-------|
-| Version constraint | `>= 26.6` |
-| Required state | Running |
-| Health checks | `lightningd`, `check-synced` |
-| Mounted volume | `main` → `/mnt/cln` (read-only) |
-| Purpose | Lightning node backend for wallet operations |
+| Property           | Value                                        |
+| ------------------ | -------------------------------------------- |
+| Version constraint | `>= 26.6`                                    |
+| Required state     | Running                                      |
+| Health checks      | `lightningd`, `check-synced`                 |
+| Mounted volume     | `main` → `/mnt/cln` (read-only)              |
+| Purpose            | Lightning node backend for wallet operations |
 
 Only required if you select "Core Lightning on this server" during setup. Alby Hub connects over the CLN gRPC interface (port 2106), resolved dynamically over the LXC bridge, reading the gRPC client certificates from the mounted volume at `/mnt/cln/bitcoin`.
 
 ### phoenixd (optional)
 
-| Property | Value |
-|----------|-------|
-| Version constraint | `>= 0.7.3` |
-| Required state | Running |
-| Health checks | `primary` |
-| Mounted volume | `main` → `/mnt/phoenixd` (read-only) |
-| Purpose | Lightning node backend for wallet operations |
+| Property           | Value                                        |
+| ------------------ | -------------------------------------------- |
+| Version constraint | `>= 0.7.3`                                   |
+| Required state     | Running                                      |
+| Health checks      | `primary`                                    |
+| Mounted volume     | `main` → `/mnt/phoenixd` (read-only)         |
+| Purpose            | Lightning node backend for wallet operations |
 
 Only required if you select "phoenixd on this server" during setup. Alby Hub connects to phoenixd's HTTP API (port 9740), resolved dynamically over the LXC bridge. phoenixd auto-generates an `http-password` in `phoenix.conf`; the package reads it from the mounted volume (`/mnt/phoenixd/phoenix.conf`) at startup and passes it as `PHOENIXD_AUTHORIZATION`.
 
@@ -196,9 +196,9 @@ Only required if you select "phoenixd on this server" during setup. Alby Hub con
 
 ## Health Checks
 
-| Check | Method | Grace Period |
-|-------|--------|--------------|
-| Web Interface | Port 8080 listening | Default |
+| Check         | Method              | Grace Period |
+| ------------- | ------------------- | ------------ |
+| Web Interface | Port 8080 listening | Default      |
 
 **Messages:**
 
@@ -277,5 +277,5 @@ health_checks:
 backup_volumes:
   - main
   - startos
-backend_options: [LND, CLN, PHOENIX, LDK, BARK]  # upstream supports more: Cashu, …
+backend_options: [LND, CLN, PHOENIX, LDK, BARK] # upstream supports more: Cashu, …
 ```
