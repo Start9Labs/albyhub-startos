@@ -6,14 +6,11 @@ Develop it inside a StartOS packaging workspace created by `start-cli s9pk init-
 which provides the packaging guide and agent context one level up. If you're reading this in a
 bare clone with no workspace, the full guide is at <https://docs.start9.com/packaging>.
 
-Work this package's `TODO.md` from top to bottom. Keep `README.md` (architecture, for developers and LLMs) and `instructions.md` (end-user docs) in sync with your changes.
+Work this package's `TODO.md` from top to bottom. Keep `README.md` (technical reference for an AI support or administering agent) and `instructions.md` (end-user docs) in sync with your changes.
 
 ## This repo
 
-- **Package id is `albyhub`.** Alby Hub is a lightning wallet whose lightning backend is chosen once, permanently, via the `set-lightning` critical setup task (written to `store.json` as `LN_BACKEND_TYPE`). Options: LND, Core Lightning, or phoenixd on this server (StartOS dependencies), or Alby's embedded LDK / Bark nodes (self-contained).
-- **Backends are reached over the LXC bridge, not `<pkg>.startos` DNS.** `sdk.host.getBridgeAddress` resolves a dependency's bridge address reactively from its host id and internal port — resolving that binding’s own derived bridge address — and `main.ts` chains `.const()` so Alby Hub restarts only when that backend's address actually changes (install / uninstall / re-port), heals automatically if the backend is installed after Alby Hub, and never restarts on backend updates. LND via `gRPCHostId`/`gRPCPort` (from `lnd-startos/startos/interfaces`), phoenixd via `apiHostId` (from `phoenixd-startos/startos/interfaces`) + `port` (from `phoenixd-startos/startos/utils`). Core Lightning's gRPC host is referenced by the literal `'grpc'` because cln exports only its `peer`/`watchtower` ids, with `grpcPort` from `cln-startos/startos/utils`.
-- **Only the selected backend's dependency is required at runtime** (`setDependencies` keys off `LN_BACKEND_TYPE`); `setupMain` throws if that backend isn't yet reachable on the internal network.
-
-## Inspecting a running install
-
-To run a command inside the service's container (read its generated config, grep app logs), use `start-cli package attach albyhub -n albyhub-sub -- <cmd>`. Select the subcontainer by **name** with `-n` (the name passed to `SubContainer.of` in `main.ts` — here `albyhub-sub`) or by image with `-i`. Note: `-s/--subcontainer` matches the internal **Guid**, not the name, so passing a name to `-s` fails with "no matching subcontainers".
+- **Adding a backend touches five places, and they are not next to each other:** the `LN_BACKEND_TYPE` enum in `startos/fileModels/store.json.ts`, the select values in `startos/actions/setLightning.ts`, the env/mount branch in `startos/main.ts`, the dependency branch in `startos/dependencies.ts`, and the manifest's `dependencies` metadata. Nothing type-checks that you did all five.
+- **Resolve a backend's address with `sdk.host.getBridgeAddress`, never `<pkg>.startos` DNS.** The sibling packages export the host id and port to feed it — LND's `gRPCHostId`/`gRPCPort` from `lnd-startos/startos/interfaces`, phoenixd's `apiHostId` from its `interfaces` and `port` from its `utils`. Core Lightning is the exception and is referenced by the literal `'grpc'`, because cln exports only its `peer` and `watchtower` ids. Chaining `.const()` is what keeps a backend update from restarting the wallet.
+- **`main` throwing when the backend is unreachable is the design, not a gap.** Don't soften it into a warning or a retry loop: a wallet that starts without its node presents an empty balance, which reads as loss of funds.
+- **`store.json` is on the `startos` volume so the application can never see it**, and the action `write`s rather than `merge`s it. Keep both properties if you add a field.

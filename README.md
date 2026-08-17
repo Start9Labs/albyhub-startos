@@ -4,13 +4,15 @@
 
 # Alby Hub on StartOS
 
-> **Upstream docs:** <https://guides.getalby.com/user-guide/alby-hub>
->
 > Everything not listed in this document should behave the same as upstream
-> Alby Hub. If a feature, setting, or behavior is not mentioned
-> here, the upstream documentation is accurate and fully applicable.
+> Alby Hub. If a feature, setting, or behavior is not mentioned here, the
+> upstream documentation is accurate and fully applicable — see the
+> Documentation section of `instructions.md` for links.
 
-[Alby Hub](https://github.com/getAlby/hub) is a self-custodial Lightning wallet that connects to a Lightning node and provides wallet functionality, Nostr Wallet Connect (NWC), and an app marketplace.
+[Alby Hub](https://github.com/getAlby/hub) is a self-custodial Lightning wallet with Nostr Wallet Connect and an app marketplace. On StartOS its Lightning backend is chosen once at install — either a node already running on this server, or one of Alby Hub's own embedded nodes — and every address and credential for an on-server backend is resolved by the package rather than typed in.
+
+- **Upstream repo:** <https://github.com/getAlby/hub>
+- **Wrapper repo:** <https://github.com/Start9Labs/albyhub-startos>
 
 ---
 
@@ -18,222 +20,150 @@
 
 - [Image and Container Runtime](#image-and-container-runtime)
 - [Volume and Data Layout](#volume-and-data-layout)
-- [Installation and First-Run Flow](#installation-and-first-run-flow)
-- [Configuration Management](#configuration-management)
-- [Network Access and Interfaces](#network-access-and-interfaces)
-- [Actions (StartOS UI)](#actions-startos-ui)
+- [File Models](#file-models)
 - [Dependencies](#dependencies)
-- [Backups and Restore](#backups-and-restore)
+- [Network Access and Interfaces](#network-access-and-interfaces)
+- [Installation and First-Run Flow](#installation-and-first-run-flow)
+- [Actions](#actions)
+- [Tasks](#tasks)
 - [Health Checks](#health-checks)
+- [Backups and Restore](#backups-and-restore)
 - [Limitations and Differences](#limitations-and-differences)
-- [What Is Unchanged from Upstream](#what-is-unchanged-from-upstream)
-- [Contributing](#contributing)
 - [Quick Reference for AI Consumers](#quick-reference-for-ai-consumers)
 
 ---
 
 ## Image and Container Runtime
 
-| Property      | Value                                       |
-| ------------- | ------------------------------------------- |
-| Image         | `ghcr.io/getalby/hub` (upstream unmodified) |
-| Architectures | x86_64, aarch64                             |
-| Entrypoint    | Default upstream entrypoint                 |
+The upstream image is used unmodified, with its own entrypoint, and one subcontainer runs the whole service.
 
----
+| Property      | Value                                                            |
+| ------------- | ---------------------------------------------------------------- |
+| Image         | `ghcr.io/getalby/hub`                                            |
+| Architectures | x86_64, aarch64                                                  |
+| Entrypoint    | Upstream default, run as the container's init process            |
+| Subcontainer  | `albyhub-sub` — the `primary` daemon, and the one to `attach` to |
 
 ## Volume and Data Layout
 
-| Volume    | Mount Point | Purpose                                                |
-| --------- | ----------- | ------------------------------------------------------ |
-| `main`    | `/data`     | Alby Hub data (replaces upstream's `WORK_DIR`)         |
-| `startos` | (internal)  | Contains `store.json` with lightning backend selection |
+Two volumes, and one of them never enters the container. Depending on the chosen backend, a third mount appears — a read-only view of another service's data.
 
-**Differences from upstream:**
+| Volume    | Mount Point   | Purpose                                                                               |
+| --------- | ------------- | ------------------------------------------------------------------------------------- |
+| `main`    | `/data`       | Alby Hub's working directory: its database, and the embedded LDK or Bark node's state |
+| `startos` | — (host side) | `store.json`; never mounted into the container                                        |
 
-- Upstream default `WORK_DIR` is `$XDG_DATA_HOME/albyhub`
-- StartOS mounts the `main` volume directly to `/data`
-- StartOS stores backend selection in separate `store.json` file (not in Alby Hub's data directory)
+| Backend  | Read-only mount | Source                                                   |
+| -------- | --------------- | -------------------------------------------------------- |
+| LND      | `/mnt/lnd`      | LND's `main` volume — TLS certificate and admin macaroon |
+| CLN      | `/mnt/cln`      | Core Lightning's `main` volume                           |
+| phoenixd | `/mnt/phoenixd` | phoenixd's `main` volume — `phoenix.conf`                |
 
----
+The embedded backends mount nothing extra: LDK and Bark keep their state under `/data` like the rest of the wallet.
 
-## Installation and First-Run Flow
+## File Models
 
-| Step                 | Upstream (Docker)                                                  | StartOS                                                                       |
-| -------------------- | ------------------------------------------------------------------ | ----------------------------------------------------------------------------- |
-| Backend selection    | Set `LN_BACKEND_TYPE` env var or use `ENABLE_ADVANCED_SETUP=true`  | **Critical task** prompts user to select before first start                   |
-| LND credentials      | Manually configure `LND_ADDRESS`, cert, macaroon paths             | Auto-configured from LND dependency                                           |
-| CLN credentials      | Manually configure `CLN_ADDRESS`, `CLN_LIGHTNING_DIR` (gRPC certs) | Auto-configured from Core Lightning dependency                                |
-| phoenixd credentials | Manually configure `PHOENIXD_ADDRESS`, `PHOENIXD_AUTHORIZATION`    | Auto-configured from phoenixd dependency (http-password read from its volume) |
-| Bark servers         | Optionally configure `BARK_SERVER`, `BARK_ESPLORA_SERVER`          | Upstream defaults (Second's public servers)                                   |
-| Initial config       | `.env` file or environment variables                               | Managed by StartOS                                                            |
+One model, holding one value — the decision everything else in the package is derived from.
 
-**Key difference:** On StartOS, you must complete a mandatory setup task to choose your backend (LND, Core Lightning, phoenixd, LDK, or Bark) before Alby Hub can start. This choice is permanent.
+| File         | Format | Modelled                | Written by                              |
+| ------------ | ------ | ----------------------- | --------------------------------------- |
+| `store.json` | JSON   | Yes — `FileHelper.json` | The Set Lightning Implementation action |
 
----
+`LN_BACKEND_TYPE` is the chosen backend, one of `LND`, `CLN`, `PHOENIX`, `LDK`, or `BARK`. The action **writes** the file rather than merging it, and nothing else in the package touches it. It lives on the `startos` volume so it is never visible to the application, which has no say in it.
 
-## Configuration Management
+**No upstream configuration is written.** Alby Hub is configured entirely by environment, and the package composes that environment fresh on every start rather than persisting it:
 
-| Setting                  | Upstream Method                                   | StartOS Method                                                                      |
-| ------------------------ | ------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| `LN_BACKEND_TYPE`        | Env var (LND, LDK, CLN, Phoenixd, Cashu, Bark, …) | One-time action (LND, CLN, phoenixd, LDK, or Bark only)                             |
-| `LND_ADDRESS`            | Env var                                           | Auto-configured: LND's gRPC over the LXC bridge (port 10009)                        |
-| `LND_CERT_FILE`          | Env var                                           | Auto-configured: `/mnt/lnd/tls.cert`                                                |
-| `LND_MACAROON_FILE`      | Env var                                           | Auto-configured: `/mnt/lnd/data/chain/bitcoin/mainnet/admin.macaroon`               |
-| `CLN_ADDRESS`            | Env var                                           | Auto-configured: CLN's gRPC over the LXC bridge (port 2106)                         |
-| `CLN_LIGHTNING_DIR`      | Env var                                           | Auto-configured: `/mnt/cln/bitcoin` (gRPC certs)                                    |
-| `PHOENIXD_ADDRESS`       | Env var                                           | Auto-configured: phoenixd's HTTP API over the LXC bridge (port 9740)                |
-| `PHOENIXD_AUTHORIZATION` | Env var                                           | Auto-configured: phoenixd's `http-password`, read from `/mnt/phoenixd/phoenix.conf` |
-| `ENABLE_ADVANCED_SETUP`  | Env var (default: unset)                          | Set to `false` when using LND, CLN, or phoenixd                                     |
-| `HIDE_UPDATE_BANNER`     | Env var (default: unset)                          | Set to `true`                                                                       |
-| `PORT`                   | Env var (default: 8080)                           | Fixed at 8080                                                                       |
-| `WORK_DIR`               | Env var                                           | Fixed at `/data`                                                                    |
-| All other settings       | Web UI / env vars                                 | Web UI only                                                                         |
+| Variable                                            | When               | Value                                                                        |
+| --------------------------------------------------- | ------------------ | ---------------------------------------------------------------------------- |
+| `LN_BACKEND_TYPE`                                   | always             | From `store.json`                                                            |
+| `WORK_DIR`                                          | always             | `/data`                                                                      |
+| `HIDE_UPDATE_BANNER`                                | always             | `true` — updates come from the registry, not from inside the app             |
+| `ENABLE_ADVANCED_SETUP`                             | on-server backends | `false` — the address and credentials are resolved, not entered              |
+| `LND_ADDRESS`, `LND_CERT_FILE`, `LND_MACAROON_FILE` | LND                | Bridge address, plus paths into the read-only LND mount                      |
+| `CLN_ADDRESS`, `CLN_LIGHTNING_DIR`                  | CLN                | Bridge address, plus `/mnt/cln/bitcoin`                                      |
+| `PHOENIXD_ADDRESS`, `PHOENIXD_AUTHORIZATION`        | phoenixd           | Bridge address, plus the `http-password` read out of `phoenix.conf` at start |
 
-**Environment variables NOT configurable on StartOS:**
-
-- `DATABASE_URI` — uses default SQLite location
-- `RELAY` — uses default Nostr relay
-- `LDK_*` variables — uses defaults
-- `BARK_*` variables — uses defaults (Second's public Ark and Esplora servers)
-- `AUTO_UNLOCK_PASSWORD` — not exposed
-
----
-
-## Network Access and Interfaces
-
-| Interface | Port | Protocol | Purpose                        |
-| --------- | ---- | -------- | ------------------------------ |
-| Web UI    | 8080 | HTTP     | Browser-based wallet interface |
-
-**Access methods (StartOS 0.4.0):**
-
-- LAN IP with unique port
-- `<hostname>.local` with unique port
-- Tor `.onion` address
-- Custom domains (if configured)
-
----
-
-## Actions (StartOS UI)
-
-### Set Lightning Implementation
-
-| Property     | Value                                                   |
-| ------------ | ------------------------------------------------------- |
-| ID           | `set-lightning`                                         |
-| Name         | Set Lightning Implementation                            |
-| Visibility   | Hidden (appears only as critical task on first install) |
-| Availability | Only when stopped                                       |
-| Purpose      | Select Lightning backend                                |
-
-**Options:**
-
-| Option                                  | Description                                                                                     |
-| --------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| LND on this server                      | Connects to your StartOS LND installation via gRPC                                              |
-| Core Lightning on this server           | Connects to your StartOS Core Lightning installation via gRPC                                   |
-| phoenixd on this server                 | Connects to your StartOS phoenixd installation via its HTTP API                                 |
-| LDK embedded node                       | Uses Alby Hub's built-in LDK implementation                                                     |
-| Bark embedded Ark wallet (experimental) | Uses Alby Hub's built-in Bark (Ark protocol) wallet via Second's public Ark and Esplora servers |
-
-**Note:** Upstream supports several backends (LDK, LND, CLN, Phoenixd, Cashu, Bark, …). StartOS exposes LND, Core Lightning, phoenixd, LDK, and Bark.
-
----
+Because the environment is rebuilt each start, a credential the backend rotates is picked up on the next restart with nothing to reconcile. The flip side is that the phoenixd password is read at start time only: if `phoenix.conf` is unreadable, the daemon fails to start rather than starting unauthenticated.
 
 ## Dependencies
 
-### LND (optional)
+Which dependency exists at all is decided by the backend choice. Exactly one of the three can be active, and the two embedded backends have none.
 
-| Property           | Value                                        |
-| ------------------ | -------------------------------------------- |
-| Version constraint | Declared in `startos/dependencies.ts`        |
-| Required state     | Running                                      |
-| Health checks      | `lnd`, `sync-progress`                       |
-| Mounted volume     | `main` → `/mnt/lnd` (read-only)              |
-| Purpose            | Lightning node backend for wallet operations |
+| Backend   | Dependency    | Kind      | Health checks required       | Mount                      |
+| --------- | ------------- | --------- | ---------------------------- | -------------------------- |
+| LND       | `lnd`         | `running` | `lnd`, `sync-progress`       | `/mnt/lnd`, read-only      |
+| CLN       | `c-lightning` | `running` | `lightningd`, `check-synced` | `/mnt/cln`, read-only      |
+| PHOENIX   | `phoenixd`    | `running` | `primary`                    | `/mnt/phoenixd`, read-only |
+| LDK, BARK | none          | —         | —                            | —                          |
 
-Only required if you select "LND on this server" during setup. Provides the TLS certificate and admin macaroon via the mounted volume.
+The sync checks are required as well as "running", so Alby Hub waits for a node that is up but still catching up.
 
-### Core Lightning (optional)
+Addresses are resolved over the local service bridge from each dependency's own host binding rather than by hostname, and `main` holds that resolution in a reactive `const`. So Alby Hub restarts when the backend's address genuinely moves — installed, uninstalled, re-ported — and not when the backend merely updates. If the backend is not reachable when Alby Hub starts, `main` throws with a message naming it rather than starting a wallet that cannot see its node.
 
-| Property           | Value                                        |
-| ------------------ | -------------------------------------------- |
-| Version constraint | Declared in `startos/dependencies.ts`        |
-| Required state     | Running                                      |
-| Health checks      | `lightningd`, `check-synced`                 |
-| Mounted volume     | `main` → `/mnt/cln` (read-only)              |
-| Purpose            | Lightning node backend for wallet operations |
+## Network Access and Interfaces
 
-Only required if you select "Core Lightning on this server" during setup. Alby Hub connects over the CLN gRPC interface (port 2106), resolved dynamically over the LXC bridge, reading the gRPC client certificates from the mounted volume at `/mnt/cln/bitcoin`.
+One interface, serving the wallet UI. Nothing is exported for dependent services.
 
-### phoenixd (optional)
+| Interface | Id     | Type | Port | Description                |
+| --------- | ------ | ---- | ---- | -------------------------- |
+| Web UI    | `main` | ui   | 8080 | The Alby Hub web interface |
 
-| Property           | Value                                        |
-| ------------------ | -------------------------------------------- |
-| Version constraint | Declared in `startos/dependencies.ts`        |
-| Required state     | Running                                      |
-| Health checks      | `primary`                                    |
-| Mounted volume     | `main` → `/mnt/phoenixd` (read-only)         |
-| Purpose            | Lightning node backend for wallet operations |
+The port is bound on the `main` MultiHost and is not masked. Note that the interface id is `main`, not `ui`.
 
-Only required if you select "phoenixd on this server" during setup. Alby Hub connects to phoenixd's HTTP API (port 9740), resolved dynamically over the LXC bridge. phoenixd auto-generates an `http-password` in `phoenix.conf`; the package reads it from the mounted volume (`/mnt/phoenixd/phoenix.conf`) at startup and passes it as `PHOENIXD_AUTHORIZATION`.
+## Installation and First-Run Flow
 
----
+Install itself does almost nothing — it generates no credentials and starts no service. What it does is raise a `critical` task, because the package cannot choose a Lightning backend on your behalf and cannot start without one.
 
-## Backups and Restore
+The ordering that matters: **install and start the backend service first**, then make the choice. `main` refuses to start when `LN_BACKEND_TYPE` is unset, and refuses again if the selected backend is not yet reachable on the internal network. Choosing LDK or Bark skips this entirely, since neither has a dependency.
 
-**Included in backup:**
+Wallet setup itself — the password, the onboarding flow — happens inside Alby Hub's own UI on first login and is untouched by this package.
 
-- `main` volume — Alby Hub data, wallet, database
-- `startos` volume — backend selection (`store.json`)
+## Actions
 
-**Restore behavior:**
+One action, and it is not user-facing.
 
-- Data and backend selection restore normally
+### Set Lightning Implementation — hidden
 
----
+**Not in the Actions list.** It is `visibility: 'hidden'` and reachable only through the task that raises it, so a user is never told to go and find it. It is also `only-stopped`, because the value it writes is read as the service starts.
+
+- **What it changes:** `LN_BACKEND_TYPE` in `store.json`, which in turn decides the package's dependency set, its mounts, and the environment handed to the application.
+- **Repeat safety:** effectively one-way. Nothing in the package prevents a second write, but once the task is cleared there is no route to the action in the UI, and a wallet's funds and channel state belong to the backend it was created against — pointing an existing install at a different one does not migrate them.
+
+## Tasks
+
+One task, raised at install, and it blocks the service until you complete it.
+
+| Task                         | Severity   | Raised when | Cleared when    |
+| ---------------------------- | ---------- | ----------- | --------------- |
+| Set Lightning Implementation | `critical` | At install  | The action runs |
+
+`critical` suspends the ordinary controls, so a fresh install presents only this prompt rather than a start button — the intended experience, not a fault, since starting without a backend could not work.
 
 ## Health Checks
 
-| Check         | Method              | Grace Period |
-| ------------- | ------------------- | ------------ |
-| Web Interface | Port 8080 listening | Default      |
+One check, on the primary daemon.
 
-**Messages:**
+| Check                     | Method                 | Grace Period |
+| ------------------------- | ---------------------- | ------------ |
+| `primary` "Web Interface" | Port 8080 is listening | SDK default  |
 
-- Success: "The web interface is ready"
-- Error: "The web interface is unreachable"
+It confirms the web server is up, which for an on-server backend also implies the backend was reachable at start — the daemon would not have got this far otherwise. A failure after a period of running therefore points at the application, not at the backend; a failure to start at all is more likely the backend, and the service logs carry the explicit message.
 
----
+## Backups and Restore
+
+Both volumes are copied wholesale — `sdk.Backups.ofVolumes('main', 'startos')` — with SQLite's transient sidecar files excluded, since capturing a `-wal` or `-shm` alongside its database would restore a torn snapshot rather than a clean one.
+
+- **Included:** Alby Hub's database, app connections and Nostr Wallet Connect settings, the embedded LDK or Bark node's state if one is in use, and the backend choice in `store.json`.
+- **Excluded:** `*-journal`, `*-wal`, `*-shm`.
+- **Restore:** the backend choice comes back with the wallet, so the package resolves the same dependency as before — which must be installed and running for the service to start. For an on-server backend, the node's own funds and channels are that package's backup, not this one's; only Alby Hub's view of them lives here.
 
 ## Limitations and Differences
 
-1. **Subset of upstream backends supported** — StartOS offers LND, Core Lightning, phoenixd, LDK, and Bark only; Cashu and other upstream backends are not available
-2. **Backend selection is permanent** — cannot switch between LND, Core Lightning, phoenixd, LDK, and Bark without reinstalling
-3. **Advanced setup disabled for LND/CLN/phoenixd** — `ENABLE_ADVANCED_SETUP=false` is set, preventing backend changes via web UI
-4. **No PostgreSQL support** — only embedded SQLite database
-5. **No custom node connection** — must use the StartOS LND, Core Lightning, or phoenixd dependency; cannot connect to external nodes
-6. **Limited env var configuration** — many upstream environment variables are not exposed (relay, LDK tuning, Bark servers, auto-unlock, etc.)
-7. **Bark uses Second's public servers** — the Bark backend connects to upstream's default Ark and Esplora servers hosted by Second; custom servers are not configurable. The wallet runs embedded in Alby Hub (via bark FFI bindings) — it cannot connect to the separate Bark Wallet StartOS service (`bark-startos`), which is its own wallet with its own seed
-
----
-
-## What Is Unchanged from Upstream
-
-- Web UI functionality and appearance
-- Wallet operations (send, receive, manage)
-- Channel management (when using LDK)
-- Nostr Wallet Connect (NWC) functionality
-- App marketplace and connections
-- Sub-accounts feature
-- All runtime configuration available in web UI
-
----
-
-## Contributing
-
-Build and development workflow follow the StartOS packaging guide: <https://docs.start9.com/packaging>. Keep `README.md`, `instructions.md`, and `AGENTS.md` in sync with any change to user-visible behavior or package structure.
+1. **The backend is chosen once.** The action that sets it is hidden after its task is cleared, and no migration path exists between backends.
+2. **On-server backends only — no address field.** LND, Core Lightning, and phoenixd are reached at addresses the package resolves from the local dependency; upstream's advanced setup, where a remote node's address and credentials are typed in, is switched off for these backends.
+3. **The phoenixd password is read from its config file at start**, so that mount must be readable; there is no way to supply the credential by hand.
+4. **The in-app update banner is suppressed.** Updates arrive through the StartOS registry, so upstream's prompt would point at the wrong mechanism.
+5. **No riscv64 build.** x86_64 and aarch64 only.
 
 ---
 
@@ -242,40 +172,38 @@ Build and development workflow follow the StartOS packaging guide: <https://docs
 ```yaml
 package_id: albyhub
 image: ghcr.io/getalby/hub
-architectures: [x86_64, aarch64]
+architectures:
+  - x86_64
+  - aarch64
+subcontainers:
+  - albyhub-sub
 volumes:
   main: /data
-  startos: internal (store.json)
-ports:
-  main: 8080
-dependencies:
-  - lnd (optional, when LND backend)
-  - c-lightning (optional, when CLN backend)
-  - phoenixd (optional, when PHOENIX backend)
+  startos: host side (store.json)
+file_models:
+  - store.json # on the startos volume; holds LN_BACKEND_TYPE only
 startos_managed_env_vars:
   - LN_BACKEND_TYPE
   - WORK_DIR
   - HIDE_UPDATE_BANNER
-  - LND_ADDRESS (when LND)
-  - LND_CERT_FILE (when LND)
-  - LND_MACAROON_FILE (when LND)
-  - CLN_ADDRESS (when CLN)
-  - CLN_LIGHTNING_DIR (when CLN)
-  - PHOENIXD_ADDRESS (when PHOENIX)
-  - PHOENIXD_AUTHORIZATION (when PHOENIX)
-  - ENABLE_ADVANCED_SETUP (when LND, CLN, or PHOENIX)
-upstream_env_vars_not_exposed:
-  - DATABASE_URI
-  - RELAY
-  - AUTO_UNLOCK_PASSWORD
-  - LDK_* (all LDK tuning vars)
-  - BARK_* (server, esplora server, access token, log level — upstream defaults)
+  - ENABLE_ADVANCED_SETUP # on-server backends only
+  - LND_ADDRESS # LND only
+  - LND_CERT_FILE # LND only
+  - LND_MACAROON_FILE # LND only
+  - CLN_ADDRESS # CLN only
+  - CLN_LIGHTNING_DIR # CLN only
+  - PHOENIXD_ADDRESS # phoenixd only
+  - PHOENIXD_AUTHORIZATION # phoenixd only
+dependencies: # exactly one, decided by LN_BACKEND_TYPE; none for LDK or BARK
+  - lnd
+  - c-lightning
+  - phoenixd
+interfaces:
+  main: { type: ui, port: 8080 }
 actions:
-  - set-lightning (hidden, only-stopped)
+  - set-lightning # hidden; raised by task only
+tasks:
+  - { action: set-lightning, severity: critical }
 health_checks:
-  - port_listening: 8080
-backup_volumes:
-  - main
-  - startos
-backend_options: [LND, CLN, PHOENIX, LDK, BARK] # upstream supports more: Cashu, …
+  - primary # the daemon's ready check, displayed "Web Interface"
 ```
