@@ -20,7 +20,11 @@ export const setDependencies = sdk.setupDependencies(async ({ effects }) => {
     return {
       'c-lightning': {
         kind: 'running',
-        versionRange: '>=26.6.1:2',
+        // 26.6.7:4 is the first revision Alby Hub can reach: a StartOS TLS
+        // listener (<=26.6.7:2) refuses the `cln` server name it must send on
+        // StartOS 0.4.0.2+, and 26.6.7:3 forwarded the port but bound cln-grpc
+        // to an address the plugin cannot parse.
+        versionRange: '>=26.6.7:4',
         healthChecks: ['lightningd', 'check-synced'],
       },
     }
