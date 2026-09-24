@@ -20,7 +20,7 @@ export const setDependencies = sdk.setupDependencies(async ({ effects }) => {
     return {
       'c-lightning': {
         kind: 'running',
-        versionRange: '>=26.6.1:2',
+        versionRange: '>=26.6.7:4',
         healthChecks: ['lightningd', 'check-synced'],
       },
     }
