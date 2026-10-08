@@ -18,9 +18,9 @@ On install, Alby Hub posts a critical task to pick your Lightning backend. **You
 2. Run the **Choose your backend lightning implementation** task and select one of:
    - **LND on this server** — Alby Hub talks to your StartOS LND node over gRPC. Requires the LND package installed and running.
    - **Core Lightning on this server** — Alby Hub talks to your StartOS Core Lightning node over gRPC. Requires the Core Lightning package installed and running.
-   - **phoenixd on this server** — Alby Hub talks to your StartOS phoenixd node over its HTTP API. Requires the phoenixd package installed and running. phoenixd is a minimal, automated Lightning node.
-   - **LDK embedded node** — Alby Hub runs its own internal LDK node. Convenient, but offers less control than a full node.
-   - **Bark embedded Ark wallet (experimental)** — Alby Hub runs its own internal Bark wallet, transacting over the Ark protocol via Ark and Esplora servers hosted by Second. No Lightning node required, but it depends on those third-party servers and is experimental. This is a separate wallet with its own seed — it does not connect to the Bark Wallet service available on StartOS.
+   - **phoenixd on this server** — Alby Hub talks to your StartOS phoenixd node over its HTTP API. Requires the phoenixd package installed and running.
+   - **LDK embedded node** — Alby Hub runs its own Lightning node inside this service. No other service on this server is needed.
+   - **Bark embedded Ark wallet (experimental)** — Alby Hub runs its own internal Bark wallet, transacting over the Ark protocol via Ark and Esplora servers hosted by Second. No Lightning node required, but it depends on those third-party servers, and Alby Hub marks it as beta. This is a separate wallet with its own seed — it does not connect to the Bark Wallet service available on StartOS.
 3. Start Alby Hub and open the **Web UI** to finish setup (create your wallet password and complete the in-app onboarding).
 
 ## Using Alby Hub
@@ -34,3 +34,4 @@ The web interface is where you manage your wallet: send and receive, manage chan
 - Only the **LND**, **Core Lightning**, **phoenixd**, **LDK**, and **Bark** backends are available; other upstream options (Cashu, …) are not offered.
 - The LND, Core Lightning, and phoenixd backends connect to your StartOS node only — there is no field for an external node.
 - The Bark backend uses Second's public Ark and Esplora servers; custom servers are not configurable.
+- With the **phoenixd** backend, Alby Hub keeps the API password it received when first started. Changing it with phoenixd's **Set API Password** disconnects Alby Hub from phoenixd.

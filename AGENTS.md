@@ -18,15 +18,23 @@ Freshly scaffolded? Work the
 guide page, not a file in this repo — read it, don't copy it in.
 
 Keep `README.md` (technical reference for an AI support or administering agent) and
-`instructions.md` (end-user docs) in sync with your changes.
+`instructions.md` (end-user docs) in sync with your changes. This file restates neither:
+whoever changes the package has both, so it carries only what they don't — repo mechanics,
+a change that looks right and is not, where the next thing gets added, a naming trap, a
+build or test invocation particular to this repo.
 
-**Bugs and feature requests are GitHub issues on this repo** — file them as you find them.
+**Fix a defect you spot rather than reporting it** — you have the package open and the
+context to be sure. File **a GitHub issue on this repo** only when the call isn't yours to
+make: you can't pin the cause down, two defensible fixes exist, or it's too large to ride on
+the work in hand. An open issue is a report, not a queue — implement one when you're asked
+to or when it's labelled `Approved`, then close it with `Closes #<n>`.
+
 Don't record work in the repo instead: no `TODO.md`, no `NOTES.md`, no `PLAN.md`. What you
 verified, tried, and decided belongs in the commit message and the PR body.
 
 ## This repo
 
-- **Adding a backend touches five places, and they are not next to each other:** the `LN_BACKEND_TYPE` enum in `startos/fileModels/store.json.ts`, the select values in `startos/actions/setLightning.ts`, the env/mount branch in `startos/main.ts`, the dependency branch in `startos/dependencies.ts`, and the manifest's `dependencies` metadata. Nothing type-checks that you did all five.
-- **Resolve a backend's address with `sdk.host.getBridgeAddress`, never `<pkg>.startos` DNS.** The sibling packages export the host id and port to feed it — LND's `gRPCHostId`/`gRPCPort` from `lnd-startos/startos/interfaces`, phoenixd's `apiHostId` from its `interfaces` and `port` from its `utils`. Core Lightning is the exception and is referenced by the literal `'grpc'`, because cln exports only its `peer` and `watchtower` ids. Chaining `.const()` is what keeps a backend update from restarting the wallet.
-- **`main` throwing when the backend is unreachable is the design, not a gap.** Don't soften it into a warning or a retry loop: a wallet that starts without its node presents an empty balance, which reads as loss of funds.
-- **`store.json` is on the `startos` volume so the application can never see it**, and the action `write`s rather than `merge`s it. Keep both properties if you add a field.
+- **Adding a backend touches four places, and nothing type-checks that you did all four:** the `LN_BACKEND_TYPE` enum in `startos/fileModels/store.json.ts`, the select values in `startos/actions/setLightning.ts`, the env/mount branch in `startos/main.ts`, and an optional dependency enabled by that choice in `startos/dependencies.ts`.
+- **Reach Core Lightning's gRPC host by the literal `'grpc'`**: cln exports only its `peer` and `watchtower` host ids. LND's and phoenixd's host ids and ports come from their packages' exports.
+- **Don't soften `main` throwing when the backend is unreachable** into a warning or a retry loop: a wallet that starts without its node shows an empty balance, which reads as loss of funds.
+- **Keep `store.json` on the `startos` volume and `write` it rather than `merge`**: the application must never see it.
