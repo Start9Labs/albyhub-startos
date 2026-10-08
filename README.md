@@ -83,22 +83,22 @@ One model, holding one value — the decision everything else in the package is 
 | `CLN_ADDRESS`, `CLN_LIGHTNING_DIR`                  | CLN                | Bridge address, plus `/mnt/cln/bitcoin`                                      |
 | `PHOENIXD_ADDRESS`, `PHOENIXD_AUTHORIZATION`        | phoenixd           | Bridge address, plus the `http-password` read out of `phoenix.conf` at start |
 
-Because the environment is rebuilt each start, a credential the backend rotates is picked up on the next restart with nothing to reconcile. The flip side is that the phoenixd password is read at start time only: if `phoenix.conf` is unreadable, the daemon fails to start rather than starting unauthenticated.
+Alby Hub copies these into its own database at start. For LND and Core Lightning it overwrites the stored values every time, so a rotated macaroon or certificate, or a moved address, takes effect on Alby Hub's next restart. For phoenixd it keeps the first address and password it ever received and ignores later ones, so a password changed with phoenixd's Set API Password does not reach Alby Hub, even after a restart. The phoenixd password is read at start time only: if `phoenix.conf` is unreadable, the daemon fails to start rather than starting unauthenticated.
 
 ## Dependencies
 
-Which dependency exists at all is decided by the backend choice. Exactly one of the three can be active, and the two embedded backends have none.
+All three are declared optional in `startos/dependencies.ts`, each enabled by the backend choice, so exactly one of the three can be active and the two embedded backends have none.
 
-| Backend   | Dependency    | Kind      | Health checks required       | Mount                      |
-| --------- | ------------- | --------- | ---------------------------- | -------------------------- |
-| LND       | `lnd`         | `running` | `lnd`, `sync-progress`       | `/mnt/lnd`, read-only      |
-| CLN       | `c-lightning` | `running` | `lightningd`, `check-synced` | `/mnt/cln`, read-only      |
-| PHOENIX   | `phoenixd`    | `running` | `primary`                    | `/mnt/phoenixd`, read-only |
-| LDK, BARK | none          | —         | —                            | —                          |
+| Backend   | Dependency    | Version           | Kind      | Health checks required       | Mount                      |
+| --------- | ------------- | ----------------- | --------- | ---------------------------- | -------------------------- |
+| LND       | `lnd`         | `>=0.21.1-beta:4` | `running` | `lnd`, `sync-progress`       | `/mnt/lnd`, read-only      |
+| CLN       | `c-lightning` | `>=26.6.7:4`      | `running` | `lightningd`, `check-synced` | `/mnt/cln`, read-only      |
+| PHOENIX   | `phoenixd`    | `>=0.8.0:1`       | `running` | `primary`                    | `/mnt/phoenixd`, read-only |
+| LDK, BARK | none          | —                 | —         | —                            | —                          |
 
 The sync checks are required as well as "running", so Alby Hub waits for a node that is up but still catching up.
 
-Addresses are resolved over the local service bridge from each dependency's own host binding rather than by hostname, and `main` holds that resolution in a reactive `const`. So Alby Hub restarts when the backend's address genuinely moves — installed, uninstalled, re-ported — and not when the backend merely updates. If the backend is not reachable when Alby Hub starts, `main` throws with a message naming it rather than starting a wallet that cannot see its node.
+Addresses are resolved over the local service bridge from each dependency's own host binding rather than by hostname, and `main` holds that resolution in a reactive `const`. So Alby Hub restarts when the backend's address genuinely moves — installed, uninstalled, re-ported — and not when the backend merely updates. A moved phoenixd address still does not take effect, for the reason under File Models. If the backend is not reachable when Alby Hub starts, `main` throws with a message naming it rather than starting a wallet that cannot see its node.
 
 ## Network Access and Interfaces
 
@@ -109,6 +109,8 @@ One interface, serving the wallet UI. Nothing is exported for dependent services
 | Web UI    | `main` | ui   | 8080 | The Alby Hub web interface |
 
 The port is bound on the `main` MultiHost and is not masked. Note that the interface id is `main`, not `ui`.
+
+An install carried over from StartOS 0.3.5 also had port 8443 bound on `main`, that version's in-container TLS proxy. The `1.24.1:0` migration retires it; the `main` host keeps its addresses, including any Tor address, on 8080.
 
 ## Installation and First-Run Flow
 
@@ -126,6 +128,7 @@ One action, and it is not user-facing.
 
 **Not in the Actions list.** It is `visibility: 'hidden'` and reachable only through the task that raises it, so a user is never told to go and find it. It is also `only-stopped`, because the value it writes is read as the service starts.
 
+- **Default:** none — the form opens with no backend selected, so the task cannot be submitted until one is picked.
 - **What it changes:** `LN_BACKEND_TYPE` in `store.json`, which in turn decides the package's dependency set, its mounts, and the environment handed to the application.
 - **Repeat safety:** effectively one-way. Nothing in the package prevents a second write, but once the task is cleared there is no route to the action in the UI, and a wallet's funds and channel state belong to the backend it was created against — pointing an existing install at a different one does not migrate them.
 
@@ -161,7 +164,7 @@ Both volumes are copied wholesale — `sdk.Backups.ofVolumes('main', 'startos')`
 
 1. **The backend is chosen once.** The action that sets it is hidden after its task is cleared, and no migration path exists between backends.
 2. **On-server backends only — no address field.** LND, Core Lightning, and phoenixd are reached at addresses the package resolves from the local dependency; upstream's advanced setup, where a remote node's address and credentials are typed in, is switched off for these backends.
-3. **The phoenixd password is read from its config file at start**, so that mount must be readable; there is no way to supply the credential by hand.
+3. **The phoenixd password is read from its config file at start**, so that mount must be readable; there is no way to supply the credential by hand. Alby Hub keeps the first phoenixd password it receives, so changing it in phoenixd breaks the connection.
 4. **The in-app update banner is suppressed.** Updates arrive through the StartOS registry, so upstream's prompt would point at the wrong mechanism.
 5. **No riscv64 build.** x86_64 and aarch64 only.
 
