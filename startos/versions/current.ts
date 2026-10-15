@@ -1,35 +1,16 @@
 import { IMPOSSIBLE, VersionInfo } from '@start9labs/start-sdk'
-import { sdk } from '../sdk'
 
 export const current = VersionInfo.of({
-  version: '1.24.1:0',
+  version: '1.24.2:0',
   releaseNotes: {
-    en_US: `UX/UI improvements and security updates. Retries automatic unlock after failures, includes static channel backups in migration exports, shows fees for zero-fee outgoing payments, fixes an LDK shutdown panic, and prevents Boltz swap information from blocking. Includes dependency updates.
-
-- A network port left reserved by the StartOS 0.3.5 version of this package is freed.
-- On a new install, the Lightning implementation choice starts with no option selected.`,
-    es_ES: `Mejoras de la experiencia de usuario y la interfaz, y actualizaciones de seguridad. Reintenta el desbloqueo automático tras un fallo, incluye copias de seguridad estáticas de canales en las exportaciones de migración, muestra las comisiones de los pagos salientes sin comisión, corrige un fallo de LDK al apagarse y evita bloqueos al obtener información de swaps de Boltz. Incluye actualizaciones de dependencias.
-
-- Se libera un puerto de red que la versión de este paquete para StartOS 0.3.5 dejó reservado.
-- En una instalación nueva, la elección de la implementación Lightning empieza sin ninguna opción seleccionada.`,
-    de_DE: `Verbesserungen der Benutzeroberfläche und Benutzerfreundlichkeit sowie Sicherheitsupdates. Wiederholt die automatische Entsperrung nach Fehlern, nimmt statische Kanal-Backups in Migrationsexporte auf, zeigt Gebühren bei gebührenfreien ausgehenden Zahlungen an, behebt einen LDK-Absturz beim Herunterfahren und verhindert Blockierungen beim Abrufen von Boltz-Swap-Informationen. Enthält aktualisierte Abhängigkeiten.
-
-- Ein Netzwerkport, den die StartOS-0.3.5-Version dieses Pakets belegt gelassen hatte, wird freigegeben.
-- Bei einer Neuinstallation ist bei der Wahl der Lightning-Implementierung zunächst keine Option ausgewählt.`,
-    pl_PL: `Ulepszenia interfejsu i wygody użytkowania oraz aktualizacje bezpieczeństwa. Ponawia automatyczne odblokowanie po niepowodzeniu, dołącza statyczne kopie zapasowe kanałów do eksportów migracji, pokazuje opłaty dla płatności wychodzących bez opłat, naprawia awarię LDK podczas zamykania i zapobiega blokowaniu podczas pobierania informacji o swapach Boltz. Zawiera aktualizacje zależności.
-
-- Port sieciowy, który wersja tego pakietu dla StartOS 0.3.5 pozostawiła zajęty, zostaje zwolniony.
-- Przy nowej instalacji wybór implementacji Lightning zaczyna się bez zaznaczonej opcji.`,
-    fr_FR: `Améliorations de l'expérience utilisateur et de l'interface, et mises à jour de sécurité. Relance le déverrouillage automatique après un échec, inclut les sauvegardes statiques des canaux dans les exports de migration, affiche les frais des paiements sortants sans frais, corrige un plantage de LDK à l'arrêt et évite les blocages lors de la récupération des informations sur les swaps Boltz. Inclut des mises à jour des dépendances.
-
-- Un port réseau que la version de ce paquet pour StartOS 0.3.5 avait laissé réservé est libéré.
-- Lors d'une nouvelle installation, le choix de l'implémentation Lightning commence sans option sélectionnée.`,
+    en_US: 'Updated Alby Hub to 1.24.2. Refreshes phoenixd connection settings on every start, restricts hold-invoice settlement and cancellation to the creating app, improves swap fee controls and provider selection, and repairs incomplete LDK static channel backups. Updated start-sdk to 3.0.6. Full upstream changes: https://github.com/getAlby/hub/compare/v1.24.1...v1.24.2',
+    es_ES: 'Alby Hub actualizado a 1.24.2. Actualiza la conexión con phoenixd en cada inicio, restringe la liquidación y cancelación de facturas retenidas a la aplicación que las creó, mejora los controles de comisiones y la selección de proveedores de swaps, y repara las copias de seguridad estáticas incompletas de canales LDK. start-sdk actualizado a 3.0.6. Cambios completos: https://github.com/getAlby/hub/compare/v1.24.1...v1.24.2',
+    de_DE: 'Alby Hub auf 1.24.2 aktualisiert. Aktualisiert die phoenixd-Verbindung bei jedem Start, beschränkt das Begleichen und Stornieren von Hold-Rechnungen auf die erstellende App, verbessert Swap-Gebührensteuerung und Anbieterauswahl und repariert unvollständige statische LDK-Kanal-Backups. start-sdk auf 3.0.6 aktualisiert. Alle Änderungen: https://github.com/getAlby/hub/compare/v1.24.1...v1.24.2',
+    pl_PL: 'Zaktualizowano Alby Hub do 1.24.2. Odświeża ustawienia połączenia z phoenixd przy każdym uruchomieniu, ogranicza rozliczanie i anulowanie faktur wstrzymanych do aplikacji, która je utworzyła, ulepsza ustawianie opłat i wybór dostawców swapów oraz naprawia niekompletne statyczne kopie zapasowe kanałów LDK. Zaktualizowano start-sdk do 3.0.6. Pełna lista zmian: https://github.com/getAlby/hub/compare/v1.24.1...v1.24.2',
+    fr_FR: 'Alby Hub mis à jour vers 1.24.2. Actualise la connexion à phoenixd à chaque démarrage, réserve le règlement et l’annulation des factures en attente à l’application qui les a créées, améliore les réglages des frais et le choix du fournisseur de swaps, et répare les sauvegardes statiques incomplètes des canaux LDK. start-sdk mis à jour vers 3.0.6. Liste complète des changements : https://github.com/getAlby/hub/compare/v1.24.1...v1.24.2',
   },
   migrations: {
-    up: async ({ effects }) => {
-      // 8443 was the 0.3.5 package's in-container TLS proxy, which no longer exists.
-      await sdk.MultiHost.of(effects, 'main').retirePort(8443)
-    },
+    up: async () => {},
     down: IMPOSSIBLE,
   },
 })

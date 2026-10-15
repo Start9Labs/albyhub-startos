@@ -83,7 +83,7 @@ One model, holding one value — the decision everything else in the package is 
 | `CLN_ADDRESS`, `CLN_LIGHTNING_DIR`                  | CLN                | Bridge address, plus `/mnt/cln/bitcoin`                                      |
 | `PHOENIXD_ADDRESS`, `PHOENIXD_AUTHORIZATION`        | phoenixd           | Bridge address, plus the `http-password` read out of `phoenix.conf` at start |
 
-Alby Hub copies these into its own database at start. For LND and Core Lightning it overwrites the stored values every time, so a rotated macaroon or certificate, or a moved address, takes effect on Alby Hub's next restart. For phoenixd it keeps the first address and password it ever received and ignores later ones, so a password changed with phoenixd's Set API Password does not reach Alby Hub, even after a restart. The phoenixd password is read at start time only: if `phoenix.conf` is unreadable, the daemon fails to start rather than starting unauthenticated.
+Alby Hub copies these into its own database at start, overwriting the stored connection values for LND, Core Lightning, and phoenixd every time. A rotated credential or moved address takes effect on Alby Hub's next restart. The phoenixd password is read at start time only: after changing it with phoenixd's Set API Password, restart Alby Hub. If `phoenix.conf` is unreadable, the daemon fails to start rather than starting unauthenticated.
 
 ## Dependencies
 
@@ -98,7 +98,7 @@ All three are declared optional in `startos/dependencies.ts`, each enabled by th
 
 The sync checks are required as well as "running", so Alby Hub waits for a node that is up but still catching up.
 
-Addresses are resolved over the local service bridge from each dependency's own host binding rather than by hostname, and `main` holds that resolution in a reactive `const`. So Alby Hub restarts when the backend's address genuinely moves — installed, uninstalled, re-ported — and not when the backend merely updates. A moved phoenixd address still does not take effect, for the reason under File Models. If the backend is not reachable when Alby Hub starts, `main` throws with a message naming it rather than starting a wallet that cannot see its node.
+Addresses are resolved over the local service bridge from each dependency's own host binding rather than by hostname, and `main` holds that resolution in a reactive `const`. So Alby Hub restarts when the backend's address genuinely moves — installed, uninstalled, re-ported — and not when the backend merely updates. If the backend is not reachable when Alby Hub starts, `main` throws with a message naming it rather than starting a wallet that cannot see its node.
 
 ## Network Access and Interfaces
 
@@ -164,7 +164,7 @@ Both volumes are copied wholesale — `sdk.Backups.ofVolumes('main', 'startos')`
 
 1. **The backend is chosen once.** The action that sets it is hidden after its task is cleared, and no migration path exists between backends.
 2. **On-server backends only — no address field.** LND, Core Lightning, and phoenixd are reached at addresses the package resolves from the local dependency; upstream's advanced setup, where a remote node's address and credentials are typed in, is switched off for these backends.
-3. **The phoenixd password is read from its config file at start**, so that mount must be readable; there is no way to supply the credential by hand. Alby Hub keeps the first phoenixd password it receives, so changing it in phoenixd breaks the connection.
+3. **The phoenixd password is read from its config file at start**, so that mount must be readable; there is no way to supply the credential by hand. Restart Alby Hub after changing the password in phoenixd.
 4. **The in-app update banner is suppressed.** Updates arrive through the StartOS registry, so upstream's prompt would point at the wrong mechanism.
 5. **No riscv64 build.** x86_64 and aarch64 only.
 

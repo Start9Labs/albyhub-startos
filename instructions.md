@@ -34,4 +34,4 @@ The web interface is where you manage your wallet: send and receive, manage chan
 - Only the **LND**, **Core Lightning**, **phoenixd**, **LDK**, and **Bark** backends are available; other upstream options (Cashu, …) are not offered.
 - The LND, Core Lightning, and phoenixd backends connect to your StartOS node only — there is no field for an external node.
 - The Bark backend uses Second's public Ark and Esplora servers; custom servers are not configurable.
-- With the **phoenixd** backend, Alby Hub keeps the API password it received when first started. Changing it with phoenixd's **Set API Password** disconnects Alby Hub from phoenixd.
+- With the **phoenixd** backend, restart Alby Hub after changing the API password with phoenixd's **Set API Password** so it reads the updated credential.
