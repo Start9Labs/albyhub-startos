@@ -4,7 +4,7 @@ export const current = VersionInfo.of({
   version: '1.24.5:0',
   releaseNotes: {
     en_US:
-      'Updated Alby Hub to 1.24.5. Fixes invalid app keys, improves Nostr Wallet Connect error reporting and notification handling, prevents LDK shutdown hangs, and validates swap addresses for the wallet network. Full upstream changes: https://github.com/getAlby/hub/compare/v1.24.4...v1.24.5',
+      'Updated Alby Hub to 1.24.5. Rejects invalid app keys, improves Nostr Wallet Connect error reporting and notification handling, prevents LDK shutdown hangs, and validates swap addresses for the wallet network. Full upstream changes: https://github.com/getAlby/hub/compare/v1.24.4...v1.24.5',
     es_ES:
       'Alby Hub actualizado a 1.24.5. Rechaza claves de aplicaciones no válidas, mejora los errores y las notificaciones de Nostr Wallet Connect, evita bloqueos al apagar LDK y valida las direcciones de swaps para la red de la billetera. Cambios completos: https://github.com/getAlby/hub/compare/v1.24.4...v1.24.5',
     de_DE:
