@@ -53,11 +53,11 @@ Two volumes, and one of them never enters the container. Depending on the chosen
 | `main`    | `/data`       | Alby Hub's working directory: its database, and the embedded LDK or Bark node's state |
 | `startos` | — (host side) | `store.json`; never mounted into the container                                        |
 
-| Backend  | Read-only mount | Source                                                   |
-| -------- | --------------- | -------------------------------------------------------- |
-| LND      | `/mnt/lnd`      | LND's `main` volume — TLS certificate and admin macaroon |
-| CLN      | `/mnt/cln`      | Core Lightning's `main` volume                           |
-| phoenixd | `/mnt/phoenixd` | phoenixd's `main` volume — `phoenix.conf`                |
+| Backend  | Read-only mount | Source                                                                               |
+| -------- | --------------- | ------------------------------------------------------------------------------------ |
+| LND      | `/mnt/lnd`      | LND's `public` volume, `admin/` — `admin.macaroon` and `tls.cert`                    |
+| CLN      | `/mnt/cln`      | Core Lightning's `public` volume, `grpc/` — `ca.pem`, `client.pem`, `client-key.pem` |
+| phoenixd | `/mnt/phoenixd` | phoenixd's `public` volume, `full/` — `http-password`                                |
 
 The embedded backends mount nothing extra: LDK and Bark keep their state under `/data` like the rest of the wallet.
 
@@ -73,17 +73,17 @@ One model, holding one value — the decision everything else in the package is 
 
 **No upstream configuration is written.** Alby Hub is configured entirely by environment, and the package composes that environment fresh on every start rather than persisting it:
 
-| Variable                                            | When               | Value                                                                        |
-| --------------------------------------------------- | ------------------ | ---------------------------------------------------------------------------- |
-| `LN_BACKEND_TYPE`                                   | always             | From `store.json`                                                            |
-| `WORK_DIR`                                          | always             | `/data`                                                                      |
-| `HIDE_UPDATE_BANNER`                                | always             | `true` — updates come from the registry, not from inside the app             |
-| `ENABLE_ADVANCED_SETUP`                             | on-server backends | `false` — the address and credentials are resolved, not entered              |
-| `LND_ADDRESS`, `LND_CERT_FILE`, `LND_MACAROON_FILE` | LND                | Bridge address, plus paths into the read-only LND mount                      |
-| `CLN_ADDRESS`, `CLN_LIGHTNING_DIR`                  | CLN                | Bridge address, plus `/mnt/cln/bitcoin`                                      |
-| `PHOENIXD_ADDRESS`, `PHOENIXD_AUTHORIZATION`        | phoenixd           | Bridge address, plus the `http-password` read out of `phoenix.conf` at start |
+| Variable                                            | When               | Value                                                                       |
+| --------------------------------------------------- | ------------------ | --------------------------------------------------------------------------- |
+| `LN_BACKEND_TYPE`                                   | always             | From `store.json`                                                           |
+| `WORK_DIR`                                          | always             | `/data`                                                                     |
+| `HIDE_UPDATE_BANNER`                                | always             | `true` — updates come from the registry, not from inside the app            |
+| `ENABLE_ADVANCED_SETUP`                             | on-server backends | `false` — the address and credentials are resolved, not entered             |
+| `LND_ADDRESS`, `LND_CERT_FILE`, `LND_MACAROON_FILE` | LND                | Bridge address, plus paths into the read-only LND mount                     |
+| `CLN_ADDRESS`, `CLN_LIGHTNING_DIR`                  | CLN                | Bridge address, plus `/mnt/cln`                                             |
+| `PHOENIXD_ADDRESS`, `PHOENIXD_AUTHORIZATION`        | phoenixd           | Bridge address, plus the contents of `/mnt/phoenixd/http-password` at start |
 
-Alby Hub copies these into its own database at start, overwriting the stored connection values for LND, Core Lightning, and phoenixd every time. A rotated credential or moved address takes effect on Alby Hub's next restart. The phoenixd password is read at start time only: after changing it with phoenixd's Set API Password, restart Alby Hub. If `phoenix.conf` is unreadable, the daemon fails to start rather than starting unauthenticated.
+Alby Hub copies these into its own database at start, overwriting the stored connection values for LND, Core Lightning, and phoenixd every time. A rotated credential or moved address takes effect on Alby Hub's next restart. The phoenixd password is read at start time only: after changing it with phoenixd's Set API Password, restart Alby Hub. If `http-password` is unreadable, the daemon fails to start rather than starting unauthenticated.
 
 ## Dependencies
 
@@ -91,9 +91,9 @@ All three are declared optional in `startos/dependencies.ts`, each enabled by th
 
 | Backend   | Dependency    | Version           | Kind      | Health checks required       | Mount                      |
 | --------- | ------------- | ----------------- | --------- | ---------------------------- | -------------------------- |
-| LND       | `lnd`         | `>=0.21.1-beta:4` | `running` | `lnd`, `sync-progress`       | `/mnt/lnd`, read-only      |
-| CLN       | `c-lightning` | `>=26.6.7:4`      | `running` | `lightningd`, `check-synced` | `/mnt/cln`, read-only      |
-| PHOENIX   | `phoenixd`    | `>=0.8.0:1`       | `running` | `primary`                    | `/mnt/phoenixd`, read-only |
+| LND       | `lnd`         | `>=0.21.6-beta:3` | `running` | `lnd`, `sync-progress`       | `/mnt/lnd`, read-only      |
+| CLN       | `c-lightning` | `>=26.6.10:3`     | `running` | `lightningd`, `check-synced` | `/mnt/cln`, read-only      |
+| PHOENIX   | `phoenixd`    | `>=0.9.2:4`       | `running` | `primary`                    | `/mnt/phoenixd`, read-only |
 | LDK, BARK | none          | —                 | —         | —                            | —                          |
 
 The sync checks are required as well as "running", so Alby Hub waits for a node that is up but still catching up.
