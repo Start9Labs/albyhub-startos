@@ -63,14 +63,14 @@ export const main = sdk.setupMain(async ({ effects }) => {
       ...env,
       LND_ADDRESS: lndAddress,
       LND_CERT_FILE: '/mnt/lnd/tls.cert',
-      LND_MACAROON_FILE: '/mnt/lnd/data/chain/bitcoin/mainnet/admin.macaroon',
+      LND_MACAROON_FILE: '/mnt/lnd/admin.macaroon',
       ENABLE_ADVANCED_SETUP: 'false',
     }
 
     mounts = mounts.mountDependency<typeof lndManifest>({
       dependencyId: 'lnd',
-      volumeId: 'main',
-      subpath: null,
+      volumeId: 'public',
+      subpath: 'admin',
       mountpoint: '/mnt/lnd',
       readonly: true,
     })
@@ -96,14 +96,14 @@ export const main = sdk.setupMain(async ({ effects }) => {
     env = {
       ...env,
       CLN_ADDRESS: clnAddress,
-      CLN_LIGHTNING_DIR: '/mnt/cln/bitcoin',
+      CLN_LIGHTNING_DIR: '/mnt/cln',
       ENABLE_ADVANCED_SETUP: 'false',
     }
 
     mounts = mounts.mountDependency<typeof clnManifest>({
       dependencyId: 'c-lightning',
-      volumeId: 'main',
-      subpath: null,
+      volumeId: 'public',
+      subpath: 'grpc',
       mountpoint: '/mnt/cln',
       readonly: true,
     })
@@ -133,8 +133,8 @@ export const main = sdk.setupMain(async ({ effects }) => {
 
     mounts = mounts.mountDependency<typeof phoenixdManifest>({
       dependencyId: 'phoenixd',
-      volumeId: 'main',
-      subpath: null,
+      volumeId: 'public',
+      subpath: 'full',
       mountpoint: '/mnt/phoenixd',
       readonly: true,
     })
@@ -175,8 +175,9 @@ export const main = sdk.setupMain(async ({ effects }) => {
 })
 
 async function readPhoenixdHttpPassword(rootfs: string): Promise<string> {
-  const conf = await readFile(`${rootfs}/mnt/phoenixd/phoenix.conf`, 'utf-8')
-  const password = conf.match(/^http-password=(.*)$/m)?.[1]?.trim()
+  const password = (
+    await readFile(`${rootfs}/mnt/phoenixd/http-password`, 'utf-8')
+  ).trim()
   if (!password) {
     throw new Error(i18n('Could not read the phoenixd http-password'))
   }

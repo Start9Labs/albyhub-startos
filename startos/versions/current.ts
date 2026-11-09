@@ -1,18 +1,18 @@
 import { IMPOSSIBLE, VersionInfo } from '@start9labs/start-sdk'
 
 export const current = VersionInfo.of({
-  version: '1.24.6:0',
+  version: '1.24.6:1',
   releaseNotes: {
     en_US:
-      'Updated Alby Hub to 1.24.6 with bug fixes and security updates. Reuses LNURL invoices when retrying payments and prevents UI crashes from unexpected metadata types. Full upstream changes: https://github.com/getAlby/hub/releases/tag/v1.24.6',
+      'Requires StartOS 0.4.1 or later. Alby Hub now reads only the credential it needs from LND, Core Lightning or phoenixd, and can no longer read their seed or other files. Requires LND 0.21.6-beta:3, Core Lightning 26.6.10:3 or phoenixd 0.9.2:4.',
     es_ES:
-      'Alby Hub actualizado a 1.24.6 con correcciones de errores y actualizaciones de seguridad. Reutiliza las facturas LNURL al reintentar pagos y evita fallos de la interfaz causados por tipos de metadatos inesperados. Cambios completos: https://github.com/getAlby/hub/releases/tag/v1.24.6',
+      'Requiere StartOS 0.4.1 o posterior. Alby Hub ahora lee solo la credencial que necesita de LND, Core Lightning o phoenixd, y ya no puede leer su semilla ni otros archivos. Requiere LND 0.21.6-beta:3, Core Lightning 26.6.10:3 o phoenixd 0.9.2:4.',
     de_DE:
-      'Alby Hub auf 1.24.6 mit Fehlerbehebungen und Sicherheitsupdates aktualisiert. Verwendet LNURL-Rechnungen bei erneuten Zahlungsversuchen wieder und verhindert Abstürze der Benutzeroberfläche durch unerwartete Metadatentypen. Alle Änderungen: https://github.com/getAlby/hub/releases/tag/v1.24.6',
+      'Erfordert StartOS 0.4.1 oder neuer. Alby Hub liest von LND, Core Lightning oder phoenixd nur noch die benötigte Zugangsberechtigung und kann deren Seed und andere Dateien nicht mehr lesen. Erfordert LND 0.21.6-beta:3, Core Lightning 26.6.10:3 oder phoenixd 0.9.2:4.',
     pl_PL:
-      'Zaktualizowano Alby Hub do 1.24.6 z poprawkami błędów i aktualizacjami zabezpieczeń. Ponownie wykorzystuje faktury LNURL przy ponawianiu płatności i zapobiega awariom interfejsu spowodowanym nieoczekiwanymi typami metadanych. Pełna lista zmian: https://github.com/getAlby/hub/releases/tag/v1.24.6',
+      'Wymaga StartOS 0.4.1 lub nowszego. Alby Hub odczytuje z LND, Core Lightning lub phoenixd tylko potrzebne mu poświadczenie i nie może już odczytać ich seeda ani innych plików. Wymaga LND 0.21.6-beta:3, Core Lightning 26.6.10:3 lub phoenixd 0.9.2:4.',
     fr_FR:
-      'Alby Hub mis à jour vers 1.24.6 avec des corrections de bugs et des mises à jour de sécurité. Réutilise les factures LNURL lors des nouvelles tentatives de paiement et évite les plantages de l’interface dus à des types de métadonnées inattendus. Liste complète des changements : https://github.com/getAlby/hub/releases/tag/v1.24.6',
+      'Nécessite StartOS 0.4.1 ou ultérieur. Alby Hub ne lit plus que l’identifiant dont il a besoin auprès de LND, Core Lightning ou phoenixd, et ne peut plus lire leur seed ni leurs autres fichiers. Nécessite LND 0.21.6-beta:3, Core Lightning 26.6.10:3 ou phoenixd 0.9.2:4.',
   },
   migrations: {
     up: async () => {},
