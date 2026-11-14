@@ -1,18 +1,18 @@
 import { IMPOSSIBLE, VersionInfo } from '@start9labs/start-sdk'
 
 export const current = VersionInfo.of({
-  version: '1.24.6:1',
+  version: '1.24.7:0',
   releaseNotes: {
     en_US:
-      'Requires StartOS 0.4.1 or later. Alby Hub now reads only the credential it needs from LND, Core Lightning or phoenixd, and can no longer read their seed or other files. Requires LND 0.21.6-beta:3, Core Lightning 26.6.10:3 or phoenixd 0.9.2:4.',
+      'Updated Alby Hub to 1.24.7. Requires StartOS 0.4.2 or later. Malformed Nostr Wallet Connect requests no longer crash Alby Hub, a canceled hold invoice paid to yourself is no longer settled, and swaps are validated more strictly and retry their claims. Adds OpenReceive to the app store. Full changes: https://github.com/getAlby/hub/compare/v1.24.6...v1.24.7',
     es_ES:
-      'Requiere StartOS 0.4.1 o posterior. Alby Hub ahora lee solo la credencial que necesita de LND, Core Lightning o phoenixd, y ya no puede leer su semilla ni otros archivos. Requiere LND 0.21.6-beta:3, Core Lightning 26.6.10:3 o phoenixd 0.9.2:4.',
+      'Alby Hub actualizado a 1.24.7. Requiere StartOS 0.4.2 o posterior. Las solicitudes mal formadas de Nostr Wallet Connect ya no bloquean Alby Hub, una factura retenida cancelada que te pagas a ti mismo ya no se liquida, y los intercambios se validan de forma más estricta y reintentan sus reclamaciones. Añade OpenReceive a la tienda de aplicaciones. Cambios completos: https://github.com/getAlby/hub/compare/v1.24.6...v1.24.7',
     de_DE:
-      'Erfordert StartOS 0.4.1 oder neuer. Alby Hub liest von LND, Core Lightning oder phoenixd nur noch die benötigte Zugangsberechtigung und kann deren Seed und andere Dateien nicht mehr lesen. Erfordert LND 0.21.6-beta:3, Core Lightning 26.6.10:3 oder phoenixd 0.9.2:4.',
+      'Alby Hub auf 1.24.7 aktualisiert. Erfordert StartOS 0.4.2 oder neuer. Fehlerhafte Nostr-Wallet-Connect-Anfragen bringen Alby Hub nicht mehr zum Absturz, eine stornierte Hold-Rechnung, die man sich selbst bezahlt, wird nicht mehr abgerechnet, und Swaps werden strenger geprüft und wiederholen ihre Claims. Fügt OpenReceive zum App Store hinzu. Alle Änderungen: https://github.com/getAlby/hub/compare/v1.24.6...v1.24.7',
     pl_PL:
-      'Wymaga StartOS 0.4.1 lub nowszego. Alby Hub odczytuje z LND, Core Lightning lub phoenixd tylko potrzebne mu poświadczenie i nie może już odczytać ich seeda ani innych plików. Wymaga LND 0.21.6-beta:3, Core Lightning 26.6.10:3 lub phoenixd 0.9.2:4.',
+      'Zaktualizowano Alby Hub do 1.24.7. Wymaga StartOS 0.4.2 lub nowszego. Nieprawidłowe żądania Nostr Wallet Connect nie powodują już awarii Alby Hub, anulowana faktura wstrzymana opłacona samemu sobie nie jest już rozliczana, a swapy są ściślej weryfikowane i ponawiają swoje roszczenia. Dodaje OpenReceive do sklepu z aplikacjami. Pełna lista zmian: https://github.com/getAlby/hub/compare/v1.24.6...v1.24.7',
     fr_FR:
-      'Nécessite StartOS 0.4.1 ou ultérieur. Alby Hub ne lit plus que l’identifiant dont il a besoin auprès de LND, Core Lightning ou phoenixd, et ne peut plus lire leur seed ni leurs autres fichiers. Nécessite LND 0.21.6-beta:3, Core Lightning 26.6.10:3 ou phoenixd 0.9.2:4.',
+      'Alby Hub mis à jour vers 1.24.7. Nécessite StartOS 0.4.2 ou ultérieur. Les requêtes Nostr Wallet Connect malformées ne font plus planter Alby Hub, une facture en attente annulée que vous vous payez à vous-même n’est plus réglée, et les swaps sont validés plus strictement et retentent leurs réclamations. Ajoute OpenReceive à la boutique d’applications. Modifications complètes : https://github.com/getAlby/hub/compare/v1.24.6...v1.24.7',
   },
   migrations: {
     up: async () => {},

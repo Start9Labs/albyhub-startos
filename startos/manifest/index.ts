@@ -14,7 +14,7 @@ export const manifest = setupManifest({
   images: {
     albyhub: {
       source: {
-        dockerTag: 'ghcr.io/getalby/hub:v1.24.6',
+        dockerTag: 'ghcr.io/getalby/hub:v1.24.7',
       },
       arch: ['x86_64', 'aarch64'],
       emulateMissing: false,
