@@ -31,10 +31,13 @@ The web interface is where you manage your wallet: send and receive, manage chan
 
 ## Backups and restore
 
-With the **LDK embedded node**, a backup holds your node's channel state. Restoring an outdated copy can lose funds: your channel peers can treat the old state as an attempt to cheat and claim the whole channel balance.
+With the **LDK embedded node**, unless your channel state is stored on Alby's VSS server (paid Alby account), a StartOS backup holds a point-in-time copy of your channel state. **Even your most recent backup can be unsafe to start if the channels changed after it was taken** — and StartOS starts Alby Hub again as soon as a backup finishes, so taking one does not freeze the node. Starting stale state can lose funds: a peer can punish a revoked commitment by claiming the whole channel balance.
 
-- Restore only your most recent backup, and take a new one after channel activity.
-- Once you restore onto another server, never start the old copy again.
+- For a planned move, stop Alby Hub before taking the final backup, and leave the original stopped permanently.
+- Never run two copies of the same node.
+- If the original ran after the backup, or you cannot be sure it did not, do not start the restored copy. Recover with your recovery phrase and latest channel backup instead, following [Alby Hub's recovery guide](https://guides.getalby.com/user-guide/alby-hub/backups-and-recover); this force-closes your channels instead of publishing stale state.
+
+If your channel state is on Alby's VSS server, follow that guide's instructions for it.
 
 ## Limitations
 
