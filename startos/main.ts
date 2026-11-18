@@ -8,6 +8,14 @@ import {
 import { grpcPort as clnGrpcPort } from 'cln-startos/startos/utils'
 import { apiHostId as phoenixdApiHostId } from 'phoenixd-startos/startos/interfaces'
 import { port as phoenixdPort } from 'phoenixd-startos/startos/utils'
+import {
+  electrumPort as fulcrumPort,
+  mainHostId as fulcrumHostId,
+} from 'fulcrum-startos/startos/utils'
+import {
+  electrumHostId as electrsHostId,
+  port as electrsPort,
+} from 'electrs-startos/startos/utils'
 import { readFile } from 'fs/promises'
 import { sdk } from './sdk'
 import { uiPort } from './utils'
@@ -22,7 +30,8 @@ export const main = sdk.setupMain(async ({ effects }) => {
    */
   console.info(i18n('Starting Alby Hub!'))
 
-  const { LN_BACKEND_TYPE, SETUP_CODE } = (await storeJson.read().once()) ?? {}
+  const { LN_BACKEND_TYPE, ELECTRUM_SERVER, SETUP_CODE } =
+    (await storeJson.read().once()) ?? {}
 
   if (!LN_BACKEND_TYPE) {
     throw new Error(i18n('You must select node type before starting Alby Hub'))
@@ -142,6 +151,43 @@ export const main = sdk.setupMain(async ({ effects }) => {
       mountpoint: '/mnt/phoenixd',
       readonly: true,
     })
+  } else if (LN_BACKEND_TYPE === 'LDK') {
+    if (!ELECTRUM_SERVER) {
+      throw new Error(
+        i18n('You must choose an Electrum server before starting Alby Hub'),
+      )
+    }
+    if (ELECTRUM_SERVER !== 'alby') {
+      const { packageId, hostId, internalPort, unreachable } =
+        ELECTRUM_SERVER === 'fulcrum'
+          ? {
+              packageId: 'fulcrum',
+              hostId: fulcrumHostId,
+              internalPort: fulcrumPort,
+              unreachable: i18n(
+                'Fulcrum is not yet reachable on the internal network. Ensure Fulcrum is installed and running.',
+              ),
+            }
+          : {
+              packageId: 'electrs',
+              hostId: electrsHostId,
+              internalPort: electrsPort,
+              unreachable: i18n(
+                'Electrs is not yet reachable on the internal network. Ensure Electrs is installed and running.',
+              ),
+            }
+      const electrumAddress = await sdk.host
+        .getBridgeAddress(effects, {
+          packageId,
+          hostId,
+          internalPort,
+          ssl: false,
+        })
+        .const()
+      if (!electrumAddress) throw new Error(unreachable)
+
+      env = { ...env, LDK_ELECTRUM_SERVER: `tcp://${electrumAddress}` }
+    }
   }
 
   const subcontainer = sdk.SubContainer.of(

@@ -3,6 +3,8 @@
   "dependencies": {
     "@start9labs/start-sdk": "4.1.0",
     "cln-startos": "github:Start9Labs/cln-startos#next",
+    "electrs-startos": "github:Start9Labs/electrs-startos#next",
+    "fulcrum-startos": "github:Start9Labs/fulcrum-startos#next",
     "lnd-startos": "github:Start9Labs/lnd-startos#next",
     "phoenixd-startos": "github:Start9-Community/phoenixd-startos#next"
   },
