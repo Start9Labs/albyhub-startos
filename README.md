@@ -102,6 +102,8 @@ All three are declared optional in `startos/dependencies.ts`, each enabled by th
 
 The sync checks are required as well as "running", so Alby Hub waits for a node that is up but still catching up.
 
+The embedded backends need nothing on this server but reach third-party servers on upstream defaults, none of which the package sets. LDK reads the chain from Alby's Electrum server (`LDK_ELECTRUM_SERVER`, `ssl://electrum.getalbypro.com:50002`), takes inbound liquidity from Lightning service providers (an LSPS2 provider from Alby's channel-peer suggestions, Megalith otherwise), and, for a node created with a paid Alby account, stores its channel state on Alby's VSS server (`LDK_VSS_URL`, `https://vss.getalbypro.com/vss`). Bark uses Second's Ark and Esplora servers.
+
 Addresses are resolved over the local service bridge from each dependency's own host binding rather than by hostname, and `main` holds that resolution in a reactive `const`. So Alby Hub restarts when the backend's address genuinely moves — installed, uninstalled, re-ported — and not when the backend merely updates. If the backend is not reachable when Alby Hub starts, `main` throws with a message naming it rather than starting a wallet that cannot see its node.
 
 ## Network Access and Interfaces
@@ -176,8 +178,9 @@ Both volumes are copied wholesale — `sdk.Backups.ofVolumes('main', 'startos')`
 1. **The backend is chosen once.** The action that sets it is hidden after its task is cleared, and no migration path exists between backends.
 2. **On-server backends only — no address field.** LND, Core Lightning, and phoenixd are reached at addresses the package resolves from the local dependency; upstream's advanced setup, where a remote node's address and credentials are typed in, is switched off for these backends.
 3. **The phoenixd password is read from its config file at start**, so that mount must be readable; there is no way to supply the credential by hand. Restart Alby Hub after changing the password in phoenixd.
-4. **The in-app update banner is suppressed.** Updates arrive through the StartOS registry, so upstream's prompt would point at the wrong mechanism.
-5. **No riscv64 build.** x86_64 and aarch64 only.
+4. **The LDK backend's chain source is Alby's Electrum server**, not a node on this server, and is not configurable.
+5. **The in-app update banner is suppressed.** Updates arrive through the StartOS registry, so upstream's prompt would point at the wrong mechanism.
+6. **No riscv64 build.** x86_64 and aarch64 only.
 
 ---
 
