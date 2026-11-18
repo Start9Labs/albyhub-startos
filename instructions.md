@@ -29,6 +29,13 @@ On install, Alby Hub posts a critical task to pick your Lightning backend. **You
 
 The web interface is where you manage your wallet: send and receive, manage channels (LDK backend), browse and connect Alby apps, and configure Nostr Wallet Connect. Day-to-day use follows upstream Alby Hub exactly.
 
+## Backups and restore
+
+With the **LDK embedded node**, a backup holds your node's channel state. Restoring an outdated copy can lose funds: your channel peers can treat the old state as an attempt to cheat and claim the whole channel balance.
+
+- Restore only your most recent backup, and take a new one after channel activity.
+- Once you restore onto another server, never start the old copy again.
+
 ## Limitations
 
 - Only the **LND**, **Core Lightning**, **phoenixd**, **LDK**, and **Bark** backends are available; other upstream options (Cashu, …) are not offered.

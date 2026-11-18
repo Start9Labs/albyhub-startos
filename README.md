@@ -169,6 +169,7 @@ Both volumes are copied wholesale — `sdk.Backups.ofVolumes('main', 'startos')`
 - **Included:** Alby Hub's database, app connections and Nostr Wallet Connect settings, the embedded LDK or Bark node's state if one is in use, and `store.json` — the backend choice and the setup code.
 - **Excluded:** `*-journal`, `*-wal`, `*-shm`.
 - **Restore:** the backend choice comes back with the wallet, so the package resolves the same dependency as before — which must be installed and running for the service to start. For an on-server backend, the node's own funds and channels are that package's backup, not this one's; only Alby Hub's view of them lives here.
+- **Stale LDK state:** with the LDK backend the backup carries live channel state under `/data`. Restoring anything but the most recent backup, or running the original install again after restoring elsewhere, broadcasts revoked state, which a peer can punish by claiming the whole channel balance. StartOS shows no warning at restore; `instructions.md` carries it.
 
 ## Limitations and Differences
 
