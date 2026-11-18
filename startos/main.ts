@@ -210,11 +210,9 @@ export const main = sdk.setupMain(async ({ effects }) => {
    *
    * Each daemon defines its own health check, which can optionally be exposed to the user.
    */
-  // A local backend must be running and synced before the wallet starts, and a
-  // backend lost while running pauses the wallet until it recovers. A synced
-  // LND or Core Lightning can report "syncing" for a moment after each new
-  // block, so a miss after readiness is confirmed past the dependency's next
-  // poll (30 s) before it stops Alby Hub.
+  // Local backend readiness gates the process, not upstream wallet unlock.
+  // A restarted wallet needs its password unless Auto Unlock is enabled.
+  // LND/CLN can briefly report "syncing" after a new block.
   const backendReady = async () =>
     (await dependencies.check(effects)).satisfied()
   let wasReady = false

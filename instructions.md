@@ -29,7 +29,9 @@ On install, Alby Hub posts a critical task to pick your Lightning backend. **You
 
 The web interface is where you manage your wallet: send and receive, manage channels (LDK backend), browse and connect Alby apps, and configure Nostr Wallet Connect. Day-to-day use follows upstream Alby Hub exactly.
 
-With a backend on this server (LND, Core Lightning, phoenixd, or Fulcrum or Electrs for LDK), Alby Hub waits for it to be running and, where it syncs, fully synced before starting. If the backend stops or falls behind, Alby Hub pauses and resumes on its own once the backend is ready again. The **Backend Readiness** health check shows when it is waiting.
+With a backend on this server (LND, Core Lightning, phoenixd, or Fulcrum or Electrs for LDK), Alby Hub waits for it to be running and, where it syncs, fully synced before starting. If the backend stops or falls behind, Alby Hub stops its process and restarts it once the backend is ready again. The **Backend Readiness** health check shows when it is waiting.
+
+After that restart, open the **Web UI** and unlock the wallet again unless Alby Hub's **Auto Unlock** was enabled. Until unlocked, Nostr Wallet Connect stays offline and an embedded LDK node remains stopped. A green **Web Interface** health check means the UI is available, not that the wallet is unlocked.
 
 ### Changing the Electrum server
 
