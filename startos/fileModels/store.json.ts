@@ -6,6 +6,10 @@ const shape = z.looseObject({
     .enum(['LND', 'LDK', 'CLN', 'PHOENIX', 'BARK'])
     .nullable()
     .catch(null),
+  ELECTRUM_SERVER: z
+    .enum(['fulcrum', 'electrs', 'alby'])
+    .nullable()
+    .catch(null),
   SETUP_CODE: z.string().nullable().catch(null),
 })
 

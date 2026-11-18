@@ -9,7 +9,7 @@ const dict = {
   'Web UI': 5,
   'The web interface of Alby Hub': 6,
   'Lightning Implementation': 7,
-  'Which Lightning node Alby Hub runs on.\n- LND on this server: the LND service on this server, reached over gRPC. Install and start LND first.\n- Core Lightning on this server: the Core Lightning service on this server, reached over gRPC. Install and start Core Lightning first.\n- phoenixd on this server: the phoenixd service on this server, reached over its HTTP API. Install and start phoenixd first.\n- LDK embedded node: Alby Hub runs its own Lightning node inside this service; no other service on this server is needed, but it reads the blockchain through an Electrum server run by Alby, opens inbound channels through Lightning service providers (LSPs), and with a paid Alby account stores channel state on a VSS server run by Alby.\n- Bark embedded Ark wallet (experimental): Alby Hub runs its own Bark wallet, which transacts over the Ark protocol instead of a Lightning node, through Ark and Esplora servers run by Second. Alby Hub marks it as beta.': 8,
+  "Which Lightning node Alby Hub runs on.\n- LND on this server: the LND service on this server, reached over gRPC. Install and start LND first.\n- Core Lightning on this server: the Core Lightning service on this server, reached over gRPC. Install and start Core Lightning first.\n- phoenixd on this server: the phoenixd service on this server, reached over its HTTP API. Install and start phoenixd first.\n- LDK embedded node: Alby Hub runs its own Lightning node inside this service. It reads the blockchain from the Electrum server you choose (Fulcrum or Electrs on this server, or Alby's), opens inbound channels through Lightning service providers (LSPs), and with a paid Alby account stores channel state on a VSS server run by Alby.\n- Bark embedded Ark wallet (experimental): Alby Hub runs its own Bark wallet, which transacts over the Ark protocol instead of a Lightning node, through Ark and Esplora servers run by Second. Alby Hub marks it as beta.": 8,
   'LND on this server': 9,
   'LDK embedded node': 10,
   'Set Lightning Implementation': 11,
@@ -28,6 +28,18 @@ const dict = {
   'Show Setup Code': 24,
   'Show the code Alby Hub asks for before first-time setup or restoring an Alby Hub backup': 25,
   'The setup code is missing': 26,
+  'Electrum Server': 27,
+  "Where the LDK node reads the blockchain from.\n- Fulcrum or Electrs on this server: your own Electrum server. Install it first; Alby Hub waits until it has finished syncing.\n- Alby's Electrum server: a server run by Alby, which sees your wallet's addresses and transactions.": 28,
+  'Fulcrum on this server': 29,
+  'Electrs on this server': 30,
+  "Alby's Electrum server": 31,
+  'Set Electrum Server': 32,
+  'Choose the Electrum server the LDK node reads the blockchain from': 33,
+  'You must choose an Electrum server before starting Alby Hub': 34,
+  'Fulcrum is not yet reachable on the internal network. Ensure Fulcrum is installed and running.': 35,
+  'Electrs is not yet reachable on the internal network. Ensure Electrs is installed and running.': 36,
+  'Backend Readiness': 37,
+  'Waiting for the selected local backend to be ready': 38,
 } as const
 
 export type I18nKey = keyof typeof dict

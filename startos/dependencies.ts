@@ -7,6 +7,13 @@ const backendIs =
   async ({ effects }: { effects: T.Effects }) =>
     (await storeJson.read((s) => s.LN_BACKEND_TYPE).const(effects)) === backend
 
+const electrumIs =
+  (server: 'fulcrum' | 'electrs') =>
+  async ({ effects }: { effects: T.Effects }) =>
+    (await storeJson
+      .read((s) => s.LN_BACKEND_TYPE === 'LDK' && s.ELECTRUM_SERVER === server)
+      .const(effects)) ?? false
+
 const lnd = sdk.Dependency.optional('lnd', {
   description: 'Provides a fully sovereign experience',
   metadata: {
@@ -43,7 +50,33 @@ const phoenixd = sdk.Dependency.optional('phoenixd', {
   enabled: backendIs('PHOENIX'),
 })
 
+const fulcrum = sdk.Dependency.optional('fulcrum', {
+  description: 'Serves the blockchain to the LDK node',
+  metadata: {
+    title: 'Fulcrum',
+    icon: 'https://raw.githubusercontent.com/Start9Labs/fulcrum-startos/bfae6129543c3c1b2941c5b4078ffc9f31a08d6c/icon.png',
+  },
+  versionRange: '>=2.1.1:8',
+  kind: 'running',
+  healthChecks: ['primary', 'sync-progress'],
+  enabled: electrumIs('fulcrum'),
+})
+
+const electrs = sdk.Dependency.optional('electrs', {
+  description: 'Serves the blockchain to the LDK node',
+  metadata: {
+    title: 'Electrs',
+    icon: 'https://raw.githubusercontent.com/Start9Labs/electrs-startos/9987e96edd9b2a849ac7dc34bc8ed97facdf7273/icon.svg',
+  },
+  versionRange: '>=0.11.1:11',
+  kind: 'running',
+  healthChecks: ['electrs', 'sync'],
+  enabled: electrumIs('electrs'),
+})
+
 export const dependencies = sdk.Dependencies.of()
   .addDependency(lnd)
   .addDependency(cln)
   .addDependency(phoenixd)
+  .addDependency(fulcrum)
+  .addDependency(electrs)

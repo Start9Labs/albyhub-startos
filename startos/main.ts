@@ -8,8 +8,17 @@ import {
 import { grpcPort as clnGrpcPort } from 'cln-startos/startos/utils'
 import { apiHostId as phoenixdApiHostId } from 'phoenixd-startos/startos/interfaces'
 import { port as phoenixdPort } from 'phoenixd-startos/startos/utils'
+import {
+  electrumPort as fulcrumPort,
+  mainHostId as fulcrumHostId,
+} from 'fulcrum-startos/startos/utils'
+import {
+  electrumHostId as electrsHostId,
+  port as electrsPort,
+} from 'electrs-startos/startos/utils'
 import { readFile } from 'fs/promises'
 import { sdk } from './sdk'
+import { dependencies } from './dependencies'
 import { uiPort } from './utils'
 import { storeJson } from './fileModels/store.json'
 import { i18n } from './i18n'
@@ -22,7 +31,8 @@ export const main = sdk.setupMain(async ({ effects }) => {
    */
   console.info(i18n('Starting Alby Hub!'))
 
-  const { LN_BACKEND_TYPE, SETUP_CODE } = (await storeJson.read().once()) ?? {}
+  const { LN_BACKEND_TYPE, ELECTRUM_SERVER, SETUP_CODE } =
+    (await storeJson.read().once()) ?? {}
 
   if (!LN_BACKEND_TYPE) {
     throw new Error(i18n('You must select node type before starting Alby Hub'))
@@ -142,6 +152,43 @@ export const main = sdk.setupMain(async ({ effects }) => {
       mountpoint: '/mnt/phoenixd',
       readonly: true,
     })
+  } else if (LN_BACKEND_TYPE === 'LDK') {
+    if (!ELECTRUM_SERVER) {
+      throw new Error(
+        i18n('You must choose an Electrum server before starting Alby Hub'),
+      )
+    }
+    if (ELECTRUM_SERVER !== 'alby') {
+      const { packageId, hostId, internalPort, unreachable } =
+        ELECTRUM_SERVER === 'fulcrum'
+          ? {
+              packageId: 'fulcrum',
+              hostId: fulcrumHostId,
+              internalPort: fulcrumPort,
+              unreachable: i18n(
+                'Fulcrum is not yet reachable on the internal network. Ensure Fulcrum is installed and running.',
+              ),
+            }
+          : {
+              packageId: 'electrs',
+              hostId: electrsHostId,
+              internalPort: electrsPort,
+              unreachable: i18n(
+                'Electrs is not yet reachable on the internal network. Ensure Electrs is installed and running.',
+              ),
+            }
+      const electrumAddress = await sdk.host
+        .getBridgeAddress(effects, {
+          packageId,
+          hostId,
+          internalPort,
+          ssl: false,
+        })
+        .const()
+      if (!electrumAddress) throw new Error(unreachable)
+
+      env = { ...env, LDK_ELECTRUM_SERVER: `tcp://${electrumAddress}` }
+    }
   }
 
   const subcontainer = sdk.SubContainer.of(
@@ -163,19 +210,49 @@ export const main = sdk.setupMain(async ({ effects }) => {
    *
    * Each daemon defines its own health check, which can optionally be exposed to the user.
    */
-  return sdk.Daemons.of(effects).addDaemon('primary', {
-    subcontainer,
-    exec: { command: sdk.useEntrypoint(), env, runAsInit: true },
-    ready: {
-      display: i18n('Web Interface'),
-      fn: () =>
-        sdk.healthCheck.checkPortListening(effects, uiPort, {
-          successMessage: i18n('The web interface is ready'),
-          errorMessage: i18n('The web interface is unreachable'),
-        }),
-    },
-    requires: [],
-  })
+  // Local backend readiness gates the process, not upstream wallet unlock.
+  // A restarted wallet needs its password unless Auto Unlock is enabled.
+  // LND/CLN can briefly report "syncing" after a new block.
+  const backendReady = async () =>
+    (await dependencies.check(effects)).satisfied()
+  let wasReady = false
+  return sdk.Daemons.of(effects)
+    .addHealthCheck('backend-readiness', {
+      ready: {
+        display: i18n('Backend Readiness'),
+        fn: async () => {
+          let ready = await backendReady()
+          if (!ready && wasReady) {
+            await new Promise((resolve) => setTimeout(resolve, 35_000))
+            ready = await backendReady()
+          }
+          wasReady = ready
+          return ready
+            ? { result: 'success', message: null }
+            : {
+                result: 'loading',
+                waiting: true,
+                message: i18n(
+                  'Waiting for the selected local backend to be ready',
+                ),
+              }
+        },
+      },
+      requires: [],
+    })
+    .addDaemon('primary', {
+      subcontainer,
+      exec: { command: sdk.useEntrypoint(), env, runAsInit: true },
+      ready: {
+        display: i18n('Web Interface'),
+        fn: () =>
+          sdk.healthCheck.checkPortListening(effects, uiPort, {
+            successMessage: i18n('The web interface is ready'),
+            errorMessage: i18n('The web interface is unreachable'),
+          }),
+      },
+      requires: ['backend-readiness'],
+    })
 })
 
 async function readPhoenixdHttpPassword(rootfs: string): Promise<string> {

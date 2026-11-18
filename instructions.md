@@ -14,12 +14,12 @@
 
 On install, Alby Hub posts a critical task to pick your Lightning backend. **Your choice is permanent** — it cannot be changed without reinstalling, so think it through before confirming.
 
-1. If you intend to use **LND**, **Core Lightning**, or **phoenixd on this server**, install and start that package first. (If you pick **LDK embedded node** or **Bark embedded Ark wallet** instead, skip this step.)
+1. If you intend to use **LND**, **Core Lightning**, or **phoenixd on this server**, install and start that package first. For the **LDK embedded node** with its own Electrum server, install **Fulcrum** or **Electrs** first and let it sync. (For **Bark embedded Ark wallet**, or LDK with Alby's Electrum server, skip this step.)
 2. Run the **Choose your backend lightning implementation** task and select one of:
    - **LND on this server** — Alby Hub talks to your StartOS LND node over gRPC. Requires the LND package installed and running.
    - **Core Lightning on this server** — Alby Hub talks to your StartOS Core Lightning node over gRPC. Requires the Core Lightning package installed and running.
    - **phoenixd on this server** — Alby Hub talks to your StartOS phoenixd node over its HTTP API. Requires the phoenixd package installed and running.
-   - **LDK embedded node** — Alby Hub runs its own Lightning node inside this service. No other service on this server is needed, but it depends on third-party servers: it reads the blockchain through an Electrum server run by Alby, opens inbound channels through Lightning service providers (LSPs), and with a paid Alby account stores your channel state on a VSS server run by Alby.
+   - **LDK embedded node** — Alby Hub runs its own Lightning node inside this service. It reads the blockchain from the Electrum server you pick in the same form: **Fulcrum on this server** (the default) or **Electrs on this server**, which Alby Hub waits for until it is synced, or **Alby's Electrum server**, which sees your wallet's addresses and transactions. It also opens inbound channels through Lightning service providers (LSPs), and with a paid Alby account stores your channel state on a VSS server run by Alby.
    - **Bark embedded Ark wallet (experimental)** — Alby Hub runs its own internal Bark wallet, transacting over the Ark protocol via Ark and Esplora servers hosted by Second. No Lightning node required, but it depends on those third-party servers, and Alby Hub marks it as beta. This is a separate wallet with its own seed — it does not connect to the Bark Wallet service available on StartOS.
 3. Start Alby Hub and open the **Web UI** to finish setup. It first asks for a setup code: copy it from the result of the task above, or run the **Show Setup Code** action. Then create your wallet password and complete the in-app onboarding. The same code is asked for if you restore an Alby Hub backup from its setup screen.
 
@@ -28,6 +28,14 @@ On install, Alby Hub posts a critical task to pick your Lightning backend. **You
 ### Web UI
 
 The web interface is where you manage your wallet: send and receive, manage channels (LDK backend), browse and connect Alby apps, and configure Nostr Wallet Connect. Day-to-day use follows upstream Alby Hub exactly.
+
+With a backend on this server (LND, Core Lightning, phoenixd, or Fulcrum or Electrs for LDK), Alby Hub waits for it to be running and, where it syncs, fully synced before starting. If the backend stops or falls behind, Alby Hub stops its process and restarts it once the backend is ready again. The **Backend Readiness** health check shows when it is waiting.
+
+After that restart, open the **Web UI** and unlock the wallet again unless Alby Hub's **Auto Unlock** was enabled. Until unlocked, Nostr Wallet Connect stays offline and an embedded LDK node remains stopped. A green **Web Interface** health check means the UI is available, not that the wallet is unlocked.
+
+### Changing the Electrum server
+
+With the **LDK embedded node**, run the **Set Electrum Server** action while Alby Hub is stopped to switch between Fulcrum, Electrs, and Alby's Electrum server. Your wallet and channels are unaffected.
 
 ## Backups and restore
 
@@ -44,5 +52,5 @@ If your channel state is on Alby's VSS server, follow that guide's instructions 
 - Only the **LND**, **Core Lightning**, **phoenixd**, **LDK**, and **Bark** backends are available; other upstream options (Cashu, …) are not offered.
 - The LND, Core Lightning, and phoenixd backends connect to your StartOS node only — there is no field for an external node.
 - The Bark backend uses Second's public Ark and Esplora servers; custom servers are not configurable.
-- The LDK backend reads the blockchain through Alby's Electrum server; a Bitcoin node or Electrum server on this StartOS is not used.
+- The LDK backend reads the blockchain from Fulcrum, Electrs, or Alby's Electrum server; it cannot use Bitcoin directly or an Electrum server elsewhere.
 - With the **phoenixd** backend, restart Alby Hub after changing the API password with phoenixd's **Set API Password** so it reads the updated credential.
