@@ -29,6 +29,8 @@ On install, Alby Hub posts a critical task to pick your Lightning backend. **You
 
 The web interface is where you manage your wallet: send and receive, manage channels (LDK backend), browse and connect Alby apps, and configure Nostr Wallet Connect. Day-to-day use follows upstream Alby Hub exactly.
 
+With a backend on this server (LND, Core Lightning, phoenixd, or Fulcrum or Electrs for LDK), Alby Hub waits for it to be running and, where it syncs, fully synced before starting. If the backend stops or falls behind, Alby Hub pauses and resumes on its own once the backend is ready again. The **Backend Readiness** health check shows when it is waiting.
+
 ### Changing the Electrum server
 
 With the **LDK embedded node**, run the **Set Electrum Server** action while Alby Hub is stopped to switch between Fulcrum, Electrs, and Alby's Electrum server. Your wallet and channels are unaffected.

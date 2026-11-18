@@ -18,6 +18,7 @@ import {
 } from 'electrs-startos/startos/utils'
 import { readFile } from 'fs/promises'
 import { sdk } from './sdk'
+import { dependencies } from './dependencies'
 import { uiPort } from './utils'
 import { storeJson } from './fileModels/store.json'
 import { i18n } from './i18n'
@@ -209,19 +210,51 @@ export const main = sdk.setupMain(async ({ effects }) => {
    *
    * Each daemon defines its own health check, which can optionally be exposed to the user.
    */
-  return sdk.Daemons.of(effects).addDaemon('primary', {
-    subcontainer,
-    exec: { command: sdk.useEntrypoint(), env, runAsInit: true },
-    ready: {
-      display: i18n('Web Interface'),
-      fn: () =>
-        sdk.healthCheck.checkPortListening(effects, uiPort, {
-          successMessage: i18n('The web interface is ready'),
-          errorMessage: i18n('The web interface is unreachable'),
-        }),
-    },
-    requires: [],
-  })
+  // A local backend must be running and synced before the wallet starts, and a
+  // backend lost while running pauses the wallet until it recovers. A synced
+  // LND or Core Lightning can report "syncing" for a moment after each new
+  // block, so a miss after readiness is confirmed past the dependency's next
+  // poll (30 s) before it stops Alby Hub.
+  const backendReady = async () =>
+    (await dependencies.check(effects)).satisfied()
+  let wasReady = false
+  return sdk.Daemons.of(effects)
+    .addHealthCheck('backend-readiness', {
+      ready: {
+        display: i18n('Backend Readiness'),
+        fn: async () => {
+          let ready = await backendReady()
+          if (!ready && wasReady) {
+            await new Promise((resolve) => setTimeout(resolve, 35_000))
+            ready = await backendReady()
+          }
+          wasReady = ready
+          return ready
+            ? { result: 'success', message: null }
+            : {
+                result: 'loading',
+                waiting: true,
+                message: i18n(
+                  'Waiting for the selected local backend to be ready',
+                ),
+              }
+        },
+      },
+      requires: [],
+    })
+    .addDaemon('primary', {
+      subcontainer,
+      exec: { command: sdk.useEntrypoint(), env, runAsInit: true },
+      ready: {
+        display: i18n('Web Interface'),
+        fn: () =>
+          sdk.healthCheck.checkPortListening(effects, uiPort, {
+            successMessage: i18n('The web interface is ready'),
+            errorMessage: i18n('The web interface is unreachable'),
+          }),
+      },
+      requires: ['backend-readiness'],
+    })
 })
 
 async function readPhoenixdHttpPassword(rootfs: string): Promise<string> {

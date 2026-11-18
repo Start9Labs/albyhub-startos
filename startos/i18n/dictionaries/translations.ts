@@ -39,6 +39,8 @@ export default {
     34: 'Debe elegir un servidor Electrum antes de iniciar Alby Hub',
     35: 'Fulcrum aún no es accesible en la red interna. Asegúrese de que Fulcrum esté instalado y en ejecución.',
     36: 'Electrs aún no es accesible en la red interna. Asegúrese de que Electrs esté instalado y en ejecución.',
+    37: 'Disponibilidad del backend',
+    38: 'Esperando a que el backend local seleccionado esté listo',
   },
   de_DE: {
     0: 'Alby Hub wird gestartet!',
@@ -78,6 +80,8 @@ export default {
     34: 'Sie müssen einen Electrum-Server wählen, bevor Sie Alby Hub starten',
     35: 'Fulcrum ist im internen Netzwerk noch nicht erreichbar. Stellen Sie sicher, dass Fulcrum installiert ist und läuft.',
     36: 'Electrs ist im internen Netzwerk noch nicht erreichbar. Stellen Sie sicher, dass Electrs installiert ist und läuft.',
+    37: 'Backend-Bereitschaft',
+    38: 'Warten, bis das ausgewählte lokale Backend bereit ist',
   },
   pl_PL: {
     0: 'Uruchamianie Alby Hub!',
@@ -117,6 +121,8 @@ export default {
     34: 'Musisz wybrać serwer Electrum przed uruchomieniem Alby Hub',
     35: 'Fulcrum nie jest jeszcze osiągalny w sieci wewnętrznej. Upewnij się, że Fulcrum jest zainstalowany i uruchomiony.',
     36: 'Electrs nie jest jeszcze osiągalny w sieci wewnętrznej. Upewnij się, że Electrs jest zainstalowany i uruchomiony.',
+    37: 'Gotowość backendu',
+    38: 'Oczekiwanie na gotowość wybranego lokalnego backendu',
   },
   fr_FR: {
     0: "Démarrage d'Alby Hub !",
@@ -156,5 +162,7 @@ export default {
     34: 'Vous devez choisir un serveur Electrum avant de démarrer Alby Hub',
     35: "Fulcrum n'est pas encore joignable sur le réseau interne. Assurez-vous que Fulcrum est installé et en cours d'exécution.",
     36: "Electrs n'est pas encore joignable sur le réseau interne. Assurez-vous qu'Electrs est installé et en cours d'exécution.",
+    37: 'Disponibilité du backend',
+    38: 'En attente de la disponibilité du backend local sélectionné',
   },
 } satisfies Record<string, LangDict>

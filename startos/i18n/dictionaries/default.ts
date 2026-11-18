@@ -38,6 +38,8 @@ const dict = {
   'You must choose an Electrum server before starting Alby Hub': 34,
   'Fulcrum is not yet reachable on the internal network. Ensure Fulcrum is installed and running.': 35,
   'Electrs is not yet reachable on the internal network. Ensure Electrs is installed and running.': 36,
+  'Backend Readiness': 37,
+  'Waiting for the selected local backend to be ready': 38,
 } as const
 
 export type I18nKey = keyof typeof dict

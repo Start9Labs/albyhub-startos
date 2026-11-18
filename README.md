@@ -104,7 +104,7 @@ All five are declared optional in `startos/dependencies.ts`, each enabled by the
 | LDK     | `electrs`     | `>=0.11.1:11`     | `running` | `electrs`, `sync`            | —                          |
 | BARK    | none          | —                 | —         | —                            | —                          |
 
-The sync checks are required as well as "running", so Alby Hub waits for a node or Electrum server that is up but still catching up. For LDK, `fulcrum` or `electrs` is enabled only when `ELECTRUM_SERVER` names it.
+Declaring a dependency only reports its status; `main` enforces it. The `backend-readiness` health check, which the `primary` daemon requires, passes only while `dependencies.check(effects)` is satisfied — the enabled dependency installed, running, and passing every check listed above, sync included — so Alby Hub waits for a node or Electrum server that is stopped or still catching up. Once ready, a miss is re-checked 35 s later (past the dependency's 30 s poll, so a momentary post-block "syncing" from LND or Core Lightning does not count); a confirmed miss pauses the daemon until the backend recovers. With Alby's Electrum server or Bark no dependency is enabled and the check passes at once. For LDK, `fulcrum` or `electrs` is enabled only when `ELECTRUM_SERVER` names it.
 
 LDK reads the chain from the Electrum server in `ELECTRUM_SERVER`; with `alby` the package leaves `LDK_ELECTRUM_SERVER` unset, so upstream's default, Alby's `ssl://electrum.getalbypro.com:50002`, applies. The embedded backends otherwise reach third-party servers on upstream defaults the package does not set: LDK takes inbound liquidity from Lightning service providers (an LSPS2 provider from Alby's channel-peer suggestions, Megalith otherwise), and, for a node created with a paid Alby account, stores its channel state on Alby's VSS server (`LDK_VSS_URL`, `https://vss.getalbypro.com/vss`). Bark uses Second's Ark and Esplora servers.
 
@@ -241,5 +241,6 @@ tasks:
   - { action: set-lightning, severity: critical }
   - { action: set-electrum-server, severity: critical } # LDK installs without ELECTRUM_SERVER
 health_checks:
+  - backend-readiness # gates primary on the selected dependency's requirements
   - primary # the daemon's ready check, displayed "Web Interface"
 ```
