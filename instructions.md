@@ -21,7 +21,7 @@ On install, Alby Hub posts a critical task to pick your Lightning backend. **You
    - **phoenixd on this server** — Alby Hub talks to your StartOS phoenixd node over its HTTP API. Requires the phoenixd package installed and running.
    - **LDK embedded node** — Alby Hub runs its own Lightning node inside this service. No other service on this server is needed.
    - **Bark embedded Ark wallet (experimental)** — Alby Hub runs its own internal Bark wallet, transacting over the Ark protocol via Ark and Esplora servers hosted by Second. No Lightning node required, but it depends on those third-party servers, and Alby Hub marks it as beta. This is a separate wallet with its own seed — it does not connect to the Bark Wallet service available on StartOS.
-3. Start Alby Hub and open the **Web UI** to finish setup (create your wallet password and complete the in-app onboarding).
+3. Start Alby Hub and open the **Web UI** to finish setup. It first asks for a setup code: copy it from the result of the task above, or run the **Show Setup Code** action. Then create your wallet password and complete the in-app onboarding. The same code is asked for if you restore an Alby Hub backup from its setup screen.
 
 ## Using Alby Hub
 

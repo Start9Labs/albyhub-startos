@@ -1,6 +1,7 @@
 import { storeJson } from '../fileModels/store.json'
 import { i18n } from '../i18n'
 import { sdk } from '../sdk'
+import { setupCodeResult } from './showSetupCode'
 
 const { InputSpec, Value } = sdk
 
@@ -46,6 +47,8 @@ export const setLightning = sdk.Action.withInput(
   async ({ effects }) => {},
 
   // the execution function
-  async ({ effects, input }) =>
-    storeJson.write(effects, { LN_BACKEND_TYPE: input.LN_BACKEND_TYPE }),
+  async ({ effects, input }) => {
+    await storeJson.merge(effects, { LN_BACKEND_TYPE: input.LN_BACKEND_TYPE })
+    return setupCodeResult()
+  },
 )

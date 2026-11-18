@@ -6,6 +6,7 @@ const shape = z.looseObject({
     .enum(['LND', 'LDK', 'CLN', 'PHOENIX', 'BARK'])
     .nullable()
     .catch(null),
+  SETUP_CODE: z.string().nullable().catch(null),
 })
 
 export const storeJson = FileHelper.json(
