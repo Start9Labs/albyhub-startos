@@ -37,4 +37,4 @@ verified, tried, and decided belongs in the commit message and the PR body.
 - **Adding a backend touches four places, and nothing type-checks that you did all four:** the `LN_BACKEND_TYPE` enum in `startos/fileModels/store.json.ts`, the select values in `startos/actions/setLightning.ts`, the env/mount branch in `startos/main.ts`, and an optional dependency enabled by that choice in `startos/dependencies.ts`.
 - **Reach Core Lightning's gRPC host by the literal `'grpc'`**: cln exports only its `peer` and `watchtower` host ids. LND's and phoenixd's host ids and ports come from their packages' exports.
 - **Don't soften `main` throwing when the backend is unreachable** into a warning or a retry loop: a wallet that starts without its node shows an empty balance, which reads as loss of funds.
-- **Keep `store.json` on the `startos` volume and `write` it rather than `merge`**: the application must never see it.
+- **Keep `store.json` on the `startos` volume** — the application must never see it — **and `merge` into it**: a `write` drops the setup code init seeded.

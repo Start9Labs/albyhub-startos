@@ -1,6 +1,7 @@
 import { storeJson } from '../fileModels/store.json'
 import { i18n } from '../i18n'
 import { sdk } from '../sdk'
+import { setupCodeResult } from './showSetupCode'
 
 const { InputSpec, Value } = sdk
 
@@ -8,7 +9,7 @@ export const inputSpec = InputSpec.of({
   LN_BACKEND_TYPE: Value.select({
     name: i18n('Lightning Implementation'),
     description: i18n(
-      'Which Lightning node Alby Hub runs on.\n- LND on this server: the LND service on this server, reached over gRPC. Install and start LND first.\n- Core Lightning on this server: the Core Lightning service on this server, reached over gRPC. Install and start Core Lightning first.\n- phoenixd on this server: the phoenixd service on this server, reached over its HTTP API. Install and start phoenixd first.\n- LDK embedded node: Alby Hub runs its own Lightning node inside this service; no other service on this server is needed.\n- Bark embedded Ark wallet (experimental): Alby Hub runs its own Bark wallet, which transacts over the Ark protocol instead of a Lightning node, through Ark and Esplora servers run by Second. Alby Hub marks it as beta.',
+      'Which Lightning node Alby Hub runs on.\n- LND on this server: the LND service on this server, reached over gRPC. Install and start LND first.\n- Core Lightning on this server: the Core Lightning service on this server, reached over gRPC. Install and start Core Lightning first.\n- phoenixd on this server: the phoenixd service on this server, reached over its HTTP API. Install and start phoenixd first.\n- LDK embedded node: Alby Hub runs its own Lightning node inside this service; no other service on this server is needed, but it reads the blockchain through an Electrum server run by Alby, opens inbound channels through Lightning service providers (LSPs), and with a paid Alby account stores channel state on a VSS server run by Alby.\n- Bark embedded Ark wallet (experimental): Alby Hub runs its own Bark wallet, which transacts over the Ark protocol instead of a Lightning node, through Ark and Esplora servers run by Second. Alby Hub marks it as beta.',
     ),
     values: {
       LND: i18n('LND on this server'),
@@ -46,6 +47,8 @@ export const setLightning = sdk.Action.withInput(
   async ({ effects }) => {},
 
   // the execution function
-  async ({ effects, input }) =>
-    storeJson.write(effects, { LN_BACKEND_TYPE: input.LN_BACKEND_TYPE }),
+  async ({ effects, input }) => {
+    await storeJson.merge(effects, { LN_BACKEND_TYPE: input.LN_BACKEND_TYPE })
+    return setupCodeResult()
+  },
 )

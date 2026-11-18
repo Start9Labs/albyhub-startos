@@ -22,14 +22,18 @@ export const main = sdk.setupMain(async ({ effects }) => {
    */
   console.info(i18n('Starting Alby Hub!'))
 
-  const LN_BACKEND_TYPE = await storeJson.read((s) => s.LN_BACKEND_TYPE).once()
+  const { LN_BACKEND_TYPE, SETUP_CODE } = (await storeJson.read().once()) ?? {}
 
   if (!LN_BACKEND_TYPE) {
     throw new Error(i18n('You must select node type before starting Alby Hub'))
   }
+  if (!SETUP_CODE) {
+    throw new Error(i18n('The setup code is missing'))
+  }
 
   let env: Record<string, string> = {
     LN_BACKEND_TYPE,
+    SETUP_CODE,
     WORK_DIR: '/data',
     HIDE_UPDATE_BANNER: 'true',
   }
