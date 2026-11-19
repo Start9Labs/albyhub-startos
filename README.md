@@ -159,14 +159,16 @@ Three actions: one raised only by its task, one listed only for the LDK backend,
 
 ## Tasks
 
-Two tasks, each blocking the service until completed.
+Two tasks. Only the first blocks the service.
 
-| Task                         | Severity   | Raised when                                                                                                                                            | Cleared when    |
-| ---------------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------- |
-| Set Lightning Implementation | `critical` | At install                                                                                                                                             | The action runs |
-| Set Electrum Server          | `critical` | On any init but install, while the backend is LDK and `ELECTRUM_SERVER` is unset — an LDK install from before the choice existed, on update or restore | The action runs |
+| Task                         | Severity    | Raised when                                                                                                                                                                     | Cleared when                        |
+| ---------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
+| Set Lightning Implementation | `critical`  | At install                                                                                                                                                                      | The action runs                     |
+| Set Electrum Server          | `important` | Once, by the `1.24.7:1` migration, for an LDK install from before the Electrum server choice existed (on update or restore); the migration sets that install's server to `alby` | The action runs, or it is dismissed |
 
 `critical` suspends the ordinary controls, so a fresh install presents only this prompt rather than a start button — the intended experience, not a fault, since starting without a backend could not work.
+
+An LDK install from before the choice existed had no `LDK_ELECTRUM_SERVER` set, so it read the chain from Alby's server, and the migration keeps it there. A new install defaults to Fulcrum on this server. `main` still refuses to start an LDK install with no `ELECTRUM_SERVER`.
 
 ## Health Checks
 

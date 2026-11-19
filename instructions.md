@@ -35,7 +35,7 @@ After that restart, open the **Web UI** and unlock the wallet again unless Alby 
 
 ### Changing the Electrum server
 
-With the **LDK embedded node**, run the **Set Electrum Server** action while Alby Hub is stopped to switch between Fulcrum, Electrs, and Alby's Electrum server. Your wallet and channels are unaffected.
+With the **LDK embedded node**, run the **Set Electrum Server** action while Alby Hub is stopped to switch between Fulcrum, Electrs, and Alby's Electrum server. Your wallet and channels are unaffected. An LDK node set up before this choice existed uses Alby's Electrum server until you change it here.
 
 ## Backups and restore
 
