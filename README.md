@@ -134,7 +134,7 @@ Wallet setup itself — the password, the onboarding flow — happens inside Alb
 
 ## Actions
 
-Three actions: one raised only by its task, one listed only for the LDK backend, and one always listed.
+Three actions: one raised only by its task, one listed only for the LDK backend, and one listed until setup completes.
 
 ### Set Lightning Implementation — hidden
 
@@ -154,8 +154,9 @@ Three actions: one raised only by its task, one listed only for the LDK backend,
 
 ### Show Setup Code
 
-- **Visibility and status:** enabled, any status.
-- **Result:** the setup code from `store.json`, masked and copyable. It changes nothing; after onboarding the code no longer has any effect.
+- **Visibility and status:** any status; listed until Alby Hub reports setup complete, then hidden.
+- **Result:** the setup code from `store.json`, masked and copyable. It changes nothing.
+- **How it hides:** a health check with no display polls upstream's unauthenticated `GET /api/info` while the service runs, and on the first `setupCompleted: true` sets `SETUP_COMPLETED` in `store.json`. The flag is never cleared, and is backed up with the rest of `store.json`.
 
 ## Tasks
 

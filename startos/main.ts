@@ -253,6 +253,24 @@ export const main = sdk.setupMain(async ({ effects }) => {
       },
       requires: ['backend-readiness'],
     })
+    .addHealthCheck('setup-completed', {
+      ready: {
+        display: null,
+        fn: async () => {
+          if (
+            !(await storeJson.read((s) => s.SETUP_COMPLETED).once()) &&
+            (await fetch(`http://127.0.0.1:${uiPort}/api/info`)
+              .then((r) => r.json())
+              .then((info) => info.setupCompleted === true)
+              .catch(() => false))
+          ) {
+            await storeJson.merge(effects, { SETUP_COMPLETED: true })
+          }
+          return { result: 'success', message: null }
+        },
+      },
+      requires: ['primary'],
+    })
 })
 
 async function readPhoenixdHttpPassword(rootfs: string): Promise<string> {
