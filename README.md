@@ -159,14 +159,15 @@ Three actions: one raised only by its task, one listed only for the LDK backend,
 
 ## Tasks
 
-Two tasks, each blocking the service until completed.
+| Task                         | Severity   | Raised when | Cleared when    |
+| ---------------------------- | ---------- | ----------- | --------------- |
+| Set Lightning Implementation | `critical` | At install  | The action runs |
 
-| Task                         | Severity   | Raised when                                                                                                                                            | Cleared when    |
-| ---------------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------- |
-| Set Lightning Implementation | `critical` | At install                                                                                                                                             | The action runs |
-| Set Electrum Server          | `critical` | On any init but install, while the backend is LDK and `ELECTRUM_SERVER` is unset — an LDK install from before the choice existed, on update or restore | The action runs |
+The `1.24.7:1` migration sets `ELECTRUM_SERVER` to `alby` for an LDK install from before the Electrum server choice existed (on update or restore), so such an install keeps running on the server it already used; Set Electrum Server switches it.
 
 `critical` suspends the ordinary controls, so a fresh install presents only this prompt rather than a start button — the intended experience, not a fault, since starting without a backend could not work.
+
+An LDK install from before the choice existed had no `LDK_ELECTRUM_SERVER` set, so it read the chain from Alby's server, and the migration keeps it there. A new install defaults to Fulcrum on this server. `main` still refuses to start an LDK install with no `ELECTRUM_SERVER`.
 
 ## Health Checks
 
@@ -241,7 +242,6 @@ actions:
   - show-setup-code
 tasks:
   - { action: set-lightning, severity: critical }
-  - { action: set-electrum-server, severity: critical } # LDK installs without ELECTRUM_SERVER
 health_checks:
   - backend-readiness # gates primary on the selected dependency's requirements
   - primary # the daemon's ready check, displayed "Web Interface"
