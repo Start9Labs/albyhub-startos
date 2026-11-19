@@ -29,7 +29,9 @@ export const showSetupCode = sdk.Action.withoutInput(
     warning: null,
     allowedStatuses: 'any',
     group: null,
-    visibility: 'enabled',
+    visibility: (await storeJson.read((s) => s.SETUP_COMPLETED).const(effects))
+      ? 'hidden'
+      : 'enabled',
   }),
 
   setupCodeResult,

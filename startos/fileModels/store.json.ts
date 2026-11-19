@@ -11,6 +11,7 @@ const shape = z.looseObject({
     .nullable()
     .catch(null),
   SETUP_CODE: z.string().nullable().catch(null),
+  SETUP_COMPLETED: z.boolean().catch(false),
 })
 
 export const storeJson = FileHelper.json(
