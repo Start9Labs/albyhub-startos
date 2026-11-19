@@ -31,7 +31,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
    */
   console.info(i18n('Starting Alby Hub!'))
 
-  const { LN_BACKEND_TYPE, ELECTRUM_SERVER, SETUP_CODE } =
+  const { LN_BACKEND_TYPE, ELECTRUM_SERVER, SETUP_CODE, SETUP_COMPLETED } =
     (await storeJson.read().once()) ?? {}
 
   if (!LN_BACKEND_TYPE) {
@@ -216,7 +216,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
   const backendReady = async () =>
     (await dependencies.check(effects)).satisfied()
   let wasReady = false
-  return sdk.Daemons.of(effects)
+  const daemons = sdk.Daemons.of(effects)
     .addHealthCheck('backend-readiness', {
       ready: {
         display: i18n('Backend Readiness'),
@@ -253,24 +253,28 @@ export const main = sdk.setupMain(async ({ effects }) => {
       },
       requires: ['backend-readiness'],
     })
-    .addHealthCheck('setup-completed', {
-      ready: {
-        display: null,
-        fn: async () => {
-          if (
-            !(await storeJson.read((s) => s.SETUP_COMPLETED).once()) &&
-            (await fetch(`http://127.0.0.1:${uiPort}/api/info`)
-              .then((r) => r.json())
-              .then((info) => info.setupCompleted === true)
-              .catch(() => false))
-          ) {
-            await storeJson.merge(effects, { SETUP_COMPLETED: true })
-          }
-          return { result: 'success', message: null }
-        },
+  if (SETUP_COMPLETED) return daemons
+
+  let setupCompleted = false
+  return daemons.addHealthCheck('setup-completed', {
+    ready: {
+      display: null,
+      fn: async () => {
+        if (
+          !setupCompleted &&
+          (await fetch(`http://127.0.0.1:${uiPort}/api/info`)
+            .then((r) => r.json())
+            .then((info) => info.setupCompleted === true)
+            .catch(() => false))
+        ) {
+          await storeJson.merge(effects, { SETUP_COMPLETED: true })
+          setupCompleted = true
+        }
+        return { result: 'success', message: null }
       },
-      requires: ['primary'],
-    })
+    },
+    requires: ['primary'],
+  })
 })
 
 async function readPhoenixdHttpPassword(rootfs: string): Promise<string> {

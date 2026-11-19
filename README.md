@@ -156,7 +156,7 @@ Three actions: one raised only by its task, one listed only for the LDK backend,
 
 - **Visibility and status:** any status; listed until Alby Hub reports setup complete, then hidden.
 - **Result:** the setup code from `store.json`, masked and copyable. It changes nothing.
-- **How it hides:** a health check with no display polls upstream's unauthenticated `GET /api/info` while the service runs, and on the first `setupCompleted: true` sets `SETUP_COMPLETED` in `store.json`. The flag is never cleared, and is backed up with the rest of `store.json`.
+- **How it hides:** while `SETUP_COMPLETED` in `store.json` is unset, `main` adds a health check with no display that polls upstream's unauthenticated `GET /api/info` and sets the flag on the first `setupCompleted: true`. A start with the flag already set adds no check. The flag is never cleared, and is backed up with the rest of `store.json`.
 
 ## Tasks
 
