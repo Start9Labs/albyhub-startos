@@ -1,8 +1,5 @@
 import { IMPOSSIBLE, VersionInfo } from '@start9labs/start-sdk'
-import { setElectrumServer } from '../actions/setElectrumServer'
 import { storeJson } from '../fileModels/store.json'
-import { i18n } from '../i18n'
-import { sdk } from '../sdk'
 
 export const current = VersionInfo.of({
   version: '1.24.7:1',
@@ -24,11 +21,6 @@ export const current = VersionInfo.of({
       if (store?.LN_BACKEND_TYPE !== 'LDK' || store.ELECTRUM_SERVER) return
       // LDK used upstream's default, Alby's Electrum server, before the choice existed.
       await storeJson.merge(effects, { ELECTRUM_SERVER: 'alby' })
-      await sdk.action.createOwnTask(effects, setElectrumServer, 'important', {
-        reason: i18n(
-          'Choose the Electrum server the LDK node reads the blockchain from',
-        ),
-      })
     },
     down: IMPOSSIBLE,
   },
