@@ -242,7 +242,6 @@ actions:
   - show-setup-code
 tasks:
   - { action: set-lightning, severity: critical }
-  - { action: set-electrum-server, severity: critical } # LDK installs without ELECTRUM_SERVER
 health_checks:
   - backend-readiness # gates primary on the selected dependency's requirements
   - primary # the daemon's ready check, displayed "Web Interface"
