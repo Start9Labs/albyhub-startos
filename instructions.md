@@ -29,7 +29,7 @@ On install, Alby Hub posts a critical task to pick your Lightning backend. **You
 
 The web interface is where you manage your wallet: send and receive, manage channels (LDK backend), browse and connect Alby apps, and configure Nostr Wallet Connect. Day-to-day use follows upstream Alby Hub exactly.
 
-Before you use **Link your Alby Account**, confirm that the Alby account shown in Alby Hub is your own. Keep the **Web UI** interface's addresses limited to networks you trust.
+Before you use **Link your Alby Account**, confirm that the Alby account shown in Alby Hub is your own: linking gives that account a connection to your hub. Keep the **Web UI** interface's addresses limited to networks you trust.
 
 With a backend on this server (LND, Core Lightning, phoenixd, or Fulcrum or Electrs for LDK), Alby Hub waits for it to be running and, where it syncs, fully synced before starting. If the backend stops or falls behind, Alby Hub stops its process and restarts it once the backend is ready again. The **Backend Readiness** health check shows when it is waiting.
 
