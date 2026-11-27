@@ -9,7 +9,6 @@
     "phoenixd-startos": "github:Start9-Community/phoenixd-startos#next"
   },
   "overrides": {
-    "@start9labs/start-sdk": "$@start9labs/start-sdk",
-    "bitcoin-core-startos": "github:Start9Labs/bitcoin-core-startos#next/31.x"
+    "@start9labs/start-sdk": "$@start9labs/start-sdk"
   }
 }
